@@ -109,14 +109,14 @@ static void runTS(LADSPA_Handle instance, unsigned long sample_count, snd_seq_ev
     }
 
     if (event_count > 0) {
-        printf("trivial_synth: have %ld events\n", event_count);
+        fprintf(stderr, "[dizzYM] have %ld events\n", event_count);
     }
 
     for (pos = 0, event_pos = 0; pos < sample_count; pos++) {
 
         while (event_pos < event_count && pos == events[event_pos].time.tick) {
 
-            printf("trivial_synth: event type %d\n", events[event_pos].type);
+            fprintf(stderr, "[dizzYM] event type %d\n", events[event_pos].type);
 
             if (events[event_pos].type == SND_SEQ_EVENT_NOTEON) {
                 data[events[event_pos].data.note.note].amp = events[event_pos].data.note.velocity / 512.0f;
