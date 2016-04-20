@@ -218,10 +218,8 @@ void Karplong::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsig
 
 void Karplong::addSamples(int voice, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "Karplong::addSamples(" << voice << ", " << offset
-    << ", " << count << "): on " << m_ons[voice] << ", off "
-    << m_offs[voice] << ", size " << m_sizes[voice]
-    << ", start " << m_blockStart + offset << std::endl;
+    std::cerr << "Karplong::addSamples(" << voice << ", " << offset << ", " << count << "): on " << m_ons[voice] << ", off " << m_offs[voice] << ", size "
+            << m_sizes[voice] << ", start " << m_blockStart + offset << std::endl;
 #endif
 
     if (m_ons[voice] < 0)
