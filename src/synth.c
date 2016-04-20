@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 #include "dssi.h"
 
 #define PORT_OUTPUT 0
