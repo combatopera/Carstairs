@@ -300,8 +300,8 @@ Karplong::runImpl(unsigned long sampleCount,
 	    count = events[eventPos].time.tick - pos;
 	}
 
-	for (i = 0; i < count; ++i) {
-	    m_output[pos + i] = 0;
+	for (unsigned long k = 0; k < count; ++k) {
+	    m_output[pos + k] = 0;
 	}
 
 	for (i = 0; i < Notes; ++i) {
@@ -334,7 +334,7 @@ Karplong::addSamples(int voice, unsigned long offset, unsigned long count)
     if (start < on) return;
 
     if (start == on) { 
-	for (size_t i = 0; i <= int(m_sizes[voice]); ++i) {
+	for (size_t i = 0; i <= unsigned(m_sizes[voice]); ++i) {
 	    m_wavetable[voice][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
 	}
     }
