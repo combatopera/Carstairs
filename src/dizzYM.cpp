@@ -1,28 +1,3 @@
-/* -*- c-basic-offset: 4 -*-  vi:set ts=8 sts=4 sw=4: */
-
-/* karplong.c
-
- DSSI Soft Synth Interface
- Constructed by Chris Cannam, Steve Harris and Sean Bolton
-
- This is an example DSSI synth plugin written by Chris Cannam.
-
- It implements the basic Karplus-Strong plucked-string synthesis
- algorithm (Kevin Karplus & Alex Strong, "Digital Synthesis of
- Plucked-String and Drum Timbres", Computer Music Journal 1983).
-
- My belief is that this algorithm is no longer patented anywhere in
- the world.  The algorithm was protected by US patent no 4,649,783,
- filed in 1984 and granted to Stanford University in 1987.  This
- patent expired in June 2004.  The related European patent EP0124197
- lapsed during the 1990s.
-
- This also serves as an example of one way to structure a simple
- DSSI plugin in C++.
-
- This example file is placed in the public domain.
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -30,9 +5,7 @@
 #include "dssi.h"
 #include "ladspa.h"
 
-//#define DEBUG_KARPLONG 1
-
-#ifdef DEBUG_KARPLONG
+#ifdef DEBUG_dizzYM
 #include <iostream>
 #endif
 
@@ -244,7 +217,7 @@ void Karplong::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsig
 }
 
 void Karplong::addSamples(int voice, unsigned long offset, unsigned long count) {
-#ifdef DEBUG_KARPLONG
+#ifdef DEBUG_dizzYM
     std::cerr << "Karplong::addSamples(" << voice << ", " << offset
     << ", " << count << "): on " << m_ons[voice] << ", off "
     << m_offs[voice] << ", size " << m_sizes[voice]
