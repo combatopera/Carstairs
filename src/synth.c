@@ -1,13 +1,10 @@
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
-#include <stdio.h>
 #include "dssi.h"
-#include "ladspa.h"
 
-#define TS_OUTPUT 0
-#define TS_FREQ   1
-#define TS_VOLUME 2
+#define PORT_OUTPUT 0
+#define PORT_FREQ   1
+#define PORT_VOLUME 2
 #define MIDI_NOTES 128
 
 static LADSPA_Descriptor *tsLDescriptor = NULL;
@@ -57,13 +54,13 @@ static void connectPortTS(LADSPA_Handle instance, unsigned long port, LADSPA_Dat
 
     plugin = (TS *) instance;
     switch (port) {
-    case TS_OUTPUT:
+    case PORT_OUTPUT:
         plugin->output = data;
         break;
-    case TS_FREQ:
+    case PORT_FREQ:
         plugin->freq = data;
         break;
-    case TS_VOLUME:
+    case PORT_VOLUME:
         plugin->vol = data;
         break;
     }
@@ -148,9 +145,9 @@ static void runTS(LADSPA_Handle instance, unsigned long sample_count, snd_seq_ev
 
 int getControllerTS(LADSPA_Handle instance, unsigned long port) {
     switch (port) {
-    case TS_VOLUME:
+    case PORT_VOLUME:
         return DSSI_CC(7);
-    case TS_FREQ:
+    case PORT_FREQ:
         return DSSI_CC(9);
     }
 
@@ -187,26 +184,26 @@ void _init()
         tsLDescriptor->PortNames = (const char **) port_names;
 
         /* Parameters for Output */
-        port_descriptors[TS_OUTPUT] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO;
-        port_names[TS_OUTPUT] = "Output";
-        port_range_hints[TS_OUTPUT].HintDescriptor = 0;
+        port_descriptors[PORT_OUTPUT] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO;
+        port_names[PORT_OUTPUT] = "Output";
+        port_range_hints[PORT_OUTPUT].HintDescriptor = 0;
 
         /* Parameters for Freq */
-        port_descriptors[TS_FREQ] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL;
-        port_names[TS_FREQ] = "Tuning frequency";
-        port_range_hints[TS_FREQ].HintDescriptor = LADSPA_HINT_DEFAULT_440 |
+        port_descriptors[PORT_FREQ] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL;
+        port_names[PORT_FREQ] = "Tuning frequency";
+        port_range_hints[PORT_FREQ].HintDescriptor = LADSPA_HINT_DEFAULT_440 |
         LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE;
-        port_range_hints[TS_FREQ].LowerBound = 420;
-        port_range_hints[TS_FREQ].UpperBound = 460;
+        port_range_hints[PORT_FREQ].LowerBound = 420;
+        port_range_hints[PORT_FREQ].UpperBound = 460;
 
         /* Parameters for Volume */
-        port_descriptors[TS_VOLUME] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL;
-        port_names[TS_VOLUME] = "Volume";
-        port_range_hints[TS_VOLUME].HintDescriptor =
+        port_descriptors[PORT_VOLUME] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL;
+        port_names[PORT_VOLUME] = "Volume";
+        port_range_hints[PORT_VOLUME].HintDescriptor =
         LADSPA_HINT_DEFAULT_MAXIMUM |
         LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE;
-        port_range_hints[TS_VOLUME].LowerBound = 0.0;
-        port_range_hints[TS_VOLUME].UpperBound = 1.0;
+        port_range_hints[PORT_VOLUME].LowerBound = 0.0;
+        port_range_hints[PORT_VOLUME].UpperBound = 1.0;
 
         tsLDescriptor->activate = activateTS;
         tsLDescriptor->cleanup = cleanupTS;
