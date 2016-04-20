@@ -6,13 +6,13 @@
 #include <iostream>
 #endif
 
-class Karplong {
+class dizzYM {
 public:
     static const DSSI_Descriptor *getDescriptor(unsigned long index);
 
 private:
-    Karplong(int sampleRate);
-    ~Karplong();
+    dizzYM(int sampleRate);
+    ~dizzYM();
 
     enum {
         OutputPort = 0, Sustain = 1, PortCount = 2
@@ -56,18 +56,18 @@ private:
     float m_sizes[Notes];
 };
 
-const char * const Karplong::portNames[PortCount] = {"Output", "Sustain (on/off)", };
+const char * const dizzYM::portNames[PortCount] = {"Output", "Sustain (on/off)", };
 
-const LADSPA_PortDescriptor Karplong::ports[PortCount] = {
+const LADSPA_PortDescriptor dizzYM::ports[PortCount] = {
 LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO,
 LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, };
 
-const LADSPA_PortRangeHint Karplong::hints[PortCount] = { {0, 0, 0}, {LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER |
+const LADSPA_PortRangeHint dizzYM::hints[PortCount] = { {0, 0, 0}, {LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER |
 LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1}, };
 
-const LADSPA_Properties Karplong::properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
+const LADSPA_Properties dizzYM::properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
 
-const LADSPA_Descriptor Karplong::ladspaDescriptor = { //
+const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
         0, // "Unique" ID
                 "karplong", // Label
                 properties, //
@@ -89,7 +89,7 @@ const LADSPA_Descriptor Karplong::ladspaDescriptor = { //
                 cleanup, //
         };
 
-const DSSI_Descriptor Karplong::dssiDescriptor = { //
+const DSSI_Descriptor dizzYM::dssiDescriptor = { //
         1, // DSSI API version
                 &ladspaDescriptor, //
                 0, // Configure
@@ -102,13 +102,13 @@ const DSSI_Descriptor Karplong::dssiDescriptor = { //
                 0, // Run multiple synths adding
         };
 
-const DSSI_Descriptor *Karplong::getDescriptor(unsigned long index) {
+const DSSI_Descriptor *dizzYM::getDescriptor(unsigned long index) {
     if (index == 0)
         return &dssiDescriptor;
     return 0;
 }
 
-Karplong::Karplong(int sampleRate) :
+dizzYM::dizzYM(int sampleRate) :
         m_output(0), m_sustain(0), m_sampleRate(sampleRate), m_blockStart(0) {
     for (int i = 0; i < Notes; ++i) {
         float frequency = 440.0f * powf(2.0, (i - 69.0) / 12.0);
@@ -117,25 +117,25 @@ Karplong::Karplong(int sampleRate) :
     }
 }
 
-Karplong::~Karplong() {
+dizzYM::~dizzYM() {
     for (int i = 0; i < Notes; ++i) {
         delete[] m_wavetable[i];
     }
 }
 
-LADSPA_Handle Karplong::instantiate(const LADSPA_Descriptor *, unsigned long rate) {
-    Karplong *karplong = new Karplong(rate);
+LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *, unsigned long rate) {
+    dizzYM *karplong = new dizzYM(rate);
     return karplong;
 }
 
-void Karplong::connectPort(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
-    Karplong *karplong = (Karplong *) handle;
+void dizzYM::connectPort(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
+    dizzYM *karplong = (dizzYM *) handle;
     float **ports[PortCount] = {&karplong->m_output, &karplong->m_sustain, };
     *ports[port] = (float *) location;
 }
 
-void Karplong::activate(LADSPA_Handle handle) {
-    Karplong *karplong = (Karplong *) handle;
+void dizzYM::activate(LADSPA_Handle handle) {
+    dizzYM *karplong = (dizzYM *) handle;
     karplong->m_blockStart = 0;
     for (size_t i = 0; i < Notes; ++i) {
         karplong->m_ons[i] = -1;
@@ -144,29 +144,29 @@ void Karplong::activate(LADSPA_Handle handle) {
     }
 }
 
-void Karplong::run(LADSPA_Handle handle, unsigned long samples) {
+void dizzYM::run(LADSPA_Handle handle, unsigned long samples) {
     runSynth(handle, samples, 0, 0);
 }
 
-void Karplong::deactivate(LADSPA_Handle handle) {
+void dizzYM::deactivate(LADSPA_Handle handle) {
     activate(handle); // both functions just reset the plugin
 }
 
-void Karplong::cleanup(LADSPA_Handle handle) {
-    delete (Karplong *) handle;
+void dizzYM::cleanup(LADSPA_Handle handle) {
+    delete (dizzYM *) handle;
 }
 
-int Karplong::getMidiController(LADSPA_Handle, unsigned long port) {
+int dizzYM::getMidiController(LADSPA_Handle, unsigned long port) {
     int controllers[PortCount] = {DSSI_NONE, DSSI_CC(64)};
     return controllers[port];
 }
 
-void Karplong::runSynth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
-    Karplong *karplong = (Karplong *) handle;
+void dizzYM::runSynth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
+    dizzYM *karplong = (dizzYM *) handle;
     karplong->runImpl(samples, events, eventCount);
 }
 
-void Karplong::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
+void dizzYM::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
     unsigned long pos;
     unsigned long count;
     unsigned long eventPos;
@@ -221,9 +221,9 @@ void Karplong::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsig
     m_blockStart += sampleCount;
 }
 
-void Karplong::addSamples(int voice, unsigned long offset, unsigned long count) {
+void dizzYM::addSamples(int voice, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "Karplong::addSamples(" << voice << ", " << offset << ", " << count << "): on " << m_ons[voice] << ", off " << m_offs[voice] << ", size "
+    std::cerr << "dizzYM::addSamples(" << voice << ", " << offset << ", " << count << "): on " << m_ons[voice] << ", off " << m_offs[voice] << ", size "
             << m_sizes[voice] << ", start " << m_blockStart + offset << std::endl;
 #endif
 
@@ -285,7 +285,7 @@ void Karplong::addSamples(int voice, unsigned long offset, unsigned long count) 
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(unsigned long index) {
-    return Karplong::getDescriptor(index);
+    return dizzYM::getDescriptor(index);
 }
 
 }
