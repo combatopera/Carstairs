@@ -67,27 +67,42 @@ LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1}, };
 
 const LADSPA_Properties Karplong::properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
 
-const LADSPA_Descriptor Karplong::ladspaDescriptor = {0, // "Unique" ID
-        "karplong", // Label
-        properties, "Simple Karplus-Strong Plucked String Synth", // Name
-        "Chris Cannam", // Maker
-        "Public Domain", // Copyright
-        PortCount, ports, portNames, hints, 0, // Implementation data
-        instantiate, connectPort, activate, run, 0, // Run adding
-        0, // Set run adding gain
-        deactivate, cleanup};
-
-const DSSI_Descriptor Karplong::dssiDescriptor = {1, // DSSI API version
-        &ladspaDescriptor, 0, // Configure
-        0, // Get Program
-        0, // Select Program
-        getMidiController, runSynth, 0, // Run synth adding
-        0, // Run multiple synths
-        0, // Run multiple synths adding
+const LADSPA_Descriptor Karplong::ladspaDescriptor = { //
+        0, // "Unique" ID
+                "karplong", // Label
+                properties, //
+                "Simple Karplus-Strong Plucked String Synth", // Name
+                "Chris Cannam", // Maker
+                "Public Domain", // Copyright
+                PortCount, //
+                ports, //
+                portNames, //
+                hints, //
+                0, // Implementation data
+                instantiate, //
+                connectPort, //
+                activate, //
+                run, //
+                0, // Run adding
+                0, // Set run adding gain
+                deactivate, //
+                cleanup, //
         };
 
-const DSSI_Descriptor *
-Karplong::getDescriptor(unsigned long index) {
+const DSSI_Descriptor Karplong::dssiDescriptor = { //
+        1, // DSSI API version
+                &ladspaDescriptor, //
+                0, // Configure
+                0, // Get Program
+                0, // Select Program
+                getMidiController, //
+                runSynth, //
+                0, // Run synth adding
+                0, // Run multiple synths
+                0, // Run multiple synths adding
+        };
+
+const DSSI_Descriptor *Karplong::getDescriptor(unsigned long index) {
     if (index == 0)
         return &dssiDescriptor;
     return 0;
@@ -115,17 +130,13 @@ LADSPA_Handle Karplong::instantiate(const LADSPA_Descriptor *, unsigned long rat
 
 void Karplong::connectPort(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
     Karplong *karplong = (Karplong *) handle;
-
     float **ports[PortCount] = {&karplong->m_output, &karplong->m_sustain, };
-
     *ports[port] = (float *) location;
 }
 
 void Karplong::activate(LADSPA_Handle handle) {
     Karplong *karplong = (Karplong *) handle;
-
     karplong->m_blockStart = 0;
-
     for (size_t i = 0; i < Notes; ++i) {
         karplong->m_ons[i] = -1;
         karplong->m_offs[i] = -1;
@@ -146,15 +157,12 @@ void Karplong::cleanup(LADSPA_Handle handle) {
 }
 
 int Karplong::getMidiController(LADSPA_Handle, unsigned long port) {
-    int controllers[PortCount] = {
-    DSSI_NONE, DSSI_CC(64)};
-
+    int controllers[PortCount] = {DSSI_NONE, DSSI_CC(64)};
     return controllers[port];
 }
 
 void Karplong::runSynth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
     Karplong *karplong = (Karplong *) handle;
-
     karplong->runImpl(samples, events, eventCount);
 }
 
@@ -275,10 +283,6 @@ void Karplong::addSamples(int voice, unsigned long offset, unsigned long count) 
 }
 
 extern "C" {
-
-const LADSPA_Descriptor *ladspa_descriptor(unsigned long index) {
-    return 0;
-}
 
 const DSSI_Descriptor *dssi_descriptor(unsigned long index) {
     return Karplong::getDescriptor(index);
