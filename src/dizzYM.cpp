@@ -1,9 +1,6 @@
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
-
 #include "dssi.h"
-#include "ladspa.h"
 
 #ifdef DEBUG_dizzYM
 #include <iostream>
