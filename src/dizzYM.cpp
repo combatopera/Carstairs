@@ -22,23 +22,23 @@ private:
         Notes = 128
     };
 
-    static const char * const portNames[PortCount];
-    static const LADSPA_PortDescriptor ports[PortCount];
-    static const LADSPA_PortRangeHint hints[PortCount];
-    static const LADSPA_Properties properties;
+    static const char * const PortNames[PortCount];
+    static const LADSPA_PortDescriptor PortDescriptors[PortCount];
+    static const LADSPA_PortRangeHint PortRangeHints[PortCount];
+    static const LADSPA_Properties Properties;
     static const LADSPA_Descriptor ladspaDescriptor;
     static const DSSI_Descriptor dssiDescriptor;
 
     static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
-    static void connectPort(LADSPA_Handle, unsigned long, LADSPA_Data *);
+    static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
     static void activate(LADSPA_Handle);
     static void run(LADSPA_Handle, unsigned long);
     static void deactivate(LADSPA_Handle);
     static void cleanup(LADSPA_Handle);
     static const DSSI_Program_Descriptor *getProgram(LADSPA_Handle, unsigned long);
     static void selectProgram(LADSPA_Handle, unsigned long, unsigned long);
-    static int getMidiController(LADSPA_Handle, unsigned long);
-    static void runSynth(LADSPA_Handle, unsigned long, snd_seq_event_t *, unsigned long);
+    static int get_midi_controller_for_port(LADSPA_Handle, unsigned long);
+    static void run_synth(LADSPA_Handle, unsigned long, snd_seq_event_t *, unsigned long);
 
     void runImpl(unsigned long, snd_seq_event_t *, unsigned long);
     void addSamples(int, unsigned long, unsigned long);
@@ -56,50 +56,50 @@ private:
     float m_sizes[Notes];
 };
 
-const char * const dizzYM::portNames[PortCount] = {"Output", "Sustain (on/off)", };
+const char * const dizzYM::PortNames[PortCount] = {"Output", "Sustain (on/off)", };
 
-const LADSPA_PortDescriptor dizzYM::ports[PortCount] = {
+const LADSPA_PortDescriptor dizzYM::PortDescriptors[PortCount] = {
 LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO,
 LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, };
 
-const LADSPA_PortRangeHint dizzYM::hints[PortCount] = { {0, 0, 0}, {LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER |
+const LADSPA_PortRangeHint dizzYM::PortRangeHints[PortCount] = { {0, 0, 0}, {LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER |
 LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1}, };
 
-const LADSPA_Properties dizzYM::properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
+const LADSPA_Properties dizzYM::Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
 
 const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
-        0, // "Unique" ID
-                "karplong", // Label
-                properties, //
-                "Simple Karplus-Strong Plucked String Synth", // Name
-                "Chris Cannam", // Maker
-                "Public Domain", // Copyright
+        0, // UniqueID
+                "dizzYM", // Label
+                Properties, //
+                "YM2149", // Name
+                "Andrzej Cichocki", // Maker
+                "Andrzej Cichocki", // Copyright
                 PortCount, //
-                ports, //
-                portNames, //
-                hints, //
-                0, // Implementation data
+                PortDescriptors, //
+                PortNames, //
+                PortRangeHints, //
+                0, // ImplementationData
                 instantiate, //
-                connectPort, //
+                connect_port, //
                 activate, //
                 run, //
-                0, // Run adding
-                0, // Set run adding gain
+                0, // run_adding
+                0, // set_run_adding_gain
                 deactivate, //
                 cleanup, //
         };
 
 const DSSI_Descriptor dizzYM::dssiDescriptor = { //
-        1, // DSSI API version
+        1, // API version, must be 1.
                 &ladspaDescriptor, //
-                0, // Configure
-                0, // Get Program
-                0, // Select Program
-                getMidiController, //
-                runSynth, //
-                0, // Run synth adding
-                0, // Run multiple synths
-                0, // Run multiple synths adding
+                0, // configure()
+                0, // get_program()
+                0, // select_program()
+                get_midi_controller_for_port, //
+                run_synth, //
+                0, // run_synth_adding()
+                0, // run_multiple_synths()
+                0, // run_multiple_synths_adding()
         };
 
 const DSSI_Descriptor *dizzYM::getDescriptor(unsigned long index) {
@@ -128,7 +128,7 @@ LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *, unsigned long rate)
     return karplong;
 }
 
-void dizzYM::connectPort(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
+void dizzYM::connect_port(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
     dizzYM *karplong = (dizzYM *) handle;
     float **ports[PortCount] = {&karplong->m_output, &karplong->m_sustain, };
     *ports[port] = (float *) location;
@@ -145,7 +145,7 @@ void dizzYM::activate(LADSPA_Handle handle) {
 }
 
 void dizzYM::run(LADSPA_Handle handle, unsigned long samples) {
-    runSynth(handle, samples, 0, 0);
+    run_synth(handle, samples, 0, 0);
 }
 
 void dizzYM::deactivate(LADSPA_Handle handle) {
@@ -156,12 +156,12 @@ void dizzYM::cleanup(LADSPA_Handle handle) {
     delete (dizzYM *) handle;
 }
 
-int dizzYM::getMidiController(LADSPA_Handle, unsigned long port) {
+int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long port) {
     int controllers[PortCount] = {DSSI_NONE, DSSI_CC(64)};
     return controllers[port];
 }
 
-void dizzYM::runSynth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
+void dizzYM::run_synth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
     dizzYM *karplong = (dizzYM *) handle;
     karplong->runImpl(samples, events, eventCount);
 }
