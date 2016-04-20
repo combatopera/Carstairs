@@ -28,15 +28,6 @@ typedef struct {
     float omega[MIDI_NOTES];
 } TS;
 
-const LADSPA_Descriptor *ladspa_descriptor(unsigned long index) {
-    switch (index) {
-    case 0:
-        return tsLDescriptor;
-    default:
-        return NULL;
-    }
-}
-
 const DSSI_Descriptor *dssi_descriptor(unsigned long index) {
     switch (index) {
     case 0:
