@@ -37,8 +37,6 @@ class dizzYM {
 
     static const LADSPA_Descriptor ladspaDescriptor;
 
-    static const DSSI_Descriptor dssiDescriptor;
-
     static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
     static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
     static void activate(LADSPA_Handle);
@@ -73,7 +71,7 @@ class dizzYM {
 
 public:
 
-    static const DSSI_Descriptor *dssi_descriptor(unsigned long index);
+    static const DSSI_Descriptor dssiDescriptor;
 
 };
 
@@ -128,15 +126,6 @@ const DSSI_Descriptor dizzYM::dssiDescriptor = { //
                 0, // run_multiple_synths()
                 0, // run_multiple_synths_adding()
         };
-
-const DSSI_Descriptor *dizzYM::dssi_descriptor(unsigned long index) {
-    if (index == 0) {
-        return &dssiDescriptor;
-    }
-    else {
-        return 0;
-    }
-}
 
 dizzYM::dizzYM(int sampleRate)
         : _output(0), _sustain(0), _sampleRate(sampleRate), _blockStart(0) {
@@ -283,7 +272,12 @@ void dizzYM::addSamples(int voice, unsigned long offset, unsigned long count) {
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(unsigned long index) {
-    return dizzYM::dssi_descriptor(index);
+    if (index == 0) {
+        return &dizzYM::dssiDescriptor;
+    }
+    else {
+        return 0;
+    }
 }
 
 }
