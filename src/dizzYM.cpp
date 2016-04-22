@@ -156,50 +156,50 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
     _blockStart += sampleCount;
 }
 
-void dizzYM::addSamples(int voice, unsigned long offset, unsigned long count) {
+void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << voice << ", " << offset << ", " << count << "): on " << _ons[voice] << ", off " << _offs[voice] << ", size "
-            << _sizes[voice] << ", start " << _blockStart + offset << std::endl;
+    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _ons[midiNote] << ", off " << _offs[midiNote] << ", size "
+            << _sizes[midiNote] << ", start " << _blockStart + offset << std::endl;
 #endif
-    if (_ons[voice] < 0) {
+    if (_ons[midiNote] < 0) {
         return;
     }
-    unsigned long on = (unsigned long) (_ons[voice]);
+    unsigned long on = (unsigned long) (_ons[midiNote]);
     unsigned long start = _blockStart + offset;
     if (start < on) {
         return;
     }
     if (start == on) {
-        for (size_t i = 0; i <= unsigned(_sizes[voice]); ++i) {
-            _wavetable[voice][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
+        for (size_t i = 0; i <= unsigned(_sizes[midiNote]); ++i) {
+            _wavetable[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
     size_t i, s;
-    float vgain = (float) (_velocities[voice]) / 127.0f;
+    float vgain = (float) (_velocities[midiNote]) / 127.0f;
     for (i = 0, s = start - on; i < count; ++i, ++s) {
         float gain(vgain);
-        if ((!_sustain || !*_sustain) && _offs[voice] >= 0 && (unsigned long) (_offs[voice]) < i + start) {
+        if ((!_sustain || !*_sustain) && _offs[midiNote] >= 0 && (unsigned long) (_offs[midiNote]) < i + start) {
             unsigned long release = 1 + (0.01 * _sampleRate);
-            unsigned long dist = i + start - _offs[voice];
+            unsigned long dist = i + start - _offs[midiNote];
             if (dist > release) {
-                _ons[voice] = -1;
+                _ons[midiNote] = -1;
                 break;
             }
             gain = gain * float(release - dist) / float(release);
         }
-        size_t sz = int(_sizes[voice]);
+        size_t sz = int(_sizes[midiNote]);
         bool decay = (s > sz);
         size_t index = (s % int(sz));
-        float sample = _wavetable[voice][index];
+        float sample = _wavetable[midiNote][index];
         if (decay) {
             if (index == 0) {
-                sample += _wavetable[voice][sz - 1];
+                sample += _wavetable[midiNote][sz - 1];
             }
             else {
-                sample += _wavetable[voice][index - 1];
+                sample += _wavetable[midiNote][index - 1];
             }
             sample /= 2;
-            _wavetable[voice][index] = sample;
+            _wavetable[midiNote][index] = sample;
         }
         _output[offset + i] += gain * sample;
     }
