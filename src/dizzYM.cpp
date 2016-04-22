@@ -7,11 +7,9 @@
 #endif
 
 class dizzYM {
-public:
-    static const DSSI_Descriptor *getDescriptor(unsigned long index);
 
-private:
     dizzYM(int sampleRate);
+
     ~dizzYM();
 
     enum {
@@ -54,6 +52,11 @@ private:
     int m_velocities[Notes];
     float *m_wavetable[Notes];
     float m_sizes[Notes];
+
+public:
+
+    static const DSSI_Descriptor *dssi_descriptor(unsigned long index);
+
 };
 
 const char * const dizzYM::PortNames[PortCount] = {"Output", "Sustain (on/off)", };
@@ -102,7 +105,7 @@ const DSSI_Descriptor dizzYM::dssiDescriptor = { //
                 0, // run_multiple_synths_adding()
         };
 
-const DSSI_Descriptor *dizzYM::getDescriptor(unsigned long index) {
+const DSSI_Descriptor *dizzYM::dssi_descriptor(unsigned long index) {
     if (index == 0)
         return &dssiDescriptor;
     return 0;
@@ -285,7 +288,7 @@ void dizzYM::addSamples(int voice, unsigned long offset, unsigned long count) {
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(unsigned long index) {
-    return dizzYM::getDescriptor(index);
+    return dizzYM::dssi_descriptor(index);
 }
 
 }
