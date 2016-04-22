@@ -150,24 +150,23 @@ dizzYM::~dizzYM() {
     }
 }
 
-LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *, unsigned long rate) {
-    dizzYM *karplong = new dizzYM(rate);
-    return karplong;
+LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
+    return new dizzYM(SampleRate);
 }
 
 void dizzYM::connect_port(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
-    dizzYM *karplong = (dizzYM *) handle;
-    float **ports[PortCount] = {&karplong->_output, &karplong->_sustain};
+    dizzYM *plugin = (dizzYM *) handle;
+    float **ports[PortCount] = {&plugin->_output, &plugin->_sustain};
     *ports[port] = (float *) location;
 }
 
 void dizzYM::activate(LADSPA_Handle handle) {
-    dizzYM *karplong = (dizzYM *) handle;
-    karplong->_blockStart = 0;
+    dizzYM *plugin = (dizzYM *) handle;
+    plugin->_blockStart = 0;
     for (size_t i = 0; i < Notes; ++i) {
-        karplong->_ons[i] = -1;
-        karplong->_offs[i] = -1;
-        karplong->_velocities[i] = 0;
+        plugin->_ons[i] = -1;
+        plugin->_offs[i] = -1;
+        plugin->_velocities[i] = 0;
     }
 }
 
@@ -189,8 +188,7 @@ int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long port) {
 }
 
 void dizzYM::run_synth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
-    dizzYM *karplong = (dizzYM *) handle;
-    karplong->runImpl(samples, events, eventCount);
+    ((dizzYM *) handle)->runImpl(samples, events, eventCount);
 }
 
 void dizzYM::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
