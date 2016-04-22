@@ -1,6 +1,9 @@
-#include <stdlib.h>
+#include <alsa/seq_event.h>
+#include <dssi.h>
+#include <ladspa.h>
 #include <math.h>
-#include "dssi.h"
+#include <stddef.h>
+#include <stdlib.h>
 
 #ifdef DEBUG_dizzYM
 #include <iostream>
@@ -135,18 +138,18 @@ const DSSI_Descriptor *dizzYM::dssi_descriptor(unsigned long index) {
     }
 }
 
-dizzYM::dizzYM(int sampleRate) :
-        _output(0), _sustain(0), _sampleRate(sampleRate), _blockStart(0) {
-    for (int i = 0; i < Notes; ++i) {
-        float frequency = 440.0f * powf(2.0, (i - 69.0) / 12.0);
-        _sizes[i] = _sampleRate / frequency;
-        _wavetable[i] = new float[int(_sizes[i]) + 1];
+dizzYM::dizzYM(int sampleRate)
+        : _output(0), _sustain(0), _sampleRate(sampleRate), _blockStart(0) {
+    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+        float frequency = 440 * powf(2, (midiNote - 69) / 12.f);
+        _sizes[midiNote] = sampleRate / frequency;
+        _wavetable[midiNote] = new float[int(_sizes[midiNote]) + 1];
     }
 }
 
 dizzYM::~dizzYM() {
-    for (int i = 0; i < Notes; ++i) {
-        delete[] _wavetable[i];
+    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+        delete[] _wavetable[midiNote];
     }
 }
 
@@ -163,10 +166,10 @@ void dizzYM::connect_port(LADSPA_Handle handle, unsigned long port, LADSPA_Data 
 void dizzYM::activate(LADSPA_Handle handle) {
     dizzYM *plugin = (dizzYM *) handle;
     plugin->_blockStart = 0;
-    for (size_t i = 0; i < Notes; ++i) {
-        plugin->_ons[i] = -1;
-        plugin->_offs[i] = -1;
-        plugin->_velocities[i] = 0;
+    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+        plugin->_ons[midiNote] = -1;
+        plugin->_offs[midiNote] = -1;
+        plugin->_velocities[midiNote] = 0;
     }
 }
 
@@ -192,41 +195,35 @@ void dizzYM::run_synth(LADSPA_Handle handle, unsigned long samples, snd_seq_even
 }
 
 void dizzYM::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
-    unsigned long pos;
-    unsigned long count;
-    unsigned long eventPos;
-    snd_seq_ev_note_t n;
-    int i;
-    for (pos = 0, eventPos = 0; pos < sampleCount;) {
+    for (unsigned long pos = 0, eventPos = 0; pos < sampleCount;) {
         while (eventPos < eventCount && pos >= events[eventPos].time.tick) {
             switch (events[eventPos].type) {
-            case SND_SEQ_EVENT_NOTEON:
-                n = events[eventPos].data.note;
-                if (n.velocity > 0) {
-                    _ons[n.note] = _blockStart + events[eventPos].time.tick;
-                    _offs[n.note] = -1;
-                    _velocities[n.note] = n.velocity;
+                case SND_SEQ_EVENT_NOTEON: {
+                    snd_seq_ev_note_t *n = &events[eventPos].data.note;
+                    if (n->velocity > 0) {
+                        _ons[n->note] = _blockStart + events[eventPos].time.tick;
+                        _offs[n->note] = -1;
+                        _velocities[n->note] = n->velocity;
+                    }
+                    break;
                 }
-                break;
-            case SND_SEQ_EVENT_NOTEOFF:
-                n = events[eventPos].data.note;
-                _offs[n.note] = _blockStart + events[eventPos].time.tick;
-                break;
-            default:
-                break;
+                case SND_SEQ_EVENT_NOTEOFF: {
+                    _offs[events[eventPos].data.note.note] = _blockStart + events[eventPos].time.tick;
+                    break;
+                }
             }
             ++eventPos;
         }
-        count = sampleCount - pos;
+        unsigned long count = sampleCount - pos;
         if (eventPos < eventCount && events[eventPos].time.tick < sampleCount) {
             count = events[eventPos].time.tick - pos;
         }
         for (unsigned long k = 0; k < count; ++k) {
             _output[pos + k] = 0;
         }
-        for (i = 0; i < Notes; ++i) {
-            if (_ons[i] >= 0) {
-                addSamples(i, pos, count);
+        for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+            if (_ons[midiNote] >= 0) {
+                addSamples(midiNote, pos, count);
             }
         }
         pos += count;
