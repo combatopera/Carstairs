@@ -41,7 +41,7 @@ class dizzYM {
     static int get_midi_controller_for_port(LADSPA_Handle, unsigned long);
     static void run_synth(LADSPA_Handle, unsigned long, snd_seq_event_t *, unsigned long);
 
-    void runImpl(unsigned long, snd_seq_event_t *, unsigned long);
+    void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
     void addSamples(int, unsigned long, unsigned long);
 
     float *_output;

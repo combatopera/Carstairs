@@ -115,11 +115,11 @@ int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long port) {
     return controllers[port];
 }
 
-void dizzYM::run_synth(LADSPA_Handle handle, unsigned long samples, snd_seq_event_t *events, unsigned long eventCount) {
-    ((dizzYM *) handle)->runImpl(samples, events, eventCount);
+void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_seq_event_t *Events, unsigned long EventCount) {
+    ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
-void dizzYM::runImpl(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
+void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
     for (unsigned long pos = 0, eventPos = 0; pos < sampleCount;) {
         while (eventPos < eventCount && pos >= events[eventPos].time.tick) {
             switch (events[eventPos].type) {
