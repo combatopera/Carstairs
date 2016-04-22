@@ -46,10 +46,6 @@ void dizzYM::activate(LADSPA_Handle handle) {
     }
 }
 
-void dizzYM::run(LADSPA_Handle handle, unsigned long samples) {
-    run_synth(handle, samples, 0, 0);
-}
-
 void dizzYM::deactivate(LADSPA_Handle handle) {
     activate(handle); // both functions just reset the plugin
 }
@@ -63,46 +59,50 @@ int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long port) {
     return controllers[port];
 }
 
+void dizzYM::run(LADSPA_Handle Instance, unsigned long SampleCount) {
+    ((dizzYM *) Instance)->runSynth(SampleCount, 0, 0);
+}
+
 void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_seq_event_t *Events, unsigned long EventCount) {
     ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
 void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
-    for (unsigned long pos = 0, eventPos = 0; pos < sampleCount;) {
-        while (eventPos < eventCount && pos >= events[eventPos].time.tick) {
-            switch (events[eventPos].type) {
+    for (unsigned long sampleIndex = 0, eventIndex = 0; sampleIndex < sampleCount;) {
+        while (eventIndex < eventCount && sampleIndex >= events[eventIndex].time.tick) {
+            switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
-                    snd_seq_ev_note_t *n = &events[eventPos].data.note;
+                    snd_seq_ev_note_t *n = &events[eventIndex].data.note;
                     if (n->velocity > 0) {
-                        _ons[n->note] = _blockStart + events[eventPos].time.tick;
+                        _ons[n->note] = _blockStart + events[eventIndex].time.tick;
                         _offs[n->note] = -1;
                         _velocities[n->note] = n->velocity;
                     }
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _offs[events[eventPos].data.note.note] = _blockStart + events[eventPos].time.tick;
+                    _offs[events[eventIndex].data.note.note] = _blockStart + events[eventIndex].time.tick;
                     break;
                 }
             }
-            ++eventPos;
+            ++eventIndex;
         }
         unsigned long count;
-        if (eventPos < eventCount && events[eventPos].time.tick < sampleCount) {
-            count = events[eventPos].time.tick - pos;
+        if (eventIndex < eventCount && events[eventIndex].time.tick < sampleCount) {
+            count = events[eventIndex].time.tick - sampleIndex;
         }
         else {
-            count = sampleCount - pos;
+            count = sampleCount - sampleIndex;
         }
         for (unsigned long k = 0; k < count; ++k) {
-            _output[pos + k] = 0;
+            _output[sampleIndex + k] = 0;
         }
         for (int midiNote = 0; midiNote < Notes; ++midiNote) {
             if (_ons[midiNote] >= 0) {
-                addSamples(midiNote, pos, count);
+                addSamples(midiNote, sampleIndex, count);
             }
         }
-        pos += count;
+        sampleIndex += count;
     }
     _blockStart += sampleCount;
 }
