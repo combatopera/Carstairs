@@ -30,6 +30,10 @@ LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned 
     return new dizzYM(SampleRate);
 }
 
+void dizzYM::cleanup(LADSPA_Handle Instance) {
+    delete (dizzYM *) Instance;
+}
+
 void dizzYM::connect_port(LADSPA_Handle handle, unsigned long port, LADSPA_Data *location) {
     dizzYM *plugin = (dizzYM *) handle;
     float **ports[PortCount] = {&plugin->_output, &plugin->_sustain};
@@ -44,10 +48,6 @@ void dizzYM::activate(LADSPA_Handle Instance) {
         plugin->_offs[midiNote] = -1;
         plugin->_velocities[midiNote] = 0;
     }
-}
-
-void dizzYM::cleanup(LADSPA_Handle handle) {
-    delete (dizzYM *) handle;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long port) {
