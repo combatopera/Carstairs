@@ -87,9 +87,12 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
             }
             ++eventPos;
         }
-        unsigned long count = sampleCount - pos;
+        unsigned long count;
         if (eventPos < eventCount && events[eventPos].time.tick < sampleCount) {
             count = events[eventPos].time.tick - pos;
+        }
+        else {
+            count = sampleCount - pos;
         }
         for (unsigned long k = 0; k < count; ++k) {
             _output[pos + k] = 0;
