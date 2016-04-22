@@ -12,7 +12,7 @@
 #endif
 
 dizzYM::dizzYM(int sampleRate)
-        : _output(0), _sustain(0), _sampleRate(sampleRate), _blockStart(0) {
+        : _output(0), _sustain(0), _sampleRate(sampleRate), _sampleCursor(0) {
     for (int midiNote = 0; midiNote < Notes; ++midiNote) {
         float frequency = 440 * powf(2, (midiNote - 69) / 12.f);
         _sizes[midiNote] = sampleRate / frequency;
@@ -36,9 +36,9 @@ void dizzYM::connect_port(LADSPA_Handle handle, unsigned long port, LADSPA_Data 
     *ports[port] = (float *) location;
 }
 
-void dizzYM::activate(LADSPA_Handle handle) {
-    dizzYM *plugin = (dizzYM *) handle;
-    plugin->_blockStart = 0;
+void dizzYM::activate(LADSPA_Handle Instance) {
+    dizzYM *plugin = (dizzYM *) Instance;
+    plugin->_sampleCursor = 0;
     for (int midiNote = 0; midiNote < Notes; ++midiNote) {
         plugin->_ons[midiNote] = -1;
         plugin->_offs[midiNote] = -1;
@@ -74,14 +74,14 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
                     if (n->velocity > 0) {
-                        _ons[n->note] = _blockStart + events[eventIndex].time.tick;
+                        _ons[n->note] = _sampleCursor + events[eventIndex].time.tick;
                         _offs[n->note] = -1;
                         _velocities[n->note] = n->velocity;
                     }
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _offs[events[eventIndex].data.note.note] = _blockStart + events[eventIndex].time.tick;
+                    _offs[events[eventIndex].data.note.note] = _sampleCursor + events[eventIndex].time.tick;
                     break;
                 }
             }
@@ -104,19 +104,19 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
         }
         sampleIndex += count;
     }
-    _blockStart += sampleCount;
+    _sampleCursor += sampleCount;
 }
 
 void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
     std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _ons[midiNote] << ", off " << _offs[midiNote] << ", size "
-            << _sizes[midiNote] << ", start " << _blockStart + offset << std::endl;
+            << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
     if (_ons[midiNote] < 0) {
         return;
     }
     unsigned long on = (unsigned long) (_ons[midiNote]);
-    unsigned long start = _blockStart + offset;
+    unsigned long start = _sampleCursor + offset;
     if (start < on) {
         return;
     }

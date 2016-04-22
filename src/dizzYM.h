@@ -53,7 +53,7 @@ class dizzYM {
 
     int _sampleRate;
 
-    long _blockStart;
+    long _sampleCursor;
 
     long _ons[Notes];
 
