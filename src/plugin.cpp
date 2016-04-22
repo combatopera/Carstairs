@@ -38,7 +38,7 @@ const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
                 run, //
                 0, // run_adding
                 0, // set_run_adding_gain
-                deactivate, //
+                0, // deactivate
                 cleanup, //
         };
 

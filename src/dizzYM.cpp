@@ -46,10 +46,6 @@ void dizzYM::activate(LADSPA_Handle Instance) {
     }
 }
 
-void dizzYM::deactivate(LADSPA_Handle handle) {
-    activate(handle); // both functions just reset the plugin
-}
-
 void dizzYM::cleanup(LADSPA_Handle handle) {
     delete (dizzYM *) handle;
 }

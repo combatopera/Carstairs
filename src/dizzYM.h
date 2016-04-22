@@ -33,7 +33,6 @@ class dizzYM {
     static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
     static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
     static void activate(LADSPA_Handle);
-    static void deactivate(LADSPA_Handle);
     static void cleanup(LADSPA_Handle);
     static const DSSI_Program_Descriptor *getProgram(LADSPA_Handle, unsigned long);
     static void selectProgram(LADSPA_Handle, unsigned long, unsigned long);
