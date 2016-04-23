@@ -1,19 +1,18 @@
 #include "plugin.h"
 
 #include <ladspa.h>
-#include <stddef.h>
-#include <array>
 
 #include "dizzYM.h"
+#include "port.h"
 
 Descriptor::Descriptor() {
     _PortDescriptors = new LADSPA_PortDescriptor[PortCount];
     _PortNames = new const char *[PortCount];
     _PortRangeHints = new LADSPA_PortRangeHint[PortCount];
     for (unsigned i = 0; i < PortCount; ++i) {
-        _PortDescriptors[i] = PORT_INFOS[i]._descriptor;
-        _PortNames[i] = PORT_INFOS[i]._name;
-        _PortRangeHints[i] = PORT_INFOS[i]._rangeHint; // Copy.
+        _PortDescriptors[i] = PORT_INFOS[i]->_descriptor;
+        _PortNames[i] = PORT_INFOS[i]->_name;
+        _PortRangeHints[i] = PORT_INFOS[i]->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         0,// UniqueID

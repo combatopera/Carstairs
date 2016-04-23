@@ -1,3 +1,5 @@
+#pragma once
+
 #include <dssi.h>
 #include <ladspa.h>
 
