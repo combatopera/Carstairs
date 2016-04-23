@@ -1,11 +1,12 @@
 #include <alsa/seq_event.h>
-#include <dssi.h>
 #include <ladspa.h>
 #include <array>
 
 #include "port.h"
 
 class dizzYM {
+
+    friend class Descriptor;
 
     dizzYM(int sampleRate);
 
@@ -26,8 +27,6 @@ private:
         Notes = 128
 
     };
-
-    static const LADSPA_Descriptor ladspaDescriptor;
 
     static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
 
@@ -68,7 +67,5 @@ private:
 public:
 
     static const std::array<Port, PortCount> PORTS;
-
-    static const DSSI_Descriptor dssiDescriptor;
 
 };
