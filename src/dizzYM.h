@@ -6,6 +6,12 @@
 
 int const MIDI_NOTE_COUNT = 128;
 
+const std::array<PortInfo, 2> PORT_INFOS = { //
+        PortInfo(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0), //
+        PortInfo(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
+        LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
+        };
+
 class dizzYM {
 
     friend class Descriptor;
@@ -47,9 +53,5 @@ class dizzYM {
     float *_wavetable[MIDI_NOTE_COUNT];
 
     float _sizes[MIDI_NOTE_COUNT];
-
-public:
-
-    static const std::array<PortInfo, 2> PORT_INFOS;
 
 };

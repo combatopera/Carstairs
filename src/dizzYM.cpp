@@ -14,12 +14,6 @@
 #include <iostream>
 #endif
 
-const std::array<PortInfo, 2> dizzYM::PORT_INFOS = { //
-        PortInfo(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0), //
-        PortInfo(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
-        LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
-        };
-
 dizzYM::dizzYM(int sampleRate)
         : _output(0), _sustain(0), _sampleRate(sampleRate), _sampleCursor(0) {
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
