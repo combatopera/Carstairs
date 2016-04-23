@@ -4,10 +4,13 @@
 #include "dizzYM.h"
 #include "port.h"
 
-const LADSPA_PortDescriptor dizzYM::PortDescriptors[PortCount] = { //
-        LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, //
-                LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, //
-        };
+LADSPA_PortDescriptor *getPortDescriptors() {
+    LADSPA_PortDescriptor *PortDescriptors = new LADSPA_PortDescriptor[dizzYM::PortCount];
+    for (int i = 0; i < dizzYM::PortCount; ++i) {
+        PortDescriptors[i] = dizzYM::PORTS[i]._descriptor;
+    }
+    return PortDescriptors;
+}
 
 const LADSPA_PortRangeHint dizzYM::PortRangeHints[PortCount] = { //
         {0, 0, 0}, //
@@ -32,7 +35,7 @@ const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
                 "Andrzej Cichocki", // Maker
                 "Andrzej Cichocki", // Copyright
                 PortCount, //
-                PortDescriptors, //
+                getPortDescriptors(), //
                 getPortNames(), //
                 PortRangeHints, //
                 0, // ImplementationData

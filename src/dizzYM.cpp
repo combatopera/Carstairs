@@ -14,8 +14,8 @@
 #endif
 
 const Port dizzYM::PORTS[PortCount] = { //
-        Port("Output"), //
-        Port("Sustain (on/off)"), //
+        Port("Output", LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO), //
+        Port("Sustain (on/off)", LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL), //
         };
 
 dizzYM::dizzYM(int sampleRate)
