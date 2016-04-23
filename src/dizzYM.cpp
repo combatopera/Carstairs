@@ -22,7 +22,7 @@ const std::array<Port, 2> dizzYM::PORTS = { //
 
 dizzYM::dizzYM(int sampleRate)
         : _output(0), _sustain(0), _sampleRate(sampleRate), _sampleCursor(0) {
-    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         float frequency = 440 * powf(2, float(midiNote - 69) / 12);
         _sizes[midiNote] = float(sampleRate) / frequency;
         _wavetable[midiNote] = new float[int(_sizes[midiNote]) + 1];
@@ -30,7 +30,7 @@ dizzYM::dizzYM(int sampleRate)
 }
 
 dizzYM::~dizzYM() {
-    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         delete[] _wavetable[midiNote];
     }
 }
@@ -52,7 +52,7 @@ void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Dat
 void dizzYM::activate(LADSPA_Handle Instance) {
     dizzYM *plugin = (dizzYM *) Instance;
     plugin->_sampleCursor = 0;
-    for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         plugin->_ons[midiNote] = -1;
         plugin->_offs[midiNote] = -1;
         plugin->_velocities[midiNote] = 0;
@@ -102,7 +102,7 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
         for (unsigned long k = 0; k < count; ++k) {
             _output[sampleIndex + k] = 0;
         }
-        for (int midiNote = 0; midiNote < Notes; ++midiNote) {
+        for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
             if (_ons[midiNote] >= 0) {
                 addSamples(midiNote, sampleIndex, count);
             }

@@ -4,6 +4,8 @@
 
 #include "port.h"
 
+int const MIDI_NOTE_COUNT = 128;
+
 class dizzYM {
 
     friend class Descriptor;
@@ -11,12 +13,6 @@ class dizzYM {
     dizzYM(int sampleRate);
 
     ~dizzYM();
-
-    enum {
-
-        Notes = 128
-
-    };
 
     static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
 
@@ -44,15 +40,15 @@ class dizzYM {
 
     long _sampleCursor;
 
-    long _ons[Notes];
+    long _ons[MIDI_NOTE_COUNT];
 
-    long _offs[Notes];
+    long _offs[MIDI_NOTE_COUNT];
 
-    int _velocities[Notes];
+    int _velocities[MIDI_NOTE_COUNT];
 
-    float *_wavetable[Notes];
+    float *_wavetable[MIDI_NOTE_COUNT];
 
-    float _sizes[Notes];
+    float _sizes[MIDI_NOTE_COUNT];
 
 public:
 
