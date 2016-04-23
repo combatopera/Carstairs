@@ -12,16 +12,6 @@ class dizzYM {
 
     ~dizzYM();
 
-public:
-
-    enum {
-
-        OutputPort = 0, Sustain = 1, PortCount = 2
-
-    };
-
-private:
-
     enum {
 
         Notes = 128
@@ -66,6 +56,6 @@ private:
 
 public:
 
-    static const std::array<Port, PortCount> PORTS;
+    static const std::array<Port, 2> PORTS;
 
 };

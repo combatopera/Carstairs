@@ -14,7 +14,7 @@
 #include <iostream>
 #endif
 
-const std::array<Port, dizzYM::PortCount> dizzYM::PORTS = { //
+const std::array<Port, 2> dizzYM::PORTS = { //
         Port("Output", LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, 0, 0, 0), //
         Port("Sustain (on/off)", LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL,
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
@@ -115,7 +115,7 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
 void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
     std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _ons[midiNote] << ", off " << _offs[midiNote] << ", size "
-    << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
+            << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
     if (_ons[midiNote] < 0) {
         return;
