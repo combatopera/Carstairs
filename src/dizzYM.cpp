@@ -14,9 +14,9 @@
 #include <iostream>
 #endif
 
-const std::array<Port, 2> dizzYM::PORTS = { //
-        Port(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0), //
-        Port(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
+const std::array<PortInfo, 2> dizzYM::PORT_INFOS = { //
+        PortInfo(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0), //
+        PortInfo(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
         };
 
@@ -45,7 +45,7 @@ void dizzYM::cleanup(LADSPA_Handle Instance) {
 
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
     dizzYM *plugin = (dizzYM *) Instance;
-    float **ports[PORTS.size()] = {&plugin->_output, &plugin->_sustain};
+    float **ports[PORT_INFOS.size()] = {&plugin->_output, &plugin->_sustain};
     *ports[Port] = DataLocation;
 }
 
@@ -60,7 +60,7 @@ void dizzYM::activate(LADSPA_Handle Instance) {
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
-    int controllers[PORTS.size()] = {DSSI_NONE, DSSI_CC(64)};
+    int controllers[PORT_INFOS.size()] = {DSSI_NONE, DSSI_CC(64)};
     return controllers[Port];
 }
 

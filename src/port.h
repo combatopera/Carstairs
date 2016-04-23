@@ -2,13 +2,11 @@
 
 #include <ladspa.h>
 
-class Port {
+class PortInfo {
 
 public:
 
-    Port(LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound, LADSPA_Data UpperBound);
-
-    ~Port();
+    PortInfo(LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound, LADSPA_Data UpperBound);
 
     LADSPA_PortDescriptor _descriptor;
 

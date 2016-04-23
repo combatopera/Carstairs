@@ -7,14 +7,14 @@
 #include "dizzYM.h"
 
 Descriptor::Descriptor() {
-    size_t portCount = dizzYM::PORTS.size();
+    size_t portCount = dizzYM::PORT_INFOS.size();
     _PortDescriptors = new LADSPA_PortDescriptor[portCount];
     _PortNames = new const char *[portCount];
     _PortRangeHints = new LADSPA_PortRangeHint[portCount];
     for (unsigned i = 0; i < portCount; ++i) {
-        _PortDescriptors[i] = dizzYM::PORTS[i]._descriptor;
-        _PortNames[i] = dizzYM::PORTS[i]._name;
-        _PortRangeHints[i] = dizzYM::PORTS[i]._rangeHint; // Copy.
+        _PortDescriptors[i] = dizzYM::PORT_INFOS[i]._descriptor;
+        _PortNames[i] = dizzYM::PORT_INFOS[i]._name;
+        _PortRangeHints[i] = dizzYM::PORT_INFOS[i]._rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         0,// UniqueID

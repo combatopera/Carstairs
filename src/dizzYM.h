@@ -50,6 +50,6 @@ class dizzYM {
 
 public:
 
-    static const std::array<Port, 2> PORTS;
+    static const std::array<PortInfo, 2> PORT_INFOS;
 
 };
