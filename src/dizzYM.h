@@ -26,10 +26,6 @@ private:
 
     };
 
-    static const LADSPA_PortDescriptor PortDescriptors[PortCount];
-
-    static const LADSPA_PortRangeHint PortRangeHints[PortCount];
-
     static const LADSPA_Properties Properties;
 
     static const LADSPA_Descriptor ladspaDescriptor;

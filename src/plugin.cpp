@@ -4,6 +4,8 @@
 #include "dizzYM.h"
 #include "port.h"
 
+const LADSPA_Properties dizzYM::Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
+
 LADSPA_PortDescriptor *getPortDescriptors() {
     LADSPA_PortDescriptor *PortDescriptors = new LADSPA_PortDescriptor[dizzYM::PortCount];
     for (int i = 0; i < dizzYM::PortCount; ++i) {
@@ -12,12 +14,13 @@ LADSPA_PortDescriptor *getPortDescriptors() {
     return PortDescriptors;
 }
 
-const LADSPA_PortRangeHint dizzYM::PortRangeHints[PortCount] = { //
-        {0, 0, 0}, //
-                {LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1}, //
-        };
-
-const LADSPA_Properties dizzYM::Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
+LADSPA_PortRangeHint *getPortRangeHints() {
+    LADSPA_PortRangeHint *PortRangeHints = new LADSPA_PortRangeHint[dizzYM::PortCount];
+    for (int i = 0; i < dizzYM::PortCount; ++i) {
+        PortRangeHints[i] = *dizzYM::PORTS[i]._rangeHintPtr; // Copy.
+    }
+    return PortRangeHints;
+}
 
 const char **getPortNames() {
     const char **PortNames = new const char *[dizzYM::PortCount];
@@ -37,7 +40,7 @@ const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
                 PortCount, //
                 getPortDescriptors(), //
                 getPortNames(), //
-                PortRangeHints, //
+                getPortRangeHints(), //
                 0, // ImplementationData
                 instantiate, //
                 connect_port, //
