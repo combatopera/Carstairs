@@ -1,16 +1,17 @@
 #include <alsa/seq_event.h>
 #include <ladspa.h>
-#include <array>
 
 #include "port.h"
 
 int const MIDI_NOTE_COUNT = 128;
 
-const std::array<PortInfo, 2> PORT_INFOS = { //
+const PortInfo PORT_INFOS[] = { //
         PortInfo(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0), //
         PortInfo(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
         };
+
+int const PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo);
 
 class dizzYM {
 

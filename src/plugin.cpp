@@ -7,11 +7,10 @@
 #include "dizzYM.h"
 
 Descriptor::Descriptor() {
-    size_t portCount = PORT_INFOS.size();
-    _PortDescriptors = new LADSPA_PortDescriptor[portCount];
-    _PortNames = new const char *[portCount];
-    _PortRangeHints = new LADSPA_PortRangeHint[portCount];
-    for (unsigned i = 0; i < portCount; ++i) {
+    _PortDescriptors = new LADSPA_PortDescriptor[PortCount];
+    _PortNames = new const char *[PortCount];
+    _PortRangeHints = new LADSPA_PortRangeHint[PortCount];
+    for (unsigned i = 0; i < PortCount; ++i) {
         _PortDescriptors[i] = PORT_INFOS[i]._descriptor;
         _PortNames[i] = PORT_INFOS[i]._name;
         _PortRangeHints[i] = PORT_INFOS[i]._rangeHint; // Copy.
@@ -23,7 +22,7 @@ Descriptor::Descriptor() {
         "YM2149",// Name
         "Andrzej Cichocki",// Maker
         "Andrzej Cichocki",// Copyright
-        portCount,//
+        PortCount,//
         _PortDescriptors,//
         _PortNames,//
         _PortRangeHints,//
