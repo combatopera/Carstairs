@@ -2,11 +2,7 @@
 #include <ladspa.h>
 
 #include "dizzYM.h"
-
-const char * const dizzYM::PortNames[PortCount] = { //
-        "Output", //
-                "Sustain (on/off)", //
-        };
+#include "port.h"
 
 const LADSPA_PortDescriptor dizzYM::PortDescriptors[PortCount] = { //
         LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, //
@@ -20,6 +16,14 @@ const LADSPA_PortRangeHint dizzYM::PortRangeHints[PortCount] = { //
 
 const LADSPA_Properties dizzYM::Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
 
+const char **getPortNames() {
+    const char **PortNames = new const char *[dizzYM::PortCount];
+    for (int i = 0; i < dizzYM::PortCount; ++i) {
+        PortNames[i] = dizzYM::PORTS[i]._name;
+    }
+    return PortNames;
+}
+
 const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
         0, // UniqueID
                 "dizzYM", // Label
@@ -29,7 +33,7 @@ const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
                 "Andrzej Cichocki", // Copyright
                 PortCount, //
                 PortDescriptors, //
-                PortNames, //
+                getPortNames(), //
                 PortRangeHints, //
                 0, // ImplementationData
                 instantiate, //

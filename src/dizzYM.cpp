@@ -7,9 +7,16 @@
 #include <stddef.h>
 #include <cstdlib>
 
+#include "port.h"
+
 #ifdef DEBUG_dizzYM
 #include <iostream>
 #endif
+
+const Port dizzYM::PORTS[PortCount] = { //
+        Port("Output"), //
+        Port("Sustain (on/off)"), //
+        };
 
 dizzYM::dizzYM(int sampleRate)
         : _output(0), _sustain(0), _sampleRate(sampleRate), _sampleCursor(0) {

@@ -2,11 +2,15 @@
 #include <dssi.h>
 #include <ladspa.h>
 
+#include "port.h"
+
 class dizzYM {
 
     dizzYM(int sampleRate);
 
     ~dizzYM();
+
+public:
 
     enum {
 
@@ -14,13 +18,13 @@ class dizzYM {
 
     };
 
+private:
+
     enum {
 
         Notes = 128
 
     };
-
-    static const char * const PortNames[PortCount];
 
     static const LADSPA_PortDescriptor PortDescriptors[PortCount];
 
@@ -67,6 +71,8 @@ class dizzYM {
     float _sizes[Notes];
 
 public:
+
+    static const Port PORTS[PortCount];
 
     static const DSSI_Descriptor dssiDescriptor;
 
