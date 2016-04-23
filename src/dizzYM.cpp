@@ -14,8 +14,8 @@
 dizzYM::dizzYM(int sampleRate)
         : _output(0), _sustain(0), _sampleRate(sampleRate), _sampleCursor(0) {
     for (int midiNote = 0; midiNote < Notes; ++midiNote) {
-        float frequency = 440 * powf(2, (midiNote - 69) / 12.f);
-        _sizes[midiNote] = sampleRate / frequency;
+        float frequency = 440 * powf(2, float(midiNote - 69) / 12);
+        _sizes[midiNote] = float(sampleRate) / frequency;
         _wavetable[midiNote] = new float[int(_sizes[midiNote]) + 1];
     }
 }
@@ -27,7 +27,7 @@ dizzYM::~dizzYM() {
 }
 
 LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
-    return new dizzYM(SampleRate);
+    return new dizzYM((int) SampleRate);
 }
 
 void dizzYM::cleanup(LADSPA_Handle Instance) {
@@ -126,7 +126,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     for (i = 0, s = start - on; i < count; ++i, ++s) {
         float gain(vgain);
         if ((!_sustain || !*_sustain) && _offs[midiNote] >= 0 && (unsigned long) (_offs[midiNote]) < i + start) {
-            unsigned long release = 1 + (0.01 * _sampleRate);
+            unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
             unsigned long dist = i + start - _offs[midiNote];
             if (dist > release) {
                 _ons[midiNote] = -1;
