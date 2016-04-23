@@ -46,7 +46,7 @@ void dizzYM::cleanup(LADSPA_Handle Instance) {
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
     dizzYM *plugin = (dizzYM *) Instance;
     float **ports[PORTS.size()] = {&plugin->_output, &plugin->_sustain};
-    *ports[Port] = (float *) DataLocation;
+    *ports[Port] = DataLocation;
 }
 
 void dizzYM::activate(LADSPA_Handle Instance) {

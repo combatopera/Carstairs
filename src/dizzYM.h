@@ -32,9 +32,7 @@ class dizzYM {
 
     void addSamples(int, unsigned long, unsigned long);
 
-    float *_output;
-
-    float *_sustain;
+    LADSPA_Data *_output, *_sustain;
 
     int _sampleRate;
 
