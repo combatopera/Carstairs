@@ -5,6 +5,7 @@
 #include <ladspa.h>
 #include <math.h>
 #include <stddef.h>
+#include <array>
 #include <cstdlib>
 
 #include "port.h"
@@ -13,10 +14,10 @@
 #include <iostream>
 #endif
 
-const Port dizzYM::PORTS[PortCount] = { //
-        Port("Output", LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, 0, 0, 0), //
-        Port("Sustain (on/off)", LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL,
-                LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1), //
+const std::array<Port, dizzYM::PortCount> dizzYM::PORTS = { //
+        {"Output", LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, 0, 0, 0}, //
+                {"Sustain (on/off)", LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL,
+                LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1}, //
         };
 
 dizzYM::dizzYM(int sampleRate)
@@ -44,7 +45,7 @@ void dizzYM::cleanup(LADSPA_Handle Instance) {
 
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
     dizzYM *plugin = (dizzYM *) Instance;
-    float **ports[PortCount] = {&plugin->_output, &plugin->_sustain};
+    float **ports[PORTS.size()] = {&plugin->_output, &plugin->_sustain};
     *ports[Port] = (float *) DataLocation;
 }
 
@@ -59,7 +60,7 @@ void dizzYM::activate(LADSPA_Handle Instance) {
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
-    int controllers[PortCount] = {DSSI_NONE, DSSI_CC(64)};
+    int controllers[PORTS.size()] = {DSSI_NONE, DSSI_CC(64)};
     return controllers[Port];
 }
 
@@ -114,7 +115,7 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
 void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
     std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _ons[midiNote] << ", off " << _offs[midiNote] << ", size "
-            << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
+    << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
     if (_ons[midiNote] < 0) {
         return;

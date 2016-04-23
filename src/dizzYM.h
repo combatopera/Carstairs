@@ -1,6 +1,7 @@
 #include <alsa/seq_event.h>
 #include <dssi.h>
 #include <ladspa.h>
+#include <array>
 
 #include "port.h"
 
@@ -25,8 +26,6 @@ private:
         Notes = 128
 
     };
-
-    static const LADSPA_Properties Properties;
 
     static const LADSPA_Descriptor ladspaDescriptor;
 
@@ -68,7 +67,7 @@ private:
 
 public:
 
-    static const Port PORTS[PortCount];
+    static const std::array<Port, PortCount> PORTS;
 
     static const DSSI_Descriptor dssiDescriptor;
 

@@ -1,28 +1,32 @@
 #include <dssi.h>
 #include <ladspa.h>
+#include <stddef.h>
+#include <array>
 
 #include "dizzYM.h"
-#include "port.h"
 
 LADSPA_PortDescriptor *getPortDescriptors() {
-    LADSPA_PortDescriptor *PortDescriptors = new LADSPA_PortDescriptor[dizzYM::PortCount];
-    for (int i = 0; i < dizzYM::PortCount; ++i) {
+    size_t n = dizzYM::PORTS.size();
+    LADSPA_PortDescriptor *PortDescriptors = new LADSPA_PortDescriptor[n];
+    for (unsigned i = 0; i < n; ++i) {
         PortDescriptors[i] = dizzYM::PORTS[i]._descriptor;
     }
     return PortDescriptors;
 }
 
 LADSPA_PortRangeHint *getPortRangeHints() {
-    LADSPA_PortRangeHint *PortRangeHints = new LADSPA_PortRangeHint[dizzYM::PortCount];
-    for (int i = 0; i < dizzYM::PortCount; ++i) {
+    size_t n = dizzYM::PORTS.size();
+    LADSPA_PortRangeHint *PortRangeHints = new LADSPA_PortRangeHint[n];
+    for (unsigned i = 0; i < n; ++i) {
         PortRangeHints[i] = *dizzYM::PORTS[i]._rangeHintPtr; // Copy.
     }
     return PortRangeHints;
 }
 
 const char **getPortNames() {
-    const char **PortNames = new const char *[dizzYM::PortCount];
-    for (int i = 0; i < dizzYM::PortCount; ++i) {
+    size_t n = dizzYM::PORTS.size();
+    const char **PortNames = new const char *[n];
+    for (unsigned i = 0; i < n; ++i) {
         PortNames[i] = dizzYM::PORTS[i]._name;
     }
     return PortNames;
