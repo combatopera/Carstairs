@@ -4,8 +4,6 @@
 #include "dizzYM.h"
 #include "port.h"
 
-const LADSPA_Properties dizzYM::Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE;
-
 LADSPA_PortDescriptor *getPortDescriptors() {
     LADSPA_PortDescriptor *PortDescriptors = new LADSPA_PortDescriptor[dizzYM::PortCount];
     for (int i = 0; i < dizzYM::PortCount; ++i) {
@@ -33,7 +31,7 @@ const char **getPortNames() {
 const LADSPA_Descriptor dizzYM::ladspaDescriptor = { //
         0, // UniqueID
                 "dizzYM", // Label
-                Properties, //
+                LADSPA_PROPERTY_HARD_RT_CAPABLE, // Properties
                 "YM2149", // Name
                 "Andrzej Cichocki", // Maker
                 "Andrzej Cichocki", // Copyright
