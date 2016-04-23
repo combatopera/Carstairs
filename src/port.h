@@ -14,6 +14,6 @@ public:
 
     LADSPA_PortDescriptor _descriptor;
 
-    LADSPA_PortRangeHint *_rangeHintPtr;
+    LADSPA_PortRangeHint _rangeHint;
 
 };

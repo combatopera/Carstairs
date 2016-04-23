@@ -14,7 +14,7 @@ Descriptor::Descriptor() {
     for (unsigned i = 0; i < portCount; ++i) {
         _PortDescriptors[i] = dizzYM::PORTS[i]._descriptor;
         _PortNames[i] = dizzYM::PORTS[i]._name;
-        _PortRangeHints[i] = *dizzYM::PORTS[i]._rangeHintPtr; // Copy.
+        _PortRangeHints[i] = dizzYM::PORTS[i]._rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         0,// UniqueID
