@@ -5,9 +5,9 @@ class Descriptor {
 
     LADSPA_PortDescriptor *_PortDescriptors;
 
-    LADSPA_PortRangeHint *_PortRangeHints;
-
     const char **_PortNames;
+
+    LADSPA_PortRangeHint *_PortRangeHints;
 
     LADSPA_Descriptor _ladspaDescriptor;
 

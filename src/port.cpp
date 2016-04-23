@@ -2,8 +2,8 @@
 
 #include <ladspa.h>
 
-Port::Port(const char *name, LADSPA_PortDescriptor descriptor, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound, LADSPA_Data UpperBound)
-        : _name(name), _descriptor(descriptor) {
+Port::Port(LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound, LADSPA_Data UpperBound)
+        : _descriptor(descriptor), _name(name) {
     _rangeHint = {HintDescriptor, LowerBound, UpperBound};
 }
 
