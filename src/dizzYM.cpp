@@ -107,10 +107,10 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
     _sampleCursor += blockSize;
 }
 
-void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
+void dizzYM::addSamples(int midiNote, unsigned long indexInBlock, unsigned long sampleCount) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _notes[midiNote]._on << ", off " << _notes[midiNote]._off
-            << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
+    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _notes[midiNote]._on << ", off " << _notes[midiNote]._off
+            << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
 #endif
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
     bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
@@ -118,7 +118,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         return;
     }
     unsigned long absOn = (unsigned long) (_notes[midiNote]._on);
-    unsigned long absStart = _sampleCursor + offset;
+    unsigned long absStart = _sampleCursor + indexInBlock;
     if (absStart < absOn) {
         return;
     }
@@ -130,7 +130,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     }
     size_t i, s;
     float normVel = float(_notes[midiNote]._velocity) / 127;
-    for (i = 0, s = absStart - absOn; i < count; ++i, ++s) {
+    for (i = 0, s = absStart - absOn; i < sampleCount; ++i, ++s) {
         float gain(normVel);
         if (!sustain && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + absStart) {
             unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
@@ -155,6 +155,6 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
             sample /= 2;
             noiseBurst[index] = sample;
         }
-        output[offset + i] += gain * sample;
+        output[indexInBlock + i] += gain * sample;
     }
 }
