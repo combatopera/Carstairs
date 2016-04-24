@@ -2,19 +2,20 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
+#include <stddef.h>
 
 #include "port.h"
 
 int const MIDI_NOTE_COUNT = 128;
 
-static PortInfo *PORT_INFOS[10]; // FIXME: Enforce is big enough for all ports.
+static PortInfo OUTPUT_PORT_INFO(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0);
 
-static unsigned PortCount;
-
-static PortInfo OUTPUT_PORT_INFO(PORT_INFOS, &PortCount, LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0);
-
-static PortInfo SUSTAIN_PORT_INFO(PORT_INFOS, &PortCount, LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
+static PortInfo SUSTAIN_PORT_INFO(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
 LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1);
+
+static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
+
+static size_t PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo *);
 
 class dizzYM {
 
