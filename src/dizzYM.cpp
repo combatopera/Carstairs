@@ -43,9 +43,9 @@ void dizzYM::activate(LADSPA_Handle Instance) {
     dizzYM *plugin = (dizzYM *) Instance;
     plugin->_sampleCursor = 0;
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        plugin->_ons[midiNote] = -1;
-        plugin->_offs[midiNote] = -1;
-        plugin->_velocities[midiNote] = 0;
+        plugin->_notes[midiNote]._on = -1;
+        plugin->_notes[midiNote]._off = -1;
+        plugin->_notes[midiNote]._velocity = 0;
     }
 }
 
@@ -69,14 +69,14 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
                     if (n->velocity > 0) {
-                        _ons[n->note] = _sampleCursor + events[eventIndex].time.tick;
-                        _offs[n->note] = -1;
-                        _velocities[n->note] = n->velocity;
+                        _notes[n->note]._on = _sampleCursor + events[eventIndex].time.tick;
+                        _notes[n->note]._off = -1;
+                        _notes[n->note]._velocity = n->velocity;
                     }
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _offs[events[eventIndex].data.note.note] = _sampleCursor + events[eventIndex].time.tick;
+                    _notes[events[eventIndex].data.note.note]._off = _sampleCursor + events[eventIndex].time.tick;
                     break;
                 }
             }
@@ -93,7 +93,7 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
             output[sampleIndex + k] = 0;
         }
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-            if (_ons[midiNote] >= 0) {
+            if (_notes[midiNote]._on >= 0) {
                 addSamples(midiNote, sampleIndex, count);
             }
         }
@@ -104,15 +104,15 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
 
 void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _ons[midiNote] << ", off " << _offs[midiNote] << ", size "
-            << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
+    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _notes[midiNote]._on << ", off " << _notes[midiNote]._off
+            << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
     LADSPA_Data *output = _ports[OUTPUT_PORT_INFO._ordinal];
     LADSPA_Data *sustain = _ports[SUSTAIN_PORT_INFO._ordinal];
-    if (_ons[midiNote] < 0) {
+    if (_notes[midiNote]._on < 0) {
         return;
     }
-    unsigned long on = (unsigned long) (_ons[midiNote]);
+    unsigned long on = (unsigned long) (_notes[midiNote]._on);
     unsigned long start = _sampleCursor + offset;
     if (start < on) {
         return;
@@ -123,14 +123,14 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         }
     }
     size_t i, s;
-    float vgain = (float) (_velocities[midiNote]) / 127.0f;
+    float vgain = (float) (_notes[midiNote]._velocity) / 127.0f;
     for (i = 0, s = start - on; i < count; ++i, ++s) {
         float gain(vgain);
-        if ((!sustain || !*sustain) && _offs[midiNote] >= 0 && (unsigned long) (_offs[midiNote]) < i + start) {
+        if ((!sustain || !*sustain) && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + start) {
             unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
-            unsigned long dist = i + start - _offs[midiNote];
+            unsigned long dist = i + start - _notes[midiNote]._off;
             if (dist > release) {
-                _ons[midiNote] = -1;
+                _notes[midiNote]._on = -1;
                 break;
             }
             gain = gain * float(release - dist) / float(release);

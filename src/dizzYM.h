@@ -18,6 +18,16 @@ static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
 
 static size_t const PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo *);
 
+class Note {
+
+    friend class dizzYM;
+
+    long _on, _off;
+
+    int _velocity;
+
+};
+
 class dizzYM {
 
     friend class Descriptor;
@@ -50,11 +60,7 @@ class dizzYM {
 
     long _sampleCursor;
 
-    long _ons[MIDI_NOTE_COUNT];
-
-    long _offs[MIDI_NOTE_COUNT];
-
-    int _velocities[MIDI_NOTE_COUNT];
+    Note _notes[MIDI_NOTE_COUNT];
 
     float *_wavetable[MIDI_NOTE_COUNT];
 
