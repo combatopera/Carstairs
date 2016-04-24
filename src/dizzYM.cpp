@@ -119,23 +119,23 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     if (_notes[midiNote]._on < 0) {
         return;
     }
-    unsigned long on = (unsigned long) (_notes[midiNote]._on);
-    unsigned long start = _sampleCursor + offset;
-    if (start < on) {
+    unsigned long absOn = (unsigned long) (_notes[midiNote]._on);
+    unsigned long absStart = _sampleCursor + offset;
+    if (absStart < absOn) {
         return;
     }
-    if (start == on) {
-        for (size_t i = 0; i <= _sizes[midiNote]; ++i) {
+    if (absStart == absOn) {
+        for (size_t i = 0; i < _sizes[midiNote] + 1; ++i) {
             _wavetable[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
     size_t i, s;
     float vgain = (float) (_notes[midiNote]._velocity) / 127.0f;
-    for (i = 0, s = start - on; i < count; ++i, ++s) {
+    for (i = 0, s = absStart - absOn; i < count; ++i, ++s) {
         float gain(vgain);
-        if ((!sustain || !*sustain) && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + start) {
+        if ((!sustain || !*sustain) && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + absStart) {
             unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
-            unsigned long dist = i + start - _notes[midiNote]._off;
+            unsigned long dist = i + absStart - _notes[midiNote]._off;
             if (dist > release) {
                 _notes[midiNote]._on = -1;
                 break;
@@ -143,8 +143,8 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
             gain = gain * float(release - dist) / float(release);
         }
         size_t sz = _sizes[midiNote];
-        bool decay = (s > sz);
-        size_t index = (s % int(sz));
+        bool decay = s > sz;
+        size_t index = s % sz;
         float sample = _wavetable[midiNote][index];
         if (decay) {
             if (index == 0) {
