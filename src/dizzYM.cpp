@@ -1,7 +1,6 @@
 #include "dizzYM.h"
 
 #include <alsa/seq_event.h>
-#include <dssi.h>
 #include <ladspa.h>
 #include <math.h>
 #include <stddef.h>
@@ -51,8 +50,7 @@ void dizzYM::activate(LADSPA_Handle Instance) {
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
-    int controllers[PortCount] = {DSSI_NONE, DSSI_CC(64)};
-    return controllers[Port];
+    return PORT_INFOS[Port]->_controllers;
 }
 
 void dizzYM::run(LADSPA_Handle Instance, unsigned long SampleCount) {
