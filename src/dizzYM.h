@@ -8,14 +8,14 @@
 
 int const MIDI_NOTE_COUNT = 128;
 
-static PortInfo OUTPUT_PORT_INFO(LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0);
+static PortInfo OUTPUT_PORT_INFO(0, LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO, "Output", 0, 0, 0);
 
-static PortInfo SUSTAIN_PORT_INFO(LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
+static PortInfo SUSTAIN_PORT_INFO(1, LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL, "Sustain (on/off)",
 LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1);
 
 static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
 
-static size_t PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo *);
+static size_t const PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo *);
 
 class dizzYM {
 
@@ -43,7 +43,7 @@ class dizzYM {
 
     void addSamples(int, unsigned long, unsigned long);
 
-    LADSPA_Data *_output, *_sustain;
+    LADSPA_Data *_ports[PortCount];
 
     int _sampleRate;
 

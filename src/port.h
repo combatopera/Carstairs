@@ -6,12 +6,15 @@ class PortInfo {
 
 public:
 
-    PortInfo(LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound, LADSPA_Data UpperBound);
+    PortInfo(int ordinal, LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
+            LADSPA_Data UpperBound);
 
-    LADSPA_PortDescriptor _descriptor;
+    int const _ordinal;
 
-    const char *_name;
+    LADSPA_PortDescriptor const _descriptor;
 
-    LADSPA_PortRangeHint _rangeHint;
+    char const * const _name;
+
+    LADSPA_PortRangeHint const _rangeHint;
 
 };
