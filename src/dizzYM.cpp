@@ -73,13 +73,11 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
     LADSPA_Data *output = _ports[OUTPUT_PORT_INFO._ordinal];
     for (unsigned long sampleIndex = 0, eventIndex = 0; sampleIndex < sampleCount;) {
-        while (eventIndex < eventCount && sampleIndex >= events[eventIndex].time.tick) {
+        while (eventIndex < eventCount && events[eventIndex].time.tick <= sampleIndex) {
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
-                    if (n->velocity > 0) {
-                        _notes[n->note].on(_sampleCursor + events[eventIndex].time.tick, n->velocity);
-                    }
+                    _notes[n->note].on(_sampleCursor + events[eventIndex].time.tick, n->velocity);
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
