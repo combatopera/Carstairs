@@ -68,6 +68,6 @@ class dizzYM {
 
     float *_wavetable[MIDI_NOTE_COUNT];
 
-    float _sizes[MIDI_NOTE_COUNT];
+    unsigned _sizes[MIDI_NOTE_COUNT];
 
 };

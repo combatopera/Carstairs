@@ -16,8 +16,8 @@ dizzYM::dizzYM(int sampleRate)
         : _sampleRate(sampleRate), _sampleCursor(0) {
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         float frequency = 440 * powf(2, float(midiNote - 69) / 12);
-        _sizes[midiNote] = float(sampleRate) / frequency;
-        _wavetable[midiNote] = new float[int(_sizes[midiNote]) + 1];
+        _sizes[midiNote] = unsigned(float(sampleRate) / frequency);
+        _wavetable[midiNote] = new float[_sizes[midiNote] + 1];
     }
 }
 
@@ -125,7 +125,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         return;
     }
     if (start == on) {
-        for (size_t i = 0; i <= unsigned(_sizes[midiNote]); ++i) {
+        for (size_t i = 0; i <= _sizes[midiNote]; ++i) {
             _wavetable[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
@@ -142,7 +142,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
             }
             gain = gain * float(release - dist) / float(release);
         }
-        size_t sz = int(_sizes[midiNote]);
+        size_t sz = _sizes[midiNote];
         bool decay = (s > sz);
         size_t index = (s % int(sz));
         float sample = _wavetable[midiNote][index];
