@@ -115,7 +115,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
             << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
     LADSPA_Data *output = _ports[OUTPUT_PORT_INFO._ordinal];
-    LADSPA_Data *sustain = _ports[SUSTAIN_PORT_INFO._ordinal];
+    bool sustain = *_ports[SUSTAIN_PORT_INFO._ordinal];
     if (_notes[midiNote]._on < 0) {
         return;
     }
@@ -130,10 +130,10 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         }
     }
     size_t i, s;
-    float vgain = (float) (_notes[midiNote]._velocity) / 127.0f;
+    float normVel = float(_notes[midiNote]._velocity) / 127;
     for (i = 0, s = absStart - absOn; i < count; ++i, ++s) {
-        float gain(vgain);
-        if ((!sustain || !*sustain) && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + absStart) {
+        float gain(normVel);
+        if (!sustain && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + absStart) {
             unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
             unsigned long dist = i + absStart - _notes[midiNote]._off;
             if (dist > release) {
