@@ -122,9 +122,10 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     if (absStart < absOn) {
         return;
     }
+    LADSPA_Data *noiseBurst = _noiseBursts[midiNote];
     if (absStart == absOn) {
         for (size_t i = 0; i < _sizes[midiNote] + 1; ++i) {
-            _noiseBursts[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
+            noiseBurst[i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
     size_t i, s;
@@ -143,16 +144,16 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         size_t sz = _sizes[midiNote];
         bool decay = s > sz;
         size_t index = s % sz;
-        LADSPA_Data sample = _noiseBursts[midiNote][index];
+        LADSPA_Data sample = noiseBurst[index];
         if (decay) {
             if (index == 0) {
-                sample += _noiseBursts[midiNote][sz - 1];
+                sample += noiseBurst[sz - 1];
             }
             else {
-                sample += _noiseBursts[midiNote][index - 1];
+                sample += noiseBurst[index - 1];
             }
             sample /= 2;
-            _noiseBursts[midiNote][index] = sample;
+            noiseBurst[index] = sample;
         }
         output[offset + i] += gain * sample;
     }
