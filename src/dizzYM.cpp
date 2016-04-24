@@ -17,13 +17,13 @@ dizzYM::dizzYM(int sampleRate)
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         float frequency = 440 * powf(2, float(midiNote - 69) / 12);
         _sizes[midiNote] = unsigned(float(sampleRate) / frequency);
-        _wavetable[midiNote] = new float[_sizes[midiNote] + 1];
+        _noiseBursts[midiNote] = new LADSPA_Data[_sizes[midiNote] + 1];
     }
 }
 
 dizzYM::~dizzYM() {
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        delete[] _wavetable[midiNote];
+        delete[] _noiseBursts[midiNote];
     }
 }
 
@@ -36,7 +36,7 @@ void dizzYM::cleanup(LADSPA_Handle Instance) {
 }
 
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
-    ((dizzYM *) Instance)->_ports[Port] = DataLocation;
+    ((dizzYM *) Instance)->_portValPtrs[Port] = DataLocation;
 }
 
 void dizzYM::activate(LADSPA_Handle Instance) {
@@ -71,7 +71,7 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 }
 
 void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
-    LADSPA_Data *output = _ports[OUTPUT_PORT_INFO._ordinal];
+    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
     for (unsigned long sampleIndex = 0, eventIndex = 0; sampleIndex < sampleCount;) {
         while (eventIndex < eventCount && events[eventIndex].time.tick <= sampleIndex) {
             switch (events[eventIndex].type) {
@@ -112,8 +112,8 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     std::cerr << "dizzYM::addSamples(" << midiNote << ", " << offset << ", " << count << "): on " << _notes[midiNote]._on << ", off " << _notes[midiNote]._off
             << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + offset << std::endl;
 #endif
-    LADSPA_Data *output = _ports[OUTPUT_PORT_INFO._ordinal];
-    bool sustain = *_ports[SUSTAIN_PORT_INFO._ordinal];
+    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
+    bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
     if (_notes[midiNote]._on < 0) {
         return;
     }
@@ -124,7 +124,7 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
     }
     if (absStart == absOn) {
         for (size_t i = 0; i < _sizes[midiNote] + 1; ++i) {
-            _wavetable[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
+            _noiseBursts[midiNote][i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
     size_t i, s;
@@ -143,16 +143,16 @@ void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count)
         size_t sz = _sizes[midiNote];
         bool decay = s > sz;
         size_t index = s % sz;
-        float sample = _wavetable[midiNote][index];
+        LADSPA_Data sample = _noiseBursts[midiNote][index];
         if (decay) {
             if (index == 0) {
-                sample += _wavetable[midiNote][sz - 1];
+                sample += _noiseBursts[midiNote][sz - 1];
             }
             else {
-                sample += _wavetable[midiNote][index - 1];
+                sample += _noiseBursts[midiNote][index - 1];
             }
             sample /= 2;
-            _wavetable[midiNote][index] = sample;
+            _noiseBursts[midiNote][index] = sample;
         }
         output[offset + i] += gain * sample;
     }

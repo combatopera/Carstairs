@@ -58,7 +58,7 @@ class dizzYM {
 
     void addSamples(int, unsigned long, unsigned long);
 
-    LADSPA_Data *_ports[PortCount];
+    LADSPA_Data *_portValPtrs[PortCount];
 
     int _sampleRate;
 
@@ -66,7 +66,7 @@ class dizzYM {
 
     Note _notes[MIDI_NOTE_COUNT];
 
-    float *_wavetable[MIDI_NOTE_COUNT];
+    LADSPA_Data *_noiseBursts[MIDI_NOTE_COUNT];
 
     unsigned _sizes[MIDI_NOTE_COUNT];
 
