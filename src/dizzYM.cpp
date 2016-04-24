@@ -70,10 +70,10 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
     ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
-void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsigned long eventCount) {
+void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
-    for (unsigned long sampleIndex = 0, eventIndex = 0; sampleIndex < sampleCount;) {
-        while (eventIndex < eventCount && events[eventIndex].time.tick <= sampleIndex) {
+    for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
+        while (eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock) {
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
@@ -88,23 +88,23 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
             ++eventIndex;
         }
         unsigned long count;
-        if (eventIndex < eventCount && events[eventIndex].time.tick < sampleCount) {
-            count = events[eventIndex].time.tick - sampleIndex;
+        if (eventIndex < eventCount && events[eventIndex].time.tick < blockSize) {
+            count = events[eventIndex].time.tick - indexInBlock;
         }
         else {
-            count = sampleCount - sampleIndex;
+            count = blockSize - indexInBlock;
         }
         for (unsigned long k = 0; k < count; ++k) {
-            output[sampleIndex + k] = 0;
+            output[indexInBlock + k] = 0;
         }
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
             if (_notes[midiNote]._on >= 0) {
-                addSamples(midiNote, sampleIndex, count);
+                addSamples(midiNote, indexInBlock, count);
             }
         }
-        sampleIndex += count;
+        indexInBlock += count;
     }
-    _sampleCursor += sampleCount;
+    _sampleCursor += blockSize;
 }
 
 void dizzYM::addSamples(int midiNote, unsigned long offset, unsigned long count) {
