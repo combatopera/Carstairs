@@ -43,10 +43,19 @@ void dizzYM::activate(LADSPA_Handle Instance) {
     dizzYM *plugin = (dizzYM *) Instance;
     plugin->_sampleCursor = 0;
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        plugin->_notes[midiNote]._on = -1;
-        plugin->_notes[midiNote]._off = -1;
-        plugin->_notes[midiNote]._velocity = 0;
+        plugin->_notes[midiNote].reset();
     }
+}
+
+void Note::reset() {
+    _on = _off = -1;
+    _velocity = 0;
+}
+
+void Note::on(unsigned long on, int velocity) {
+    _on = on;
+    _off = -1;
+    _velocity = velocity;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
@@ -69,9 +78,7 @@ void dizzYM::runSynth(unsigned long sampleCount, snd_seq_event_t *events, unsign
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
                     if (n->velocity > 0) {
-                        _notes[n->note]._on = _sampleCursor + events[eventIndex].time.tick;
-                        _notes[n->note]._off = -1;
-                        _notes[n->note]._velocity = n->velocity;
+                        _notes[n->note].on(_sampleCursor + events[eventIndex].time.tick, n->velocity);
                     }
                     break;
                 }

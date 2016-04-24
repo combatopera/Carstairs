@@ -26,6 +26,10 @@ class Note {
 
     int _velocity;
 
+    void reset();
+
+    void on(unsigned long on, int velocity);
+
 };
 
 class dizzYM {
