@@ -4,6 +4,7 @@
 #include <ladspa.h>
 #include <math.h>
 #include <stddef.h>
+#include <string.h>
 #include <cstdlib>
 
 #include "port.h"
@@ -72,6 +73,7 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 
 void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
+    memset(output, 0, blockSize * sizeof *output);
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         while (eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock) {
             switch (events[eventIndex].type) {
@@ -94,9 +96,6 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         else {
             count = blockSize - indexInBlock;
         }
-        for (unsigned long k = 0; k < count; ++k) {
-            output[indexInBlock + k] = 0;
-        }
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
             if (_notes[midiNote]._on >= 0) {
                 addSamples(midiNote, indexInBlock, count);
@@ -109,10 +108,10 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
 
 void dizzYM::addSamples(int midiNote, unsigned long indexInBlock, unsigned long sampleCount) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _notes[midiNote]._on << ", off " << _notes[midiNote]._off
-            << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
+    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _notes[midiNote]._on << ", off "
+            << _notes[midiNote]._off << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
 #endif
-    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
+    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock;
     bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
     if (_notes[midiNote]._on < 0) {
         return;
@@ -155,6 +154,6 @@ void dizzYM::addSamples(int midiNote, unsigned long indexInBlock, unsigned long 
             sample /= 2;
             noiseBurst[index] = sample;
         }
-        output[indexInBlock + i] += gain * sample;
+        output[i] += gain * sample;
     }
 }

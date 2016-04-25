@@ -16,7 +16,7 @@ LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | 
 
 static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
 
-static size_t const PortCount = sizeof(PORT_INFOS) / sizeof(PortInfo *);
+static size_t const PortCount = (sizeof PORT_INFOS) / (sizeof PORT_INFOS[0]);
 
 class Note {
 
