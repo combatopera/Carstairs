@@ -75,7 +75,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
     memset(output, 0, blockSize * sizeof *output);
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
-        while (eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock) {
+        for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
@@ -87,21 +87,14 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
                     break;
                 }
             }
-            ++eventIndex;
         }
-        unsigned long count;
-        if (eventIndex < eventCount && events[eventIndex].time.tick < blockSize) {
-            count = events[eventIndex].time.tick - indexInBlock;
-        }
-        else {
-            count = blockSize - indexInBlock;
-        }
+        unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
             if (_notes[midiNote]._on >= 0) {
-                addSamples(midiNote, indexInBlock, count);
+                addSamples(midiNote, indexInBlock, limitInBlock - indexInBlock);
             }
         }
-        indexInBlock += count;
+        indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
 }
