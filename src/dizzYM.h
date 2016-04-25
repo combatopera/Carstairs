@@ -30,6 +30,8 @@ class Note {
 
     void on(unsigned long on, int velocity);
 
+    bool isActive();
+
 };
 
 class dizzYM {

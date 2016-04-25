@@ -59,6 +59,10 @@ void Note::on(unsigned long on, int velocity) {
     _velocity = velocity;
 }
 
+bool Note::isActive() {
+    return _on >= 0;
+}
+
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
     return PORT_INFOS[Port]->_controllers;
 }
@@ -90,7 +94,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         }
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-            if (_notes[midiNote]._on >= 0) {
+            if (_notes[midiNote].isActive()) {
                 addSamples(midiNote, indexInBlock, limitInBlock - indexInBlock);
             }
         }
