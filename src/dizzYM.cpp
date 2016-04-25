@@ -7,6 +7,7 @@
 #include <string.h>
 #include <cstdlib>
 
+#include "note.h"
 #include "port.h"
 
 #ifdef DEBUG_dizzYM
@@ -46,21 +47,6 @@ void dizzYM::activate(LADSPA_Handle Instance) {
     for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
         plugin->_notes[midiNote].reset();
     }
-}
-
-void Note::reset() {
-    _on = _off = -1;
-    _velocity = 0;
-}
-
-void Note::on(unsigned long on, int velocity) {
-    _on = on;
-    _off = -1;
-    _velocity = velocity;
-}
-
-bool Note::isActive() {
-    return _on >= 0;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {

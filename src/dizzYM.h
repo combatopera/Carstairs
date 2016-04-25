@@ -5,6 +5,7 @@
 #include <ladspa.h>
 #include <stddef.h>
 
+#include "note.h"
 #include "port.h"
 
 int const MIDI_NOTE_COUNT = 128;
@@ -17,22 +18,6 @@ LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | 
 static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
 
 static size_t const PortCount = (sizeof PORT_INFOS) / (sizeof PORT_INFOS[0]);
-
-class Note {
-
-    friend class dizzYM;
-
-    long _on, _off;
-
-    int _velocity;
-
-    void reset();
-
-    void on(unsigned long on, int velocity);
-
-    bool isActive();
-
-};
 
 class dizzYM {
 
