@@ -79,6 +79,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
     memset(output, 0, blockSize * sizeof *output);
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
+        // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
@@ -92,6 +93,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
                 }
             }
         }
+        // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
             if (_notes[midiNote].isActive()) {
