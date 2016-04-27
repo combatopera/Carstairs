@@ -5,7 +5,6 @@
 #include <ladspa.h>
 #include <stddef.h>
 
-#include "note.h"
 #include "port.h"
 
 int const MIDI_NOTE_COUNT = 128;
@@ -43,7 +42,7 @@ class dizzYM {
 
     void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
 
-    void addSamples(int, unsigned long, unsigned long);
+    void addSamples(unsigned long, unsigned long);
 
     LADSPA_Data *_portValPtrs[PortCount];
 
@@ -51,7 +50,11 @@ class dizzYM {
 
     long _sampleCursor;
 
-    Note _notes[MIDI_NOTE_COUNT];
+    int _midiNote;
+
+    long _noteOn, _noteOff;
+
+    int _velocity;
 
     LADSPA_Data *_noiseBursts[MIDI_NOTE_COUNT];
 

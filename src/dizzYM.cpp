@@ -7,7 +7,6 @@
 #include <string.h>
 #include <cstdlib>
 
-#include "note.h"
 #include "port.h"
 
 #ifdef DEBUG_dizzYM
@@ -44,9 +43,9 @@ void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Dat
 void dizzYM::activate(LADSPA_Handle Instance) {
     dizzYM *plugin = (dizzYM *) Instance;
     plugin->_sampleCursor = 0;
-    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        plugin->_notes[midiNote].reset();
-    }
+    plugin->_noteOn = -1;
+    plugin->_noteOff = -1;
+    plugin->_velocity = 0;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
@@ -70,62 +69,63 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
-                    _notes[n->note].on(_sampleCursor + events[eventIndex].time.tick, n->velocity);
+                    _midiNote = n->note;
+                    _noteOn = _sampleCursor + events[eventIndex].time.tick;
+                    _noteOff = -1;
+                    _velocity = n->velocity;
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _notes[events[eventIndex].data.note.note]._off = _sampleCursor + events[eventIndex].time.tick;
+                    _noteOff = _sampleCursor + events[eventIndex].time.tick;
                     break;
                 }
             }
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-            if (_notes[midiNote].isActive()) {
-                addSamples(midiNote, indexInBlock, limitInBlock - indexInBlock);
-            }
+        if (_noteOn >= 0) {
+            addSamples(indexInBlock, limitInBlock - indexInBlock);
         }
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
 }
 
-void dizzYM::addSamples(int midiNote, unsigned long indexInBlock, unsigned long sampleCount) {
+void dizzYM::addSamples(unsigned long indexInBlock, unsigned long sampleCount) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _notes[midiNote]._on << ", off "
-            << _notes[midiNote]._off << ", size " << _sizes[midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
+    std::cerr << "dizzYM::addSamples(" << _midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _noteOn << ", off " << _noteOff << ", size "
+            << _sizes[_midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
 #endif
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock;
     bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
-    if (_notes[midiNote]._on < 0) {
+    if (_noteOn < 0) {
         return;
     }
-    unsigned long absOn = (unsigned long) (_notes[midiNote]._on);
+    unsigned long absOn = (unsigned long) _noteOn;
     unsigned long absStart = _sampleCursor + indexInBlock;
     if (absStart < absOn) {
         return;
     }
-    LADSPA_Data *noiseBurst = _noiseBursts[midiNote];
+    LADSPA_Data *noiseBurst = _noiseBursts[_midiNote];
     if (absStart == absOn) {
-        for (size_t i = 0; i < _sizes[midiNote] + 1; ++i) {
+        for (size_t i = 0; i < _sizes[_midiNote] + 1; ++i) {
             noiseBurst[i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
         }
     }
     size_t i, s;
-    float normVel = float(_notes[midiNote]._velocity) / 127;
+    float normVel = float(_velocity) / 127;
     for (i = 0, s = absStart - absOn; i < sampleCount; ++i, ++s) {
         float gain(normVel);
-        if (!sustain && _notes[midiNote]._off >= 0 && (unsigned long) (_notes[midiNote]._off) < i + absStart) {
+        if (!sustain && _noteOff >= 0 && (unsigned long) (_noteOff) < i + absStart) {
             unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
-            unsigned long dist = i + absStart - _notes[midiNote]._off;
+            unsigned long dist = i + absStart - _noteOff;
             if (dist > release) {
-                _notes[midiNote]._on = -1;
+                _noteOn = -1;
                 break;
             }
             gain = gain * float(release - dist) / float(release);
         }
-        size_t sz = _sizes[midiNote];
+        size_t sz = _sizes[_midiNote];
         bool decay = s > sz;
         size_t index = s % sz;
         LADSPA_Data sample = noiseBurst[index];
