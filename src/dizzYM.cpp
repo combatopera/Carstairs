@@ -76,7 +76,9 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _noteOff = _sampleCursor + events[eventIndex].time.tick;
+                    if (_midiNote == events[eventIndex].data.note.note) {
+                        _noteOff = _sampleCursor + events[eventIndex].time.tick;
+                    }
                     break;
                 }
             }
