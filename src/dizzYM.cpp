@@ -62,7 +62,7 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 
 void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
-    memset(output, 0, blockSize * sizeof *output);
+    memset(output, 0, blockSize * sizeof *output); // Not portable.
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
