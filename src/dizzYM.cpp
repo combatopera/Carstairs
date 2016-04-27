@@ -98,9 +98,6 @@ void dizzYM::addSamples(unsigned long indexInBlock, unsigned long sampleCount) {
 #endif
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock;
     bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
-    if (_noteOn < 0) {
-        return;
-    }
     unsigned long absOn = (unsigned long) _noteOn;
     unsigned long absStart = _sampleCursor + indexInBlock;
     if (absStart < absOn) {
