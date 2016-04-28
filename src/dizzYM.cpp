@@ -2,10 +2,7 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
-#include <math.h>
-#include <stddef.h>
 #include <string.h>
-#include <cstdlib>
 
 #include "port.h"
 
@@ -15,17 +12,9 @@
 
 dizzYM::dizzYM(int sampleRate)
         : _sampleRate(sampleRate), _sampleCursor(0) {
-    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        float frequency = 440 * powf(2, float(midiNote - 69) / 12);
-        _sizes[midiNote] = unsigned(float(sampleRate) / frequency);
-        _noiseBursts[midiNote] = new LADSPA_Data[_sizes[midiNote] + 1];
-    }
 }
 
 dizzYM::~dizzYM() {
-    for (int midiNote = 0; midiNote < MIDI_NOTE_COUNT; ++midiNote) {
-        delete[] _noiseBursts[midiNote];
-    }
 }
 
 LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
@@ -95,49 +84,8 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
 
 void dizzYM::addSamples(unsigned long indexInBlock, unsigned long sampleCount) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << _midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _noteOn << ", off " << _noteOff << ", size "
-            << _sizes[_midiNote] << ", start " << _sampleCursor + indexInBlock << std::endl;
+    std::cerr << "dizzYM::addSamples(" << _midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _noteOn << ", off " << _noteOff << ", start "
+            << _sampleCursor + indexInBlock << std::endl;
 #endif
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock;
-    bool sustain = *_portValPtrs[SUSTAIN_PORT_INFO._ordinal];
-    unsigned long absOn = (unsigned long) _noteOn;
-    unsigned long absStart = _sampleCursor + indexInBlock;
-    if (absStart < absOn) {
-        return;
-    }
-    LADSPA_Data *noiseBurst = _noiseBursts[_midiNote];
-    if (absStart == absOn) {
-        for (size_t i = 0; i < _sizes[_midiNote] + 1; ++i) {
-            noiseBurst[i] = (float(rand()) / float(RAND_MAX)) * 2 - 1;
-        }
-    }
-    size_t i, s;
-    float normVel = float(_velocity) / 127;
-    for (i = 0, s = absStart - absOn; i < sampleCount; ++i, ++s) {
-        float gain(normVel);
-        if (!sustain && _noteOff >= 0 && (unsigned long) (_noteOff) < i + absStart) {
-            unsigned long release = (unsigned long) (1 + (0.01 * _sampleRate));
-            unsigned long dist = i + absStart - _noteOff;
-            if (dist > release) {
-                _noteOn = -1;
-                break;
-            }
-            gain = gain * float(release - dist) / float(release);
-        }
-        size_t sz = _sizes[_midiNote];
-        bool decay = s > sz;
-        size_t index = s % sz;
-        LADSPA_Data sample = noiseBurst[index];
-        if (decay) {
-            if (index == 0) {
-                sample += noiseBurst[sz - 1];
-            }
-            else {
-                sample += noiseBurst[index - 1];
-            }
-            sample /= 2;
-            noiseBurst[index] = sample;
-        }
-        output[i] += gain * sample;
-    }
 }

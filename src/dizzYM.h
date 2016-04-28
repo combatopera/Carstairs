@@ -56,8 +56,4 @@ class dizzYM {
 
     int _velocity;
 
-    LADSPA_Data *_noiseBursts[MIDI_NOTE_COUNT];
-
-    unsigned _sizes[MIDI_NOTE_COUNT];
-
 };
