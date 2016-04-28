@@ -48,7 +48,7 @@ class dizzYM {
 
     int _sampleRate;
 
-    long _sampleCursor;
+    unsigned long _sampleCursor;
 
     int _midiNote;
 
