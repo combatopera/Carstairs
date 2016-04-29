@@ -51,7 +51,6 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 
 void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
     LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
-    memset(output, 0, blockSize * sizeof *output); // Not portable.
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
@@ -74,18 +73,17 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        if (_noteOn >= 0) {
-            addSamples(indexInBlock, limitInBlock - indexInBlock);
-        }
+        putSamples(indexInBlock, limitInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
 }
 
-void dizzYM::addSamples(unsigned long indexInBlock, unsigned long sampleCount) {
+void dizzYM::putSamples(unsigned long indexInBlock, unsigned long limitInBlock) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::addSamples(" << _midiNote << ", " << indexInBlock << ", " << sampleCount << "): on " << _noteOn << ", off " << _noteOff << ", start "
+    std::cerr << "dizzYM::putSamples(" << indexInBlock << ", " << limitInBlock << "): on " << _noteOn << ", off " << _noteOff << ", start "
             << _sampleCursor + indexInBlock << std::endl;
 #endif
-    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock;
+    LADSPA_Data *chipBuf = _chip.render(_sampleCursor + limitInBlock);
+    memcpy(_portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, chipBuf, (limitInBlock - indexInBlock) * sizeof *chipBuf);
 }
