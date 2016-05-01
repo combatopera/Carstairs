@@ -13,6 +13,10 @@ static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, unsigned l
     return new dizzYM((int) SampleRate);
 }
 
+static void activate(LADSPA_Handle Instance) {
+    ((dizzYM *) Instance)->reset();
+}
+
 static void cleanup(LADSPA_Handle Instance) {
     delete (dizzYM *) Instance;
 #ifdef DEBUG_dizzYM
@@ -43,7 +47,7 @@ Descriptor::Descriptor() {
         0,// ImplementationData
         instantiate,//
         dizzYM::connect_port,//
-        dizzYM::activate,//
+        activate,//
         dizzYM::run,//
         0,// run_adding
         0,// set_run_adding_gain

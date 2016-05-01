@@ -14,12 +14,11 @@ void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Dat
     ((dizzYM *) Instance)->_portValPtrs[Port] = DataLocation;
 }
 
-void dizzYM::activate(LADSPA_Handle Instance) {
-    dizzYM *plugin = (dizzYM *) Instance;
-    plugin->_sampleCursor = 0;
-    plugin->_state._noteOn = -1;
-    plugin->_state._noteOff = -1;
-    plugin->_state._velocity = 0;
+void dizzYM::reset() {
+    _sampleCursor = 0;
+    _state._noteOn = -1;
+    _state._noteOff = -1;
+    _state._velocity = 0;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
