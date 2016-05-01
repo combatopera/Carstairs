@@ -6,13 +6,13 @@ template<typename T> class View {
 
 protected:
 
+    View();
+
     size_t _limit;
 
     T *_data;
 
 public:
-
-    View();
 
     View(const View<T>& master);
 
@@ -27,6 +27,8 @@ template<typename T> class Buffer: public View<T> {
     size_t _capacity;
 
 public:
+
+    Buffer();
 
     ~Buffer();
 

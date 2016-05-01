@@ -5,7 +5,12 @@
 #include <cstring>
 
 template<typename T> View<T>::View() {
-    _data = (T *) malloc(_limit = 0);
+    _limit = 0;
+    _data = (T *) malloc(0);
+}
+
+template<typename T> Buffer<T>::Buffer() {
+    _capacity = 0;
 }
 
 template<typename T> View<T>::View(const View<T>& master)
