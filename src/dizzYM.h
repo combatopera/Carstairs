@@ -20,10 +20,6 @@ static size_t const PortCount = (sizeof PORT_INFOS) / (sizeof PORT_INFOS[0]);
 
 class dizzYM {
 
-    friend class Descriptor;
-
-    static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
-
     LADSPA_Data *_portValPtrs[PortCount];
 
     int _sampleRate;
@@ -39,6 +35,8 @@ public:
     dizzYM(int sampleRate);
 
     void reset();
+
+    static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
 
     void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
 
