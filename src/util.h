@@ -2,10 +2,31 @@
 
 #include <stddef.h>
 
-template<typename T> void zero(T *buf, size_t n);
+template<typename T> class Buf {
 
-template<typename T> void copy(T *from, T *to, size_t n);
+    bool _master;
+
+    size_t _limit, _capacity;
+
+    T *_data;
+
+public:
+
+    Buf();
+
+    Buf(const Buf<T>& master);
+
+    ~Buf();
+
+    void setLimit(size_t limit);
+
+    size_t limit();
+
+    void zero();
+
+    void copy(T *to);
+
+};
 
 #define UTIL_INSTANTIATE(T) \
-    template void zero<T>(T *, size_t n); \
-    template void copy<T>(T *, T *, size_t n);
+    template class Buf<T>;
