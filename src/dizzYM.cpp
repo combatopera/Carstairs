@@ -3,7 +3,7 @@
 #include <alsa/seq_event.h>
 #include <ladspa.h>
 
-#include "port.h"
+#include "dssi/port.h"
 #include "util.h"
 
 #ifdef DEBUG_dizzYM

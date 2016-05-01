@@ -5,8 +5,8 @@
 #include <ladspa.h>
 #include <stddef.h>
 
+#include "dssi/port.h"
 #include "node/pcm.h"
-#include "port.h"
 
 int const MIDI_NOTE_COUNT = 128;
 

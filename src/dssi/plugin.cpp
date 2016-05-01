@@ -2,7 +2,7 @@
 
 #include <ladspa.h>
 
-#include "dizzYM.h"
+#include "../dizzYM.h"
 #include "port.h"
 
 Descriptor::Descriptor() {
