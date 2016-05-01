@@ -8,7 +8,7 @@ template<typename T> class View {
 
 protected:
 
-    size_t _limit, _capacity;
+    size_t _limit;
 
     T *_data;
 
@@ -27,6 +27,8 @@ public:
 };
 
 template<typename T> class Buffer: public View<T> {
+
+    size_t _capacity;
 
 public:
 

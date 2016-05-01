@@ -6,11 +6,11 @@
 
 template<typename T> View<T>::View()
         : _master(true) {
-    _data = (T *) malloc(_limit = _capacity = 0);
+    _data = (T *) malloc(_limit = 0);
 }
 
 template<typename T> View<T>::View(const View<T>& master)
-        : _master(false), _limit(master._limit), _capacity(master._capacity), _data(master._data) {
+        : _master(false), _limit(master._limit), _data(master._data) {
     // Nothing else.
 }
 
