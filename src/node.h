@@ -1,12 +1,10 @@
 #include <ladspa.h>
 #include <stddef.h>
-
+#pragma once
 template<typename T>
 class Node {
 
     unsigned long _cursor;
-
-    T *_buffer;
 
     size_t _capacity;
 
@@ -16,20 +14,42 @@ public:
 
     virtual ~Node();
 
-    T *render(unsigned long newCursor);
+    virtual T *render(unsigned long newCursor);
 
-    virtual void renderImpl(T *buffer, unsigned long n);
+protected:
+
+    T *_buffer;
+
+    virtual void renderImpl(T *_buffer,unsigned long n) = 0;
 
 };
 
 class Tone: public Node<int> {
 
-    void renderImpl(int *buffer, unsigned long n);
+    void renderImpl(int*buffer,unsigned long n);
+
+public:
+
+    Tone();
+
+    ~Tone();
+
+    int *render(unsigned long newCursor);
 
 };
 
 class PCM: public Node<LADSPA_Data> {
 
-    void renderImpl(LADSPA_Data *buffer, unsigned long n);
+    Tone _tone;
+
+    void renderImpl(LADSPA_Data*buffer,unsigned long n);
+
+public:
+
+    PCM();
+
+    ~PCM();
+
+    LADSPA_Data *render(unsigned long newCursor);
 
 };

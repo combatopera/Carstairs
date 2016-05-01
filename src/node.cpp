@@ -1,6 +1,5 @@
 #include "node.h"
 
-#include <ladspa.h>
 #include <stdlib.h>
 
 #include "util.h"
@@ -24,15 +23,39 @@ T *Node<T>::render(unsigned long newCursor) {
         if (blockSize > _capacity) {
             _buffer = (T *) realloc(_buffer, _capacity = (blockSize * sizeof *_buffer));
         }
-        renderImpl(_buffer, blockSize);
+        renderImpl(_buffer,blockSize);
     }
     return _buffer;
+}
+
+Tone::Tone():Node() {
+
+}
+
+Tone::~Tone() {
+
+}
+
+int *Tone::render(unsigned long newCursor) {
+    return Node::render(newCursor);
 }
 
 void Tone::renderImpl(int *buffer, unsigned long n) {
     zero(buffer, n);
 }
 
-void PCM::renderImpl(LADSPA_Data *buffer, unsigned long n) {
+PCM::PCM():Node() {
+
+}
+
+PCM::~PCM() {
+
+}
+
+LADSPA_Data *PCM::render(unsigned long newCursor) {
+    return Node::render(newCursor);
+}
+
+void PCM::renderImpl(LADSPA_Data * buffer, unsigned long n) {
     zero(buffer, n);
 }

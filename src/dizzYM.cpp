@@ -2,9 +2,9 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
-#include <string.h>
 
 #include "port.h"
+#include "util.h"
 
 #ifdef DEBUG_dizzYM
 #include <iostream>
@@ -50,7 +50,6 @@ void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_se
 }
 
 void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
-    LADSPA_Data *output = _portValPtrs[OUTPUT_PORT_INFO._ordinal];
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
@@ -84,6 +83,5 @@ void dizzYM::putSamples(unsigned long indexInBlock, unsigned long limitInBlock) 
     std::cerr << "dizzYM::putSamples(" << indexInBlock << ", " << limitInBlock << "): on " << _noteOn << ", off " << _noteOff << ", start "
             << _sampleCursor + indexInBlock << std::endl;
 #endif
-    LADSPA_Data *chipBuf = _chip.render(_sampleCursor + limitInBlock);
-    memcpy(_portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, chipBuf, (limitInBlock - indexInBlock) * sizeof *chipBuf);
+    copy(_chip.render(_sampleCursor + limitInBlock), _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, limitInBlock - indexInBlock);
 }
