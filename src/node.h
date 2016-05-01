@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ladspa.h>
 #include <stddef.h>
 
 template<typename T> class Node {
@@ -25,16 +24,6 @@ protected:
 
 };
 
-class Tone: public Node<int> {
-
-    void renderImpl(unsigned long n);
-
-};
-
-class PCM: public Node<LADSPA_Data> {
-
-    Tone _tone;
-
-    void renderImpl(unsigned long n);
-
-};
+#define NODE_INSTANTIATE(T) \
+    template Node<T>::Node(); \
+    template Node<T>::~Node();

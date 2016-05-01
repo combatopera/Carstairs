@@ -3,8 +3,6 @@
 #include <ladspa.h>
 #include <stdlib.h>
 
-#include "util.h"
-
 template<typename T> Node<T>::Node()
         : _cursor(0) {
     _buffer = (T *) malloc(_capacity = 0);
@@ -26,13 +24,5 @@ template<typename T> T *Node<T>::render(unsigned long newCursor) {
     return _buffer;
 }
 
-void Tone::renderImpl(unsigned long n) {
-    zero(_buffer, n);
-}
-
-void PCM::renderImpl(unsigned long n) {
-    zero(_buffer, n);
-}
-
-template Node<int>::Node();
-template Node<LADSPA_Data>::Node();
+NODE_INSTANTIATE(int)
+NODE_INSTANTIATE(LADSPA_Data)

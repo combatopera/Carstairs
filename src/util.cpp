@@ -12,5 +12,5 @@ template<typename T> void copy(T *from, T *to, size_t n) {
     memcpy(to, from, n * sizeof *from);
 }
 
-INSTANTIATE(int)
-INSTANTIATE(LADSPA_Data)
+UTIL_INSTANTIATE(int)
+UTIL_INSTANTIATE(LADSPA_Data)
