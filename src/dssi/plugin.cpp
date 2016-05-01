@@ -17,6 +17,10 @@ static void activate(LADSPA_Handle Instance) {
     ((dizzYM *) Instance)->reset();
 }
 
+static int get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
+    return PORT_INFOS[Port]->_controllers;
+}
+
 static void cleanup(LADSPA_Handle Instance) {
     delete (dizzYM *) Instance;
 #ifdef DEBUG_dizzYM
@@ -60,7 +64,7 @@ Descriptor::Descriptor() {
         0,// configure()
         0,// get_program()
         0,// select_program()
-        dizzYM::get_midi_controller_for_port,//
+        get_midi_controller_for_port,//
         dizzYM::run_synth,//
         0,// run_synth_adding()
         0,// run_multiple_synths()

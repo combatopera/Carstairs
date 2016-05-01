@@ -24,8 +24,6 @@ class dizzYM {
 
     static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
 
-    static int get_midi_controller_for_port(LADSPA_Handle, unsigned long);
-
     static void run(LADSPA_Handle, unsigned long);
 
     static void run_synth(LADSPA_Handle, unsigned long, snd_seq_event_t *, unsigned long);

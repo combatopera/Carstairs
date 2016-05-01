@@ -21,10 +21,6 @@ void dizzYM::reset() {
     _state._velocity = 0;
 }
 
-int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
-    return PORT_INFOS[Port]->_controllers;
-}
-
 void dizzYM::run(LADSPA_Handle Instance, unsigned long SampleCount) {
     ((dizzYM *) Instance)->runSynth(SampleCount, 0, 0);
 }
