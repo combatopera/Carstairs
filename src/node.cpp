@@ -3,8 +3,10 @@
 #include <ladspa.h>
 #include <stdlib.h>
 
-template<typename T> Node<T>::Node()
-        : _cursor(0) {
+#include "state.h"
+
+template<typename T> Node<T>::Node(State *state)
+        : _state(state), _cursor(0) {
     _buffer = (T *) malloc(_capacity = 0);
 }
 

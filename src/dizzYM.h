@@ -7,6 +7,7 @@
 
 #include "dssi/port.h"
 #include "node/pcm.h"
+#include "state.h"
 
 int const MIDI_NOTE_COUNT = 128;
 
@@ -51,11 +52,7 @@ class dizzYM {
 
     unsigned long _sampleCursor;
 
-    int _midiNote;
-
-    long _noteOn, _noteOff;
-
-    int _velocity;
+    State _state;
 
     PCM _chip;
 

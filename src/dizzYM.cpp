@@ -11,7 +11,7 @@
 #endif
 
 dizzYM::dizzYM(int sampleRate)
-        : _sampleRate(sampleRate), _sampleCursor(0) {
+        : _sampleRate(sampleRate), _sampleCursor(0), _chip(&_state) {
 }
 
 dizzYM::~dizzYM() {
@@ -23,6 +23,9 @@ LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned 
 
 void dizzYM::cleanup(LADSPA_Handle Instance) {
     delete (dizzYM *) Instance;
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Cleaned up." << std::endl;
+#endif
 }
 
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
@@ -32,9 +35,9 @@ void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Dat
 void dizzYM::activate(LADSPA_Handle Instance) {
     dizzYM *plugin = (dizzYM *) Instance;
     plugin->_sampleCursor = 0;
-    plugin->_noteOn = -1;
-    plugin->_noteOff = -1;
-    plugin->_velocity = 0;
+    plugin->_state._noteOn = -1;
+    plugin->_state._noteOff = -1;
+    plugin->_state._velocity = 0;
 }
 
 int dizzYM::get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
@@ -56,15 +59,15 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
-                    _midiNote = n->note;
-                    _noteOn = _sampleCursor + events[eventIndex].time.tick;
-                    _noteOff = -1;
-                    _velocity = n->velocity;
+                    _state._midiNote = n->note;
+                    _state._noteOn = _sampleCursor + events[eventIndex].time.tick;
+                    _state._noteOff = -1;
+                    _state._velocity = n->velocity;
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    if (_midiNote == events[eventIndex].data.note.note) {
-                        _noteOff = _sampleCursor + events[eventIndex].time.tick;
+                    if (_state._midiNote == events[eventIndex].data.note.note) {
+                        _state._noteOff = _sampleCursor + events[eventIndex].time.tick;
                     }
                     break;
                 }
@@ -80,7 +83,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
 
 void dizzYM::putSamples(unsigned long indexInBlock, unsigned long limitInBlock) {
 #ifdef DEBUG_dizzYM
-    std::cerr << "dizzYM::putSamples(" << indexInBlock << ", " << limitInBlock << "): on " << _noteOn << ", off " << _noteOff << ", start "
+    std::cerr << "[dizzYM] putSamples(" << indexInBlock << ", " << limitInBlock << "): on " << _state._noteOn << ", off " << _state._noteOff << ", start "
             << _sampleCursor + indexInBlock << std::endl;
 #endif
     copy(_chip.render(_sampleCursor + limitInBlock), _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, limitInBlock - indexInBlock);

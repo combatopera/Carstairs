@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+#include "state.h"
+
 template<typename T> class Node {
 
     unsigned long _cursor;
@@ -10,13 +12,15 @@ template<typename T> class Node {
 
 public:
 
-    Node();
+    Node(State *state);
 
     virtual ~Node();
 
     virtual T *render(unsigned long newCursor);
 
 protected:
+
+    State *_state;
 
     T *_buffer;
 
@@ -25,5 +29,5 @@ protected:
 };
 
 #define NODE_INSTANTIATE(T) \
-    template Node<T>::Node(); \
+    template Node<T>::Node(State *); \
     template Node<T>::~Node();
