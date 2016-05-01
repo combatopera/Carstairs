@@ -22,14 +22,6 @@ class dizzYM {
 
     friend class Descriptor;
 
-    dizzYM(int sampleRate);
-
-    ~dizzYM();
-
-    static LADSPA_Handle instantiate(const LADSPA_Descriptor *, unsigned long);
-
-    static void cleanup(LADSPA_Handle);
-
     static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
 
     static void activate(LADSPA_Handle);
@@ -51,5 +43,9 @@ class dizzYM {
     State _state;
 
     PCM _chip;
+
+public:
+
+    dizzYM(int sampleRate);
 
 };

@@ -5,6 +5,21 @@
 #include "../dizzYM.h"
 #include "port.h"
 
+#ifdef DEBUG_dizzYM
+#include <iostream>
+#endif
+
+static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
+    return new dizzYM((int) SampleRate);
+}
+
+static void cleanup(LADSPA_Handle Instance) {
+    delete (dizzYM *) Instance;
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Cleaned up." << std::endl;
+#endif
+}
+
 Descriptor::Descriptor() {
     _PortDescriptors = new LADSPA_PortDescriptor[PortCount];
     _PortNames = new const char *[PortCount];
@@ -26,14 +41,14 @@ Descriptor::Descriptor() {
         _PortNames,//
         _PortRangeHints,//
         0,// ImplementationData
-        dizzYM::instantiate,//
+        instantiate,//
         dizzYM::connect_port,//
         dizzYM::activate,//
         dizzYM::run,//
         0,// run_adding
         0,// set_run_adding_gain
         0,// deactivate
-        dizzYM::cleanup,//
+        cleanup,//
     };
     _dssiDescriptor = { //
         1,// API version, must be 1.

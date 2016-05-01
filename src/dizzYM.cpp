@@ -6,26 +6,8 @@
 #include "dssi/port.h"
 #include "util.h"
 
-#ifdef DEBUG_dizzYM
-#include <iostream>
-#endif
-
 dizzYM::dizzYM(int sampleRate)
         : _sampleRate(sampleRate), _sampleCursor(0), _chip(&_state) {
-}
-
-dizzYM::~dizzYM() {
-}
-
-LADSPA_Handle dizzYM::instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
-    return new dizzYM((int) SampleRate);
-}
-
-void dizzYM::cleanup(LADSPA_Handle Instance) {
-    delete (dizzYM *) Instance;
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Cleaned up." << std::endl;
-#endif
 }
 
 void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
