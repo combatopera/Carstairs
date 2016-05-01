@@ -37,5 +37,5 @@ public:
 };
 
 #define UTIL_INSTANTIATE(T) \
-    template class Buf<T>; \
-    template class MasterBuf<T>;
+    template class View<T>; \
+    template class Buffer<T>;
