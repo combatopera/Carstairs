@@ -30,10 +30,6 @@ template<typename T> void Buffer<T>::setLimit(size_t limit) {
     this->_limit = limit;
 }
 
-template<typename T> size_t View<T>::limit() {
-    return _limit;
-}
-
 template<typename T> void Buffer<T>::zero() {
     memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
 }

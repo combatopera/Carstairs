@@ -18,7 +18,9 @@ public:
 
     View(const View<T>& master);
 
-    size_t limit();
+    size_t limit() {
+        return _limit;
+    }
 
     void copyTo(T *to);
 
