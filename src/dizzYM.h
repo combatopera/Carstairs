@@ -44,8 +44,6 @@ class dizzYM {
 
     void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
 
-    void putSamples(unsigned long, unsigned long);
-
     LADSPA_Data *_portValPtrs[PortCount];
 
     int _sampleRate;

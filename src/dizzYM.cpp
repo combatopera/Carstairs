@@ -75,16 +75,8 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        putSamples(indexInBlock, limitInBlock);
+        copy(_chip.render(_sampleCursor + limitInBlock), _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, limitInBlock - indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
-}
-
-void dizzYM::putSamples(unsigned long indexInBlock, unsigned long limitInBlock) {
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] putSamples(" << indexInBlock << ", " << limitInBlock << "): on " << _state._noteOn << ", off " << _state._noteOff << ", start "
-            << _sampleCursor + indexInBlock << std::endl;
-#endif
-    copy(_chip.render(_sampleCursor + limitInBlock), _portValPtrs[OUTPUT_PORT_INFO._ordinal] + indexInBlock, limitInBlock - indexInBlock);
 }
