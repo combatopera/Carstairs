@@ -1,7 +1,6 @@
 #include "pcm.h"
 
 #include "../state.h"
-#include "../util.h"
 
 PCM::PCM(State *state)
         : Node(state), _tone(state) {
@@ -9,5 +8,5 @@ PCM::PCM(State *state)
 }
 
 void PCM::renderImpl(unsigned long n) {
-    zero(_buffer, n);
+    _tone.render(_cursor + n); // FIXME: Convert to chip time.
 }
