@@ -4,8 +4,6 @@
 
 template<typename T> class View {
 
-    bool _master;
-
 protected:
 
     size_t _limit;
@@ -18,8 +16,6 @@ public:
 
     View(const View<T>& master);
 
-    ~View();
-
     size_t limit();
 
     void copyTo(T *to);
@@ -31,6 +27,8 @@ template<typename T> class Buffer: public View<T> {
     size_t _capacity;
 
 public:
+
+    ~Buffer();
 
     void setLimit(size_t limit);
 

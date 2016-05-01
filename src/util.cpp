@@ -4,20 +4,17 @@
 #include <stdlib.h>
 #include <cstring>
 
-template<typename T> View<T>::View()
-        : _master(true) {
+template<typename T> View<T>::View() {
     _data = (T *) malloc(_limit = 0);
 }
 
 template<typename T> View<T>::View(const View<T>& master)
-        : _master(false), _limit(master._limit), _data(master._data) {
+        : _limit(master._limit), _data(master._data) {
     // Nothing else.
 }
 
-template<typename T> View<T>::~View() {
-    if (_master) {
-        free(_data);
-    }
+template<typename T> Buffer<T>::~Buffer() {
+    free(this->_data);
 }
 
 template<typename T> void Buffer<T>::setLimit(size_t limit) {
