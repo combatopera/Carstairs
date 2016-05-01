@@ -21,17 +21,17 @@ template<typename T> T *Node<T>::render(unsigned long newCursor) {
         if (blockSize > _capacity) {
             _buffer = (T *) realloc(_buffer, _capacity = (blockSize * sizeof *_buffer));
         }
-        renderImpl(_buffer, blockSize);
+        renderImpl(blockSize);
     }
     return _buffer;
 }
 
-void Tone::renderImpl(int *buffer, unsigned long n) {
-    zero(buffer, n);
+void Tone::renderImpl(unsigned long n) {
+    zero(_buffer, n);
 }
 
-void PCM::renderImpl(LADSPA_Data * buffer, unsigned long n) {
-    zero(buffer, n);
+void PCM::renderImpl(unsigned long n) {
+    zero(_buffer, n);
 }
 
 template Node<int>::Node();
