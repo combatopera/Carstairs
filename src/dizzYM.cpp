@@ -21,14 +21,6 @@ void dizzYM::reset() {
     _state._velocity = 0;
 }
 
-void dizzYM::run(LADSPA_Handle Instance, unsigned long SampleCount) {
-    ((dizzYM *) Instance)->runSynth(SampleCount, 0, 0);
-}
-
-void dizzYM::run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_seq_event_t *Events, unsigned long EventCount) {
-    ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
-}
-
 void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
     for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:

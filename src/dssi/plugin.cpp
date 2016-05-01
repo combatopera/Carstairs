@@ -1,5 +1,6 @@
 #include "plugin.h"
 
+#include <alsa/seq_event.h>
 #include <ladspa.h>
 
 #include "../dizzYM.h"
@@ -25,6 +26,14 @@ static void activate(LADSPA_Handle Instance) {
 
 static int get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
     return PORT_INFOS[Port]->_controllers;
+}
+
+static void run(LADSPA_Handle Instance, unsigned long SampleCount) {
+    ((dizzYM *) Instance)->runSynth(SampleCount, 0, 0);
+}
+
+static void run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_seq_event_t *Events, unsigned long EventCount) {
+    ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
 static void cleanup(LADSPA_Handle Instance) {
@@ -58,7 +67,7 @@ Descriptor::Descriptor() {
         instantiate,//
         dizzYM::connect_port,//
         activate,//
-        dizzYM::run,//
+        run,//
         0,// run_adding
         0,// set_run_adding_gain
         0,// deactivate
@@ -71,7 +80,7 @@ Descriptor::Descriptor() {
         0,// get_program()
         0,// select_program()
         get_midi_controller_for_port,//
-        dizzYM::run_synth,//
+        run_synth,//
         0,// run_synth_adding()
         0,// run_multiple_synths()
         0,// run_multiple_synths_adding()
