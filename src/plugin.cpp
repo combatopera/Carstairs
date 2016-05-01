@@ -1,7 +1,6 @@
 #include "plugin.h"
 
 #include <ladspa.h>
-#include <cstdio>
 
 #include "dizzYM.h"
 #include "port.h"
