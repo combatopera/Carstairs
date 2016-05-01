@@ -14,7 +14,7 @@ template<typename T> Node<T>::~Node() {
     // Do nothing.
 }
 
-template<typename T> Buf<T> Node<T>::render(unsigned long newCursor) {
+template<typename T> View<T> Node<T>::render(unsigned long newCursor) {
     if (_cursor < newCursor) {
         unsigned long blockSize = newCursor - _cursor;
         _buf.setLimit(blockSize);

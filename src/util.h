@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-template<typename T> class Buf {
+template<typename T> class View {
 
     bool _master;
 
@@ -14,11 +14,11 @@ protected:
 
 public:
 
-    Buf();
+    View();
 
-    Buf(const Buf<T>& master);
+    View(const View<T>& master);
 
-    ~Buf();
+    ~View();
 
     size_t limit();
 
@@ -26,7 +26,7 @@ public:
 
 };
 
-template<typename T> class MasterBuf: public Buf<T> {
+template<typename T> class Buffer: public View<T> {
 
 public:
 

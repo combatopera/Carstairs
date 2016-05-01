@@ -11,11 +11,11 @@ public:
 
     virtual ~Node();
 
-    virtual Buf<T> render(unsigned long newCursor);
+    virtual View<T> render(unsigned long newCursor);
 
 protected:
 
-    MasterBuf<T> _buf;
+    Buffer<T> _buf;
 
     State *_state;
 
