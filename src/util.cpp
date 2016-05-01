@@ -36,7 +36,7 @@ template<typename T> void Buffer<T>::zero() {
     memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
 }
 
-template<typename T> void View<T>::copy(T *to) {
+template<typename T> void View<T>::copyTo(T *to) {
     memcpy(to, _data, _limit * sizeof(T));
 }
 

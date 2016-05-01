@@ -22,7 +22,7 @@ public:
 
     size_t limit();
 
-    void copy(T *to);
+    void copyTo(T *to);
 
 };
 
