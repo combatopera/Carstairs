@@ -27,11 +27,7 @@ protected:
 
 class Tone: public Node<int> {
 
-    void renderImpl(int*buffer, unsigned long n);
-
-public:
-
-    int *render(unsigned long newCursor);
+    void renderImpl(int *buffer, unsigned long n);
 
 };
 
@@ -40,9 +36,5 @@ class PCM: public Node<LADSPA_Data> {
     Tone _tone;
 
     void renderImpl(LADSPA_Data*buffer, unsigned long n);
-
-public:
-
-    LADSPA_Data *render(unsigned long newCursor);
 
 };

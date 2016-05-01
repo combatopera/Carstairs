@@ -26,16 +26,8 @@ template<typename T> T *Node<T>::render(unsigned long newCursor) {
     return _buffer;
 }
 
-int *Tone::render(unsigned long newCursor) {
-    return Node::render(newCursor);
-}
-
 void Tone::renderImpl(int *buffer, unsigned long n) {
     zero(buffer, n);
-}
-
-LADSPA_Data *PCM::render(unsigned long newCursor) {
-    return Node::render(newCursor);
 }
 
 void PCM::renderImpl(LADSPA_Data * buffer, unsigned long n) {
