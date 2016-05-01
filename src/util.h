@@ -6,6 +6,8 @@ template<typename T> class Buf {
 
     bool _master;
 
+protected:
+
     size_t _limit, _capacity;
 
     T *_data;
@@ -18,15 +20,22 @@ public:
 
     ~Buf();
 
-    void setLimit(size_t limit);
-
     size_t limit();
-
-    void zero();
 
     void copy(T *to);
 
 };
 
+template<typename T> class MasterBuf: public Buf<T> {
+
+public:
+
+    void setLimit(size_t limit);
+
+    void zero();
+
+};
+
 #define UTIL_INSTANTIATE(T) \
-    template class Buf<T>;
+    template class Buf<T>; \
+    template class MasterBuf<T>;

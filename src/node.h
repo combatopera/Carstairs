@@ -15,7 +15,7 @@ public:
 
 protected:
 
-    Buf<T> _buf;
+    MasterBuf<T> _buf;
 
     State *_state;
 

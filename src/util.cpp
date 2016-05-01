@@ -20,20 +20,20 @@ template<typename T> Buf<T>::~Buf() {
     }
 }
 
-template<typename T> void Buf<T>::setLimit(size_t limit) {
-    if (limit > _capacity) {
-        _data = (T *) realloc(_data, limit * sizeof(T));
-        _capacity = limit;
+template<typename T> void MasterBuf<T>::setLimit(size_t limit) {
+    if (limit > this->_capacity) {
+        this->_data = (T *) realloc(this->_data, limit * sizeof(T));
+        this->_capacity = limit;
     }
-    _limit = limit;
+    this->_limit = limit;
 }
 
 template<typename T> size_t Buf<T>::limit() {
     return _limit;
 }
 
-template<typename T> void Buf<T>::zero() {
-    memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
+template<typename T> void MasterBuf<T>::zero() {
+    memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
 }
 
 template<typename T> void Buf<T>::copy(T *to) {
