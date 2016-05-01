@@ -9,8 +9,6 @@
 #include "node/pcm.h"
 #include "state.h"
 
-int const MIDI_NOTE_COUNT = 128;
-
 static PortInfo OUTPUT_PORT_INFO(0, true, true, "Output", 0, 0, 0, DSSI_NONE);
 
 static PortInfo SUSTAIN_PORT_INFO(1, false, false, "Sustain (on/off)",
