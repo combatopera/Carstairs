@@ -6,7 +6,7 @@ class PortInfo {
 
 public:
 
-    PortInfo(int ordinal, LADSPA_PortDescriptor descriptor, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
+    PortInfo(int ordinal, bool output, bool audio, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
             LADSPA_Data UpperBound, int controllers);
 
     int const _ordinal;
