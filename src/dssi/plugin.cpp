@@ -10,10 +10,16 @@
 #endif
 
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Instantiating." << std::endl;
+#endif
     return new dizzYM((int) SampleRate);
 }
 
 static void activate(LADSPA_Handle Instance) {
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Activating." << std::endl;
+#endif
     ((dizzYM *) Instance)->reset();
 }
 
