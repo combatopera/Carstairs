@@ -31,10 +31,6 @@ class Tone: public Node<int> {
 
 public:
 
-    Tone();
-
-    ~Tone();
-
     int *render(unsigned long newCursor);
 
 };
@@ -46,10 +42,6 @@ class PCM: public Node<LADSPA_Data> {
     void renderImpl(LADSPA_Data*buffer, unsigned long n);
 
 public:
-
-    PCM();
-
-    ~PCM();
 
     LADSPA_Data *render(unsigned long newCursor);
 

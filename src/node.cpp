@@ -26,26 +26,12 @@ template<typename T> T *Node<T>::render(unsigned long newCursor) {
     return _buffer;
 }
 
-Tone::Tone()
-        : Node() {
-}
-
-Tone::~Tone() {
-}
-
 int *Tone::render(unsigned long newCursor) {
     return Node::render(newCursor);
 }
 
 void Tone::renderImpl(int *buffer, unsigned long n) {
     zero(buffer, n);
-}
-
-PCM::PCM()
-        : Node() {
-}
-
-PCM::~PCM() {
 }
 
 LADSPA_Data *PCM::render(unsigned long newCursor) {
@@ -55,3 +41,6 @@ LADSPA_Data *PCM::render(unsigned long newCursor) {
 void PCM::renderImpl(LADSPA_Data * buffer, unsigned long n) {
     zero(buffer, n);
 }
+
+template Node<int>::Node();
+template Node<LADSPA_Data>::Node();
