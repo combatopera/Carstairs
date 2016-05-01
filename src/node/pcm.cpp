@@ -1,5 +1,8 @@
 #include "pcm.h"
 
+#include <ladspa.h>
+#include <stddef.h>
+
 #include "../state.h"
 #include "../util.h"
 
@@ -9,5 +12,9 @@ PCM::PCM(State *state)
 }
 
 void PCM::renderImpl() {
-    _tone.render(_cursor + _buf.limit()); // FIXME: Convert to chip time.
+    size_t n = _buf.limit();
+    View<int> view = _tone.render(_cursor + n); // FIXME: Convert to chip time.
+    for (index_t i = 0; i < n; ++i) {
+        _buf.put(i, (LADSPA_Data) view.at(i));
+    }
 }

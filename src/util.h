@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+typedef size_t index_t;
+
 template<typename T> class View {
 
 protected:
@@ -19,6 +21,14 @@ public:
     size_t limit();
 
     void copyTo(T *to);
+
+    T at(index_t i) {
+        return _data[i];
+    }
+
+    void put(index_t i, T value) {
+        _data[i] = value;
+    }
 
 };
 
