@@ -16,8 +16,7 @@ template<typename T> Node<T>::~Node() {
 
 template<typename T> View<T> Node<T>::render(unsigned long newCursor) {
     if (_cursor < newCursor) {
-        unsigned long blockSize = newCursor - _cursor;
-        _buf.setLimit(blockSize);
+        _buf.setLimit(newCursor - _cursor);
         renderImpl();
         _cursor = newCursor;
     }
