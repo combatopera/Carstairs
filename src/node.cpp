@@ -1,29 +1,27 @@
 #include "node.h"
 
 #include <ladspa.h>
-#include <stdlib.h>
 
 #include "state.h"
+#include "util.h"
 
 template<typename T> Node<T>::Node(State *state)
         : _state(state), _cursor(0) {
-    _buffer = (T *) malloc(_capacity = 0);
+    // Nothing else.
 }
 
 template<typename T> Node<T>::~Node() {
-    free(_buffer);
+    // Do nothing.
 }
 
-template<typename T> T *Node<T>::render(unsigned long newCursor) {
+template<typename T> Buf<T> Node<T>::render(unsigned long newCursor) {
     if (_cursor < newCursor) {
         unsigned long blockSize = newCursor - _cursor;
-        if (blockSize > _capacity) {
-            _buffer = (T *) realloc(_buffer, _capacity = (blockSize * sizeof *_buffer));
-        }
-        renderImpl(blockSize);
+        _buf.setLimit(blockSize);
+        renderImpl();
         _cursor = newCursor;
     }
-    return _buffer;
+    return _buf;
 }
 
 NODE_INSTANTIATE(int)

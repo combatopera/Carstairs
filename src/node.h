@@ -1,12 +1,9 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "state.h"
+#include "util.h"
 
 template<typename T> class Node {
-
-    size_t _capacity;
 
 public:
 
@@ -14,17 +11,17 @@ public:
 
     virtual ~Node();
 
-    virtual T *render(unsigned long newCursor);
+    virtual Buf<T> render(unsigned long newCursor);
 
 protected:
+
+    Buf<T> _buf;
 
     State *_state;
 
     unsigned long _cursor;
 
-    T *_buffer;
-
-    virtual void renderImpl(unsigned long n) = 0;
+    virtual void renderImpl() = 0;
 
 };
 
