@@ -17,11 +17,11 @@ template<typename T> Node<T>::~Node() {
 template<typename T> T *Node<T>::render(unsigned long newCursor) {
     if (_cursor < newCursor) {
         unsigned long blockSize = newCursor - _cursor;
-        _cursor = newCursor;
         if (blockSize > _capacity) {
             _buffer = (T *) realloc(_buffer, _capacity = (blockSize * sizeof *_buffer));
         }
         renderImpl(blockSize);
+        _cursor = newCursor;
     }
     return _buffer;
 }

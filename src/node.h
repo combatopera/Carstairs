@@ -6,8 +6,6 @@
 
 template<typename T> class Node {
 
-    unsigned long _cursor;
-
     size_t _capacity;
 
 public:
@@ -21,6 +19,8 @@ public:
 protected:
 
     State *_state;
+
+    unsigned long _cursor;
 
     T *_buffer;
 
