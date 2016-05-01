@@ -1,8 +1,9 @@
+#pragma once
+
 #include <ladspa.h>
 #include <stddef.h>
-#pragma once
-template<typename T>
-class Node {
+
+template<typename T> class Node {
 
     unsigned long _cursor;
 
@@ -20,13 +21,13 @@ protected:
 
     T *_buffer;
 
-    virtual void renderImpl(T *_buffer,unsigned long n) = 0;
+    virtual void renderImpl(T *_buffer, unsigned long n) = 0;
 
 };
 
 class Tone: public Node<int> {
 
-    void renderImpl(int*buffer,unsigned long n);
+    void renderImpl(int*buffer, unsigned long n);
 
 public:
 
@@ -42,7 +43,7 @@ class PCM: public Node<LADSPA_Data> {
 
     Tone _tone;
 
-    void renderImpl(LADSPA_Data*buffer,unsigned long n);
+    void renderImpl(LADSPA_Data*buffer, unsigned long n);
 
 public:
 
