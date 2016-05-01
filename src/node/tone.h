@@ -5,7 +5,7 @@
 
 class Tone: public Node<int> {
 
-    void renderImpl(unsigned long n);
+    void renderImpl();
 
 public:
 

@@ -10,7 +10,7 @@ class PCM: public Node<LADSPA_Data> {
 
     Tone _tone;
 
-    void renderImpl(unsigned long n);
+    void renderImpl();
 
 public:
 
