@@ -7,7 +7,7 @@ template<typename T> class Node {
 
 public:
 
-    Node(State *state);
+    Node(const char *label, State *state);
 
     virtual ~Node();
 
@@ -26,5 +26,5 @@ protected:
 };
 
 #define NODE_INSTANTIATE(T) \
-    template Node<T>::Node(State *); \
+    template Node<T>::Node(const char *, State *); \
     template Node<T>::~Node();

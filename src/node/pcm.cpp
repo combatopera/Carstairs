@@ -7,7 +7,7 @@
 #include "../util.h"
 
 PCM::PCM(State *state)
-        : Node(state), _tone(state) {
+        : Node("PCM", state), _tone(state) {
     // Nothing else.
 }
 

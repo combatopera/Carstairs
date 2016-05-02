@@ -36,7 +36,7 @@ template<typename T> class Buffer: public View<T> {
 
 public:
 
-    Buffer();
+    Buffer(const char *label);
 
     ~Buffer();
 

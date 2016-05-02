@@ -4,12 +4,19 @@
 #include <stdlib.h>
 #include <cstring>
 
+#ifdef DEBUG_dizzYM
+#include <iostream>
+#endif
+
 template<typename T> View<T>::View() {
     _limit = 0;
     _data = (T *) malloc(0);
 }
 
-template<typename T> Buffer<T>::Buffer() {
+template<typename T> Buffer<T>::Buffer(const char *label) {
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Creating Buffer: " << label << std::endl;
+#endif
     _capacity = 0;
 }
 

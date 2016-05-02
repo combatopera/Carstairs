@@ -3,7 +3,7 @@
 #include "../state.h"
 
 Tone::Tone(State *state)
-        : Node(state) {
+        : Node("Tone", state) {
     // Nothing else.
 }
 

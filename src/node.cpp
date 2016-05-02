@@ -5,8 +5,8 @@
 #include "state.h"
 #include "util.h"
 
-template<typename T> Node<T>::Node(State *state)
-        : _state(state), _cursor(0) {
+template<typename T> Node<T>::Node(const char *label, State *state)
+        : _buf(label), _state(state), _cursor(0) {
     // Nothing else.
 }
 
