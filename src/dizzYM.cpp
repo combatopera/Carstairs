@@ -4,7 +4,8 @@
 #include <dssi.h>
 #include <ladspa.h>
 
-#include "util.h"
+#include "buf.h"
+#include "util/util.h"
 
 PortInfoEnum::PortInfoEnum(index_t ord)
         : _output {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //

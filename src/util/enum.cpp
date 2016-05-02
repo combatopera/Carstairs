@@ -1,6 +1,7 @@
 #include "enum.h"
 
-#include "dssi/port.h"
+#include "../dssi/port.h"
+#include "util.h"
 
 template<typename T> Values<T>::Values(T *first, index_t ordCursor)
         : _first(first), _n(ordCursor - _first->_ordinal) {

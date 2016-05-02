@@ -5,10 +5,10 @@
 
 #include "buf.h"
 #include "dssi/port.h"
-#include "enum.h"
 #include "node/pcm.h"
 #include "state.h"
-#include "util.h"
+#include "util/enum.h"
+#include "util/util.h"
 
 class PortInfoEnum {
 

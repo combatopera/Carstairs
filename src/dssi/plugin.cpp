@@ -4,7 +4,7 @@
 #include <ladspa.h>
 
 #include "../dizzYM.h"
-#include "../util.h"
+#include "../util/util.h"
 #include "port.h"
 
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {

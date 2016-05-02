@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <cstring>
 
-#include "util.h"
+#include "util/util.h"
 
 template<typename T> View<T>::View() {
     _limit = 0;

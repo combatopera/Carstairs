@@ -3,9 +3,9 @@
 #include <ladspa.h>
 #include <stddef.h>
 
-#include "../enum.h"
+#include "../buf.h"
 #include "../state.h"
-#include "../util.h"
+#include "../util/util.h"
 
 PCM::PCM(State *state)
         : Node("PCM", state), _tone(state) {

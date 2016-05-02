@@ -2,7 +2,7 @@
 
 #include <ladspa.h>
 
-#include "../util.h"
+#include "../util/util.h"
 
 class PortInfo_t {
 
