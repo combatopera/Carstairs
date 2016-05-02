@@ -1,7 +1,6 @@
 #include "util.h"
 
 #include <ladspa.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <cstdarg>
 #include <cstdio>
@@ -9,8 +8,8 @@
 
 #include "dssi/port.h"
 
-template<typename T> Values<T>::Values(T *first, size_t n)
-        : _first(first), _n(n) {
+template<typename T> Values<T>::Values(T *first, index_t ordCursor)
+        : _first(first), _n(ordCursor - _first->_ordinal) {
 }
 
 template<typename T> T *Values<T>::at(index_t i) {

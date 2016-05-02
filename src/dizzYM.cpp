@@ -10,7 +10,7 @@ PortInfoEnum::PortInfoEnum(index_t ord)
         : _output {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
         _sustain {ord++, false, false, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
-        _values {&_output, ord - _output._ordinal} {
+        _values {&_output, ord} {
 }
 
 dizzYM::dizzYM(int sampleRate)

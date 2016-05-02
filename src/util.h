@@ -12,7 +12,7 @@ public:
 
     size_t const _n;
 
-    Values(T *first, size_t n);
+    Values(T *first, index_t ordCursor);
 
     T *at(index_t i);
 
