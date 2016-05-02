@@ -3,6 +3,7 @@
 #include <ladspa.h>
 #include <stddef.h>
 
+#include "../enum.h"
 #include "../state.h"
 #include "../util.h"
 

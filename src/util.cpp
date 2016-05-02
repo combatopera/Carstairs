@@ -6,16 +6,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "dssi/port.h"
-
-template<typename T> Values<T>::Values(T *first, index_t ordCursor)
-        : _first(first), _n(ordCursor - _first->_ordinal) {
-}
-
-template<typename T> T *Values<T>::at(index_t i) {
-    return _first + i; // Assume the objects are right next to each other.
-}
-
 void debug(const char *format, ...) {
 #ifdef DEBUG_dizzYM
     fprintf(stderr, "[dizzYM] ");
@@ -68,5 +58,3 @@ template<typename T> void View<T>::copyTo(T *to) {
 UTIL_INSTANTIATE(int)
 UTIL_INSTANTIATE(LADSPA_Data)
 UTIL_INSTANTIATE(LADSPA_Data *)
-template PortInfo_t *Values<PortInfo_t>::at(index_t);
-template Values<PortInfo_t>::Values(PortInfo_t *, size_t);
