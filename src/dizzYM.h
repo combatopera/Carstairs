@@ -1,7 +1,6 @@
 #pragma once
 
 #include <alsa/seq_event.h>
-#include <dssi.h>
 #include <ladspa.h>
 #include <stddef.h>
 
@@ -10,14 +9,23 @@
 #include "state.h"
 #include "util.h"
 
-static PortInfo OUTPUT_PORT_INFO(0, true, true, "Output", 0, 0, 0, DSSI_NONE);
+class Constants {
 
-static PortInfo SUSTAIN_PORT_INFO(1, false, false, "Sustain (on/off)",
-LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64));
+public:
 
-static PortInfo *PORT_INFOS[] = {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO};
+    PortInfo OUTPUT_PORT_INFO;
 
-static size_t const PortCount = (sizeof PORT_INFOS) / (sizeof PORT_INFOS[0]);
+    PortInfo SUSTAIN_PORT_INFO;
+
+    PortInfo *PORT_INFOS[2];
+
+    size_t const PortCount;
+
+    Constants();
+
+};
+
+extern Constants CONSTANTS;
 
 class dizzYM {
 

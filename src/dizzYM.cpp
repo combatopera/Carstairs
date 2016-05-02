@@ -1,14 +1,22 @@
 #include "dizzYM.h"
 
 #include <alsa/seq_event.h>
+#include <dssi.h>
 #include <ladspa.h>
 
-#include "dssi/port.h"
 #include "util.h"
+
+Constants::Constants()
+        : OUTPUT_PORT_INFO {0, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
+        SUSTAIN_PORT_INFO {1, false, false, "Sustain (on/off)",
+        LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
+        PORT_INFOS {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO}, //
+        PortCount((sizeof PORT_INFOS) / (sizeof PORT_INFOS[0])) {
+}
 
 dizzYM::dizzYM(int sampleRate)
         : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _chip(&_state) {
-    _portValPtrs.setLimit(PortCount);
+    _portValPtrs.setLimit(CONSTANTS.PortCount);
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
@@ -45,7 +53,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(OUTPUT_PORT_INFO._ordinal) + indexInBlock);
+        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(CONSTANTS.OUTPUT_PORT_INFO._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
