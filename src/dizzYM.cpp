@@ -6,12 +6,12 @@
 
 #include "util.h"
 
-Constants::Constants()
-        : OUTPUT_PORT_INFO {0, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
-        SUSTAIN_PORT_INFO {1, false, false, "Sustain (on/off)",
+Constants::Constants(int ord)
+        : OUTPUT_PORT_INFO {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
+        SUSTAIN_PORT_INFO {ord++, false, false, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
         PORT_INFOS {&OUTPUT_PORT_INFO, &SUSTAIN_PORT_INFO}, //
-        PortCount((sizeof PORT_INFOS) / (sizeof PORT_INFOS[0])) {
+        PortCount(ord) {
 }
 
 dizzYM::dizzYM(int sampleRate)

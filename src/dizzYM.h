@@ -21,7 +21,7 @@ public:
 
     size_t const PortCount;
 
-    Constants();
+    Constants(int ord = 0);
 
 };
 
