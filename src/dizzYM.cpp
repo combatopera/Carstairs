@@ -7,10 +7,10 @@
 #include "util.h"
 
 PortInfoEnum::PortInfoEnum(index_t ord)
-        : OUTPUT {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
-        SUSTAIN {ord++, false, false, "Sustain (on/off)",
+        : _output {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
+        _sustain {ord++, false, false, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
-        _values {&OUTPUT, ord - OUTPUT._ordinal} {
+        _values {&_output, ord - _output._ordinal} {
 }
 
 dizzYM::dizzYM(int sampleRate)
@@ -52,7 +52,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo.OUTPUT._ordinal) + indexInBlock);
+        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;

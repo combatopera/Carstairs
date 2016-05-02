@@ -12,7 +12,7 @@ class PortInfoEnum {
 
 public:
 
-    PortInfo_t OUTPUT, SUSTAIN;
+    PortInfo_t _output, _sustain;
 
     Values<PortInfo_t> _values;
 
