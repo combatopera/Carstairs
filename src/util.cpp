@@ -40,6 +40,7 @@ template<typename T> Buffer<T>::~Buffer() {
 
 template<typename T> void Buffer<T>::setLimit(size_t limit) {
     if (limit > this->_capacity) {
+        debug("Resizing %s to: %d", _label, limit);
         this->_data = (T *) realloc(this->_data, limit * sizeof(T));
         this->_capacity = limit;
     }
@@ -56,3 +57,4 @@ template<typename T> void View<T>::copyTo(T *to) {
 
 UTIL_INSTANTIATE(int)
 UTIL_INSTANTIATE(LADSPA_Data)
+UTIL_INSTANTIATE(LADSPA_Data *)

@@ -8,6 +8,7 @@
 #include "dssi/port.h"
 #include "node/pcm.h"
 #include "state.h"
+#include "util.h"
 
 static PortInfo OUTPUT_PORT_INFO(0, true, true, "Output", 0, 0, 0, DSSI_NONE);
 
@@ -20,7 +21,7 @@ static size_t const PortCount = (sizeof PORT_INFOS) / (sizeof PORT_INFOS[0]);
 
 class dizzYM {
 
-    LADSPA_Data *_portValPtrs[PortCount];
+    Buffer<LADSPA_Data *> _portValPtrs;
 
     int _sampleRate;
 
