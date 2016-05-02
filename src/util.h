@@ -28,10 +28,6 @@ public:
         return _data[i];
     }
 
-    void put(index_t i, T value) {
-        _data[i] = value;
-    }
-
 };
 
 template<typename T> class Buffer: public View<T> {
@@ -47,6 +43,10 @@ public:
     void setLimit(size_t limit);
 
     void zero();
+
+    void put(index_t i, T value) {
+        this->_data[i] = value;
+    }
 
 };
 
