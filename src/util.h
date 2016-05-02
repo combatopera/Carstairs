@@ -2,9 +2,23 @@
 
 #include <stddef.h>
 
-void debug(const char *format, ...);
-
 typedef size_t index_t;
+
+template<typename T> class Values {
+
+    T *_first;
+
+public:
+
+    size_t const _n;
+
+    Values(T *first, size_t n);
+
+    T *at(index_t i);
+
+};
+
+void debug(const char *format, ...);
 
 template<typename T> class View {
 
