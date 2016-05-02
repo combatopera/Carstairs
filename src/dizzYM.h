@@ -37,7 +37,7 @@ public:
 
     void reset();
 
-    static void connect_port(LADSPA_Handle, unsigned long, LADSPA_Data *);
+    void setPortValPtr(int, LADSPA_Data *);
 
     void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
 

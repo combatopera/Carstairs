@@ -11,8 +11,8 @@ dizzYM::dizzYM(int sampleRate)
     _portValPtrs.setLimit(PortCount);
 }
 
-void dizzYM::connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
-    ((dizzYM *) Instance)->_portValPtrs.put(Port, DataLocation);
+void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
+    _portValPtrs.put(index, valPtr);
 }
 
 void dizzYM::reset() {

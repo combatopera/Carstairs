@@ -17,6 +17,10 @@ static void activate(LADSPA_Handle Instance) {
     ((dizzYM *) Instance)->reset();
 }
 
+static void connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data *DataLocation) {
+    ((dizzYM *) Instance)->setPortValPtr((int) Port, DataLocation);
+}
+
 static int get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
     return PORT_INFOS[Port]->_controllers;
 }
@@ -56,7 +60,7 @@ Descriptor::Descriptor() {
         _PortRangeHints,//
         0,// ImplementationData
         instantiate,//
-        dizzYM::connect_port,//
+        connect_port,//
         activate,//
         run,//
         0,// run_adding
