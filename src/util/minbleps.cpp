@@ -1,11 +1,12 @@
 #include "minbleps.h"
 
 #include <ladspa.h>
+#include <cmath>
 
 #include "../buf.h"
 #include "util.h"
 
-static int const SCALE = 6;
+static int const SCALE = (int) round(2000000 / 44100.);
 
 cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) {
     return pcmCount * SCALE; // FIXME: Do it properly.
