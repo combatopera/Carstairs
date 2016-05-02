@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-typedef size_t index_t;
+#include "util.h"
 
 template<typename T> class Values {
 

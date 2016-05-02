@@ -3,7 +3,9 @@
 #include <alsa/seq_event.h>
 #include <ladspa.h>
 
+#include "buf.h"
 #include "dssi/port.h"
+#include "enum.h"
 #include "node/pcm.h"
 #include "state.h"
 #include "util.h"
