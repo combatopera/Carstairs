@@ -2,6 +2,7 @@
 
 #include "buf.h"
 #include "state.h"
+#include "util/util.h"
 
 template<typename T> class Node {
 
@@ -13,13 +14,17 @@ public:
 
     virtual View<T> render(unsigned long newCursor);
 
+    cursor_t cursor() {
+        return _cursor;
+    }
+
 protected:
 
     Buffer<T> _buf;
 
     State *_state;
 
-    unsigned long _cursor;
+    cursor_t _cursor;
 
     virtual void renderImpl() = 0;
 
