@@ -18,6 +18,7 @@ template<typename T> Buffer<T>::Buffer(const char *label) {
     std::cerr << "[dizzYM] Creating Buffer: " << label << std::endl;
 #endif
     _capacity = 0;
+    _label = label;
 }
 
 template<typename T> View<T>::View(const View<T>& master)
@@ -26,6 +27,9 @@ template<typename T> View<T>::View(const View<T>& master)
 }
 
 template<typename T> Buffer<T>::~Buffer() {
+#ifdef DEBUG_dizzYM
+    std::cerr << "[dizzYM] Destroying Buffer: " << _label << std::endl;
+#endif
     free(this->_data);
 }
 

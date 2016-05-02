@@ -34,6 +34,8 @@ template<typename T> class Buffer: public View<T> {
 
     size_t _capacity;
 
+    const char *_label;
+
 public:
 
     Buffer(const char *label);
