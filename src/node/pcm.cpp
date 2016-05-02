@@ -1,9 +1,9 @@
 #include "pcm.h"
 
-#include <ladspa.h>
 #include <stddef.h>
 
 #include "../buf.h"
+#include "../node.h"
 #include "../state.h"
 #include "../util/util.h"
 
@@ -13,9 +13,7 @@ PCM::PCM(State *state)
 }
 
 void PCM::renderImpl() {
-    size_t n = _buf.limit();
-    View<int> view = _tone.render(_cursor + n); // FIXME: Convert to chip time.
-    for (index_t i = 0; i < n; ++i) {
-        _buf.put(i, (LADSPA_Data) view.at(i));
-    }
+    size_t pcmCount = _buf.limit();
+    cursor_t naiveX = _tone.cursor(), naiveN = _minBLEPs.getMinNaiveN(naiveX, pcmCount);
+    _minBLEPs.paste(naiveX, _tone.render(naiveX + naiveN), _buf);
 }
