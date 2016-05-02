@@ -22,7 +22,7 @@ static void connect_port(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data
 }
 
 static int get_midi_controller_for_port(LADSPA_Handle, unsigned long Port) {
-    return CONSTANTS.PORT_INFOS[Port]->_controllers;
+    return PortInfo._values[Port]->_controllers;
 }
 
 static void run(LADSPA_Handle Instance, unsigned long SampleCount) {
@@ -39,13 +39,13 @@ static void cleanup(LADSPA_Handle Instance) {
 }
 
 Descriptor::Descriptor() {
-    _PortDescriptors = new LADSPA_PortDescriptor[CONSTANTS.PortCount];
-    _PortNames = new const char *[CONSTANTS.PortCount];
-    _PortRangeHints = new LADSPA_PortRangeHint[CONSTANTS.PortCount];
-    for (unsigned i = 0; i < CONSTANTS.PortCount; ++i) {
-        _PortDescriptors[i] = CONSTANTS.PORT_INFOS[i]->_descriptor;
-        _PortNames[i] = CONSTANTS.PORT_INFOS[i]->_name;
-        _PortRangeHints[i] = CONSTANTS.PORT_INFOS[i]->_rangeHint; // Copy.
+    _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._count];
+    _PortNames = new const char *[PortInfo._count];
+    _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._count];
+    for (unsigned i = 0; i < PortInfo._count; ++i) {
+        _PortDescriptors[i] = PortInfo._values[i]->_descriptor;
+        _PortNames[i] = PortInfo._values[i]->_name;
+        _PortRangeHints[i] = PortInfo._values[i]->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         0,// UniqueID
@@ -54,7 +54,7 @@ Descriptor::Descriptor() {
         "YM2149",// Name
         "Andrzej Cichocki",// Maker
         "Andrzej Cichocki",// Copyright
-        CONSTANTS.PortCount,//
+        PortInfo._count,//
         _PortDescriptors,//
         _PortNames,//
         _PortRangeHints,//
@@ -88,7 +88,7 @@ Descriptor::~Descriptor() {
     delete[] _PortRangeHints;
 }
 
-Constants CONSTANTS;
+PortInfoEnum PortInfo;
 
 static Descriptor descriptor;
 

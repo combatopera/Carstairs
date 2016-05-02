@@ -2,7 +2,7 @@
 
 #include <ladspa.h>
 
-PortInfo::PortInfo(int ordinal, //
+PortInfo_t::PortInfo_t(int ordinal, //
         bool output, //
         bool audio, //
         const char *name, //

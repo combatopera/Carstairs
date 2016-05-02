@@ -9,23 +9,21 @@
 #include "state.h"
 #include "util.h"
 
-class Constants {
+class PortInfoEnum {
 
 public:
 
-    PortInfo OUTPUT_PORT_INFO;
+    PortInfo_t OUTPUT, SUSTAIN;
 
-    PortInfo SUSTAIN_PORT_INFO;
+    PortInfo_t *_values[2];
 
-    PortInfo *PORT_INFOS[2];
+    size_t const _count;
 
-    size_t const PortCount;
-
-    Constants(int ord = 0);
+    PortInfoEnum(int ord = 0);
 
 };
 
-extern Constants CONSTANTS;
+extern PortInfoEnum PortInfo;
 
 class dizzYM {
 
