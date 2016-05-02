@@ -2,14 +2,16 @@
 
 #include <ladspa.h>
 
+#include "../util.h"
+
 class PortInfo_t {
 
 public:
 
-    PortInfo_t(int ordinal, bool output, bool audio, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
+    PortInfo_t(index_t ordinal, bool output, bool audio, const char *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
             LADSPA_Data UpperBound, int controllers);
 
-    int const _ordinal;
+    index_t const _ordinal;
 
     LADSPA_PortDescriptor const _descriptor;
 
