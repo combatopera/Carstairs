@@ -2,7 +2,6 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
-#include <stddef.h>
 
 #include "dssi/port.h"
 #include "node/pcm.h"
@@ -15,11 +14,9 @@ public:
 
     PortInfo_t OUTPUT, SUSTAIN;
 
-    PortInfo_t *_values[2];
+    Values<PortInfo_t> _values;
 
-    size_t const _count;
-
-    PortInfoEnum(int ord = 0);
+    PortInfoEnum(index_t ord = 0);
 
 };
 

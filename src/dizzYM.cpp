@@ -6,17 +6,16 @@
 
 #include "util.h"
 
-PortInfoEnum::PortInfoEnum(int ord)
+PortInfoEnum::PortInfoEnum(index_t ord)
         : OUTPUT {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
         SUSTAIN {ord++, false, false, "Sustain (on/off)",
         LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
-        _values {&OUTPUT, &SUSTAIN}, //
-        _count(ord - OUTPUT._ordinal) {
+        _values {&OUTPUT, ord - OUTPUT._ordinal} {
 }
 
 dizzYM::dizzYM(int sampleRate)
         : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _chip(&_state) {
-    _portValPtrs.setLimit(PortInfo._count);
+    _portValPtrs.setLimit(PortInfo._values._n);
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
