@@ -4,23 +4,16 @@
 #include <ladspa.h>
 
 #include "../dizzYM.h"
+#include "../util.h"
 #include "port.h"
 
-#ifdef DEBUG_dizzYM
-#include <iostream>
-#endif
-
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, unsigned long SampleRate) {
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Instantiating." << std::endl;
-#endif
+    debug("Instantiating.");
     return new dizzYM((int) SampleRate);
 }
 
 static void activate(LADSPA_Handle Instance) {
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Activating." << std::endl;
-#endif
+    debug("Activating.");
     ((dizzYM *) Instance)->reset();
 }
 
@@ -38,9 +31,7 @@ static void run_synth(LADSPA_Handle Instance, unsigned long SampleCount, snd_seq
 
 static void cleanup(LADSPA_Handle Instance) {
     delete (dizzYM *) Instance;
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Cleaned up." << std::endl;
-#endif
+    debug("Cleaned up.");
 }
 
 Descriptor::Descriptor() {

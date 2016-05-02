@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+void debug(const char *format, ...);
+
 typedef size_t index_t;
 
 template<typename T> class View {

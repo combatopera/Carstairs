@@ -2,11 +2,20 @@
 
 #include <ladspa.h>
 #include <stdlib.h>
+#include <cstdarg>
+#include <cstdio>
 #include <cstring>
 
+void debug(const char *format, ...) {
 #ifdef DEBUG_dizzYM
-#include <iostream>
+    fprintf(stderr, "[dizzYM] ");
+    va_list ap;
+    va_start(ap, format);
+    vfprintf(stderr, format, ap);
+    va_end(ap);
+    fprintf(stderr, "\n");
 #endif
+}
 
 template<typename T> View<T>::View() {
     _limit = 0;
@@ -14,9 +23,7 @@ template<typename T> View<T>::View() {
 }
 
 template<typename T> Buffer<T>::Buffer(const char *label) {
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Creating Buffer: " << label << std::endl;
-#endif
+    debug("Creating Buffer: %s", label);
     _capacity = 0;
     _label = label;
 }
@@ -27,9 +34,7 @@ template<typename T> View<T>::View(const View<T>& master)
 }
 
 template<typename T> Buffer<T>::~Buffer() {
-#ifdef DEBUG_dizzYM
-    std::cerr << "[dizzYM] Destroying Buffer: " << _label << std::endl;
-#endif
+    debug("Destroying Buffer: %s", _label);
     free(this->_data);
 }
 
