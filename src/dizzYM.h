@@ -30,7 +30,7 @@ class dizzYM {
 
     int _sampleRate;
 
-    unsigned long _sampleCursor;
+    cursor_t _sampleCursor;
 
     State _state;
 
@@ -44,6 +44,6 @@ public:
 
     void setPortValPtr(int, LADSPA_Data *);
 
-    void runSynth(unsigned long, snd_seq_event_t *, unsigned long);
+    void runSynth(cursor_t, snd_seq_event_t *, cursor_t);
 
 };

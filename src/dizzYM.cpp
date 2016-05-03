@@ -30,8 +30,8 @@ void dizzYM::reset() {
     _state._velocity = 0;
 }
 
-void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned long eventCount) {
-    for (unsigned long indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
+void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t eventCount) {
+    for (cursor_t indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
             switch (events[eventIndex].type) {
@@ -52,7 +52,7 @@ void dizzYM::runSynth(unsigned long blockSize, snd_seq_event_t *events, unsigned
             }
         }
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
-        unsigned long limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
+        cursor_t limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
