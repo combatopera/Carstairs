@@ -12,7 +12,7 @@ public:
 
     virtual ~Node();
 
-    virtual View<T> render(unsigned long newCursor);
+    virtual View<T> render(cursor_t newCursor);
 
     cursor_t cursor() {
         return _cursor;

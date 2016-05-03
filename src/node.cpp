@@ -14,7 +14,7 @@ template<typename T> Node<T>::~Node() {
     // Do nothing.
 }
 
-template<typename T> View<T> Node<T>::render(unsigned long newCursor) {
+template<typename T> View<T> Node<T>::render(cursor_t newCursor) {
     if (_cursor < newCursor) {
         _buf.setLimit(newCursor - _cursor);
         renderImpl();
