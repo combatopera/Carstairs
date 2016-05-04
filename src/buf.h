@@ -32,6 +32,12 @@ public:
         _data[i] = value;
     }
 
+    void fill(index_t i, index_t j, T value) {
+        for (; i < j; ++i) {
+            _data[i] = value;
+        }
+    }
+
 };
 
 template<typename T> class Buffer: public View<T> {
