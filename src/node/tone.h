@@ -5,6 +5,8 @@
 
 class Tone: public Node<int> {
 
+    int _indexInShape, _progress, _stepSize;
+
     void renderImpl();
 
 public:
