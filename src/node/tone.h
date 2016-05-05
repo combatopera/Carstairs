@@ -1,9 +1,12 @@
 #pragma once
 
+#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 
 class Tone: public Node<int> {
+
+    Config *_config;
 
     int _indexInShape, _progress, _stepSize;
 
@@ -11,6 +14,6 @@ class Tone: public Node<int> {
 
 public:
 
-    Tone(State *state);
+    Tone(Config *config, State *state);
 
 };

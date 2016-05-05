@@ -1,25 +1,20 @@
 #include "tone.h"
 
-#include <cmath>
-
 #include "../buf.h"
+#include "../config.h"
 #include "../state.h"
 #include "../util/util.h"
 
 int shape[] = {1, 0};
 int shapeSize = 2;
 
-Tone::Tone(State *state)
-        : Node("Tone", state), _indexInShape(0), _progress(0), _stepSize(0) {
+Tone::Tone(Config *config, State *state)
+        : Node("Tone", state), _config(config), _indexInShape(0), _progress(0), _stepSize(0) {
     // Nothing else.
 }
 
-int const REF_MIDI_NOTE = 69, REF_FREQ = 440, SEMITONES = 12, CLOCK = 2000000, ATOM_SIZE = 8;
-
 void Tone::renderImpl() {
-    double freq = REF_FREQ * pow(2, ((_state->_midiNote - REF_MIDI_NOTE) / (double) SEMITONES));
-    int TP = (int) round(CLOCK / (16 * freq));
-    _stepSize = ATOM_SIZE * TP;
+    _stepSize = _config->_atomSize * *_state->TP();
     if (_progress >= _stepSize) { // Start a new step.
         _indexInShape = (_indexInShape + 1) % shapeSize;
         _progress = 0;
