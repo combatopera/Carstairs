@@ -38,6 +38,14 @@ public:
         }
     }
 
+    T *begin() {
+        return _data;
+    }
+
+    T *end() {
+        return _data + _limit;
+    }
+
 };
 
 template<typename T> class Buffer: public View<T> {
