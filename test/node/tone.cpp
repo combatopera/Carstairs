@@ -30,3 +30,21 @@ BOOST_AUTO_TEST_CASE(works) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin() + 24);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin() + 24, v.end());
 }
+
+BOOST_AUTO_TEST_CASE(resume) {
+    Config config(8);
+    State state;
+    state._TP = 3;
+    Tone o(&config, &state);
+    Buffer<int> ones("ones"), zeros("zeros");
+    ones.setLimit(24);
+    zeros.setLimit(24);
+    ones.fill(0, 24, 1);
+    zeros.fill(0, 24, 0);
+    View<int> v = o.render(25);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin() + 24);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 1, v.begin() + 24, v.end());
+    v = o.render(v.limit() + 24);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 23, v.begin(), v.begin() + 23);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 1, v.begin() + 23, v.end());
+}
