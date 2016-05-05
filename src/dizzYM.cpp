@@ -15,7 +15,7 @@ PortInfoEnum::PortInfoEnum(index_t ord)
 }
 
 dizzYM::dizzYM(int sampleRate)
-        : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _chip(&_state) {
+        : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _config(8), _chip(&_config, &_state) {
     _portValPtrs.setLimit(PortInfo._values._n);
 }
 

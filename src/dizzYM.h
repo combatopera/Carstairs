@@ -4,6 +4,7 @@
 #include <ladspa.h>
 
 #include "buf.h"
+#include "config.h"
 #include "dssi/port.h"
 #include "node/pcm.h"
 #include "state.h"
@@ -31,6 +32,8 @@ class dizzYM {
     int _sampleRate;
 
     cursor_t _sampleCursor;
+
+    Config _config;
 
     State _state;
 
