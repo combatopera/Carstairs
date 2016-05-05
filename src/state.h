@@ -4,11 +4,15 @@
 
 class State {
 
-    int _midiNote;
+    int _midiNote, _velocity;
 
     long _noteOn, _noteOff;
 
-    int _velocity;
+#ifdef UNIT_TEST
+public:
+#endif
+
+    int _TP;
 
 public:
 
@@ -17,5 +21,7 @@ public:
     void noteOn(cursor_t cursor, int midiNote, int velocity);
 
     void noteOff(cursor_t cursor, int midiNote);
+
+    int const *TP();
 
 };
