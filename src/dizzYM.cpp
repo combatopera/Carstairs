@@ -25,9 +25,7 @@ void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
 
 void dizzYM::reset() {
     _sampleCursor = 0;
-    _state._noteOn = -1;
-    _state._noteOff = -1;
-    _state._velocity = 0;
+    _state.reset();
 }
 
 void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t eventCount) {
@@ -37,16 +35,11 @@ void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t even
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     snd_seq_ev_note_t *n = &events[eventIndex].data.note;
-                    _state._midiNote = n->note;
-                    _state._noteOn = _sampleCursor + events[eventIndex].time.tick;
-                    _state._noteOff = -1;
-                    _state._velocity = n->velocity;
+                    _state.noteOn(_sampleCursor + events[eventIndex].time.tick, n->note, n->velocity);
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    if (_state._midiNote == events[eventIndex].data.note.note) {
-                        _state._noteOff = _sampleCursor + events[eventIndex].time.tick;
-                    }
+                    _state.noteOff(_sampleCursor + events[eventIndex].time.tick, events[eventIndex].data.note.note);
                     break;
                 }
             }
