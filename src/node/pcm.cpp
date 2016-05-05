@@ -3,12 +3,13 @@
 #include <stddef.h>
 
 #include "../buf.h"
+#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 #include "../util/util.h"
 
-PCM::PCM(State *state)
-        : Node("PCM", state), _tone(state) {
+PCM::PCM(Config *config, State *state)
+        : Node("PCM", state), _tone(config, state) {
     // Nothing else.
 }
 

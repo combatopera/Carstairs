@@ -2,6 +2,7 @@
 
 #include <ladspa.h>
 
+#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 #include "../util/minbleps.h"
@@ -17,6 +18,6 @@ class PCM: public Node<LADSPA_Data> {
 
 public:
 
-    PCM(State *);
+    PCM(Config *, State *);
 
 };
