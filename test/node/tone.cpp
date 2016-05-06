@@ -48,3 +48,19 @@ BOOST_AUTO_TEST_CASE(resume) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 23, v.begin(), v.begin() + 23);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 1, v.begin() + 23, v.end());
 }
+
+BOOST_AUTO_TEST_CASE(carry) {
+    Config config(8);
+    State state;
+    state._TP = 1;
+    int size = 3 * 8 + 1;
+    Tone refOsc(&config, &state); // Must stay in scope for ref to be valid.
+    View<int> ref = refOsc.render(size);
+    for (int n = 0; n <= size; ++n) {
+        Tone o(&config, &state);
+        View<int> v = o.render(n);
+        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin() + v.limit(), v.begin(), v.end());
+        v = o.render(size);
+        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.end() - v.limit(), ref.end(), v.begin(), v.end());
+    }
+}
