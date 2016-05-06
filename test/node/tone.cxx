@@ -2,6 +2,7 @@
 #include <boost/test/unit_test_suite.hpp>
 
 #include "../../src/config.h"
+#include "../../src/node.h"
 
 #define BOOST_TEST_MODULE Tone
 
@@ -81,4 +82,26 @@ BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.end());
     v = o.render(12);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin(), v.end());
+}
+
+BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
+    Config config(8);
+    State state;
+    state._TP = 1;
+    Tone o(&config, &state);
+    Buffer<int> ones("ones"), zeros("zeros");
+    ones.setLimit(24);
+    zeros.setLimit(24);
+    ones.fill(0, 24, 1);
+    zeros.fill(0, 24, 0);
+    View<int> v = o.render(16);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 8, v.begin(), v.begin() + 8);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 8, v.begin() + 8, v.end());
+    state._TP = 2;
+    v = o.render(o.cursor() + 31);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 16, v.begin(), v.begin() + 16);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 15, v.begin() + 16, v.end());
+    state._TP = 3;
+    v = o.render(o.cursor() + 34);
+    // self.assertEqual([0] * 9 + [1] * 24 + [0], o.call(Block(34)).tolist())
 }
