@@ -22,8 +22,8 @@ void Tone::renderImpl() {
     index_t endOfStep = _stepSize - _progress;
     for (index_t i = 0, n = _buf.limit(); i < n;) {
         int value = shape[_indexInShape];
-        // Could eagerly terminate step by using > here:
-        if (endOfStep >= n) {
+        // Could allow next block to extend step by using >= here:
+        if (endOfStep > n) {
             _buf.fill(i, n, value);
             i = n;
             _progress = int(_stepSize - (endOfStep - n));
