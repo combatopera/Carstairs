@@ -12,16 +12,17 @@
 
 #include <boost/test/unit_test.hpp>
 
+#define BUF(n, value, name) Buffer<int> name("name"); \
+    name.setLimit(n); \
+    name.fill(0, n, value);
+
 BOOST_AUTO_TEST_CASE(works) {
     Config config(8);
     State state;
     state._TP = 3;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(24);
-    zeros.setLimit(24);
-    ones.fill(0, 24, 1);
-    zeros.fill(0, 24, 0);
+    BUF(24, 1, ones)
+    BUF(24, 0, zeros)
     View<int> v = o.render(96);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin() + 24);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin() + 24, v.begin() + 48);
@@ -37,11 +38,8 @@ BOOST_AUTO_TEST_CASE(resume) {
     State state;
     state._TP = 3;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(24);
-    zeros.setLimit(24);
-    ones.fill(0, 24, 1);
-    zeros.fill(0, 24, 0);
+    BUF(24, 1, ones)
+    BUF(24, 0, zeros)
     View<int> v = o.render(25);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin() + 24);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 1, v.begin() + 24, v.end());
@@ -71,11 +69,8 @@ BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
     State state;
     state._TP = 1;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(4);
-    zeros.setLimit(4);
-    ones.fill(0, 4, 1);
-    zeros.fill(0, 4, 0);
+    BUF(4, 1, ones)
+    BUF(4, 0, zeros)
     View<int> v = o.render(4);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.end());
     v = o.render(8);
@@ -89,11 +84,8 @@ BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
     State state;
     state._TP = 1;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(24);
-    zeros.setLimit(24);
-    ones.fill(0, 24, 1);
-    zeros.fill(0, 24, 0);
+    BUF(24, 1, ones)
+    BUF(24, 0, zeros)
     View<int> v = o.render(16);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 8, v.begin(), v.begin() + 8);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 8, v.begin() + 8, v.end());
@@ -113,11 +105,8 @@ BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
     State state;
     state._TP = 3;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(24);
-    zeros.setLimit(24);
-    ones.fill(0, 24, 1);
-    zeros.fill(0, 24, 0);
+    BUF(24, 1, ones)
+    BUF(24, 0, zeros)
     View<int> v = o.render(48);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 24, v.begin(), v.begin() + 24);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 24, v.begin() + 24, v.end());
@@ -139,11 +128,8 @@ BOOST_AUTO_TEST_CASE(smallerBlocksThanPeriod) {
     State state;
     state._TP = 5;
     Tone o(&config, &state);
-    Buffer<int> ones("ones"), zeros("zeros");
-    ones.setLimit(24);
-    zeros.setLimit(24);
-    ones.fill(0, 24, 1);
-    zeros.fill(0, 24, 0);
+    BUF(24, 1, ones)
+    BUF(24, 0, zeros)
     View<int> v = o.render(4);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 4, v.begin(), v.end());
     v = o.render(o.cursor() + 4);
