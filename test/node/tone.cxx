@@ -103,5 +103,7 @@ BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 15, v.begin() + 16, v.end());
     state._TP = 3;
     v = o.render(o.cursor() + 34);
-    // self.assertEqual([0] * 9 + [1] * 24 + [0], o.call(Block(34)).tolist())
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 9, v.begin(), v.begin() + 9);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 24, v.begin() + 9, v.begin() + 33);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 1, v.begin() + 33, v.end());
 }
