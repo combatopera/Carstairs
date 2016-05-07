@@ -107,3 +107,29 @@ BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 24, v.begin() + 9, v.begin() + 33);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 1, v.begin() + 33, v.end());
 }
+
+BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
+    Config config(8);
+    State state;
+    state._TP = 3;
+    Tone o(&config, &state);
+    Buffer<int> ones("ones"), zeros("zeros");
+    ones.setLimit(24);
+    zeros.setLimit(24);
+    ones.fill(0, 24, 1);
+    zeros.fill(0, 24, 0);
+    View<int> v = o.render(48);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 24, v.begin(), v.begin() + 24);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 24, v.begin() + 24, v.end());
+    state._TP = 2;
+    v = o.render(o.cursor() + 38);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 16, v.begin(), v.begin() + 16);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 16, v.begin() + 16, v.begin() + 32);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 6, v.begin() + 32, v.end());
+    state._TP = 1;
+    v = o.render(o.cursor() + 19);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 2, v.begin(), v.begin() + 2);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 8, v.begin() + 2, v.begin() + 10);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 8, v.begin() + 10, v.begin() + 18);
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin() + 1, v.begin() + 18, v.end());
+}
