@@ -87,9 +87,11 @@ Descriptor::Descriptor() {
         0,// run_multiple_synths()
         0,// run_multiple_synths_adding()
     };
+    debug("Constructed the Descriptor.");
 }
 
 Descriptor::~Descriptor() {
+    debug("Destroying the Descriptor.");
     delete[] _PortDescriptors;
     delete[] _PortNames;
     delete[] _PortRangeHints;
