@@ -95,7 +95,7 @@ Descriptor::~Descriptor() {
     delete[] _PortRangeHints;
 }
 
-PortInfoEnum PortInfo;
+PortInfoEnum PortInfo; // Must be in same file as descriptor for static init order.
 
 static Descriptor descriptor;
 
