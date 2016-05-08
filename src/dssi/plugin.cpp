@@ -8,20 +8,26 @@
 #include "port.h"
 
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, cursor_t SampleRate) {
-    debug("Instantiating.");
+    debug("LADSPA: instantiate");
     return new dizzYM((int) SampleRate);
 }
 
 static void activate(LADSPA_Handle Instance) {
-    debug("Activating.");
+    debug("LADSPA: activate");
     ((dizzYM *) Instance)->reset();
 }
 
+static void deactivate(LADSPA_Handle Instance) {
+    debug("LADSPA: deactivate");
+}
+
 static void connect_port(LADSPA_Handle Instance, cursor_t Port, LADSPA_Data *DataLocation) {
+    debug("LADSPA: connect_port");
     ((dizzYM *) Instance)->setPortValPtr((int) Port, DataLocation);
 }
 
 static int get_midi_controller_for_port(LADSPA_Handle, cursor_t Port) {
+    debug("DSSI: get_midi_controller_for_port");
     return PortInfo._values.at(Port)->_controllers;
 }
 
@@ -34,6 +40,7 @@ static void run_synth(LADSPA_Handle Instance, cursor_t SampleCount, snd_seq_even
 }
 
 static void cleanup(LADSPA_Handle Instance) {
+    debug("LADSPA: cleanup");
     delete (dizzYM *) Instance;
     debug("Cleaned up.");
 }
@@ -65,7 +72,7 @@ Descriptor::Descriptor() {
         run,//
         0,// run_adding
         0,// set_run_adding_gain
-        0,// deactivate
+        deactivate,//
         cleanup,//
     };
     _dssiDescriptor = { //
