@@ -13,6 +13,7 @@ void State::reset() {
 int const REF_MIDI_NOTE = 69, REF_FREQ = 440, SEMITONES = 12, CLOCK = 2000000;
 
 void State::noteOn(cursor_t cursor, int midiNote, int velocity) {
+    debug("ON %d %d %d", cursor, midiNote, velocity);
     _midiNote = midiNote;
     _noteOn = cursor;
     _noteOff = -1;
@@ -23,6 +24,7 @@ void State::noteOn(cursor_t cursor, int midiNote, int velocity) {
 
 void State::noteOff(cursor_t cursor, int midiNote) {
     if (_midiNote == midiNote) {
+        debug("OFF %d %d", cursor, midiNote);
         _noteOff = cursor;
     }
 }
