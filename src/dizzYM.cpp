@@ -5,6 +5,7 @@
 #include <ladspa.h>
 
 #include "buf.h"
+#include "node.h"
 #include "util/util.h"
 
 PortInfoEnum::PortInfoEnum(index_t ord)
@@ -16,7 +17,7 @@ PortInfoEnum::PortInfoEnum(index_t ord)
 }
 
 dizzYM::dizzYM(int sampleRate)
-        : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _config(8), _chip(&_config, &_state) {
+        : _portValPtrs("_portValPtrs"), _sampleRate(sampleRate), _sampleCursor(0), _config(8), _tone(&_config, &_state), _chip(&_config, &_state, &_tone) {
     _portValPtrs.setLimit(PortInfo._values._n);
 }
 
@@ -27,9 +28,14 @@ void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
 void dizzYM::reset() {
     _sampleCursor = 0;
     _state.reset();
+    _tone.reset();
+    _chip.reset();
 }
 
 void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t eventCount) {
+    if (0 == _sampleCursor || eventCount) {
+        debug("%d -> %d", _sampleCursor, _sampleCursor + blockSize);
+    }
     for (cursor_t indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {

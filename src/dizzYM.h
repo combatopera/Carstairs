@@ -7,6 +7,7 @@
 #include "config.h"
 #include "dssi/port.h"
 #include "node/pcm.h"
+#include "node/tone.h"
 #include "state.h"
 #include "util/enum.h"
 #include "util/util.h"
@@ -36,6 +37,8 @@ class dizzYM {
     Config _config;
 
     State _state;
+
+    Tone _tone;
 
     PCM _chip;
 
