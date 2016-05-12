@@ -12,6 +12,11 @@ public:
 
     virtual ~Node();
 
+    void reset() {
+        _cursor = 0;
+        resetImpl();
+    }
+
     virtual View<T> render(cursor_t newCursor);
 
     cursor_t cursor() {
@@ -25,6 +30,8 @@ protected:
     State *_state;
 
     cursor_t _cursor;
+
+    virtual void resetImpl() = 0;
 
     virtual void renderImpl() = 0;
 
