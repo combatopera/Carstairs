@@ -13,6 +13,11 @@ Tone::Tone(Config *config, State *state)
     // Nothing else.
 }
 
+void Tone::resetImpl() {
+    _indexInShape = 0;
+    _progress = 0;
+}
+
 void Tone::renderImpl() {
     _stepSize = _config->_atomSize * *_state->TP();
     if (_progress >= _stepSize) { // Start a new step.

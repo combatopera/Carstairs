@@ -10,14 +10,16 @@
 
 class PCM: public Node<LADSPA_Data> {
 
-    Tone _tone;
+    Tone *_tone;
 
     MinBLEPs _minBLEPs;
+
+    void resetImpl();
 
     void renderImpl();
 
 public:
 
-    PCM(Config *, State *);
+    PCM(Config *, State *, Tone *);
 
 };
