@@ -2,13 +2,14 @@
 
 #include "../buf.h"
 #include "../config.h"
+#include "../node.h"
 #include "../state.h"
 #include "../util/util.h"
 
 int shape[] = {1, 0};
 int shapeSize = 2;
 
-Tone::Tone(Config *config, State *state)
+Tone::Tone(Config const *config, State *state)
         : Node("Tone", state), _config(config), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
     // Nothing else.
 }

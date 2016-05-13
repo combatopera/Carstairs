@@ -20,6 +20,6 @@ class PCM: public Node<LADSPA_Data> {
 
 public:
 
-    PCM(Config *, State *, Tone *);
+    PCM(Config const *, State *, Tone *);
 
 };
