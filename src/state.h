@@ -4,15 +4,17 @@
 
 class State {
 
-    int _midiNote, _velocity;
+    static Bounds<int> const TP_BOUNDS;
 
     cursor_t _onOrMax, _offOrMax;
+
+    int _midiNote, _velocity;
 
 #ifdef UNIT_TEST
 public:
 #endif
 
-    int _TP;
+    int _TP = TP_BOUNDS._min;
 
 public:
 
@@ -22,6 +24,8 @@ public:
 
     void noteOff(cursor_t cursor, int midiNote);
 
-    int const *TP();
+    int const *TP() const {
+        return &_TP;
+    }
 
 };
