@@ -41,4 +41,5 @@ protected:
 
 #define NODE_INSTANTIATE(T) \
     template Node<T>::Node(const char *, State *); \
-    template Node<T>::~Node();
+    template Node<T>::~Node(); \
+    template View<T> Node<T>::render(cursor_t);
