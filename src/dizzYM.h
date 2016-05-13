@@ -28,6 +28,8 @@ extern PortInfoEnum PortInfo;
 
 class dizzYM {
 
+    static cursor_t const INITIAL_SAMPLE_CURSOR = 0;
+
     Buffer<LADSPA_Data *> _portValPtrs;
 
     int _sampleRate;
