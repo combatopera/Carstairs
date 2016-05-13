@@ -2,16 +2,24 @@
 
 #include "../buf.h"
 #include "../config.h"
-#include "../node.h"
 #include "../state.h"
 #include "../util/util.h"
 
-int shape[] = {1, 0};
-int shapeSize = 2;
+static class Square: public Buffer<int> {
+
+public:
+
+    Square()
+            : Buffer("SQUARE") {
+        setLimit(2);
+        put(0, 1);
+        put(1, 0);
+    }
+
+} SQUARE;
 
 Tone::Tone(Config const *config, State *state)
-        : Node("Tone", state), _config(config), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
-    // Nothing else.
+        : Node("Tone", state), _config(config), _shape(SQUARE), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
 }
 
 void Tone::resetImpl() {
@@ -22,12 +30,12 @@ void Tone::resetImpl() {
 void Tone::renderImpl() {
     _stepSize = _config->_atomSize * *_state->TP();
     if (_progress >= _stepSize) { // Start a new step.
-        _indexInShape = (_indexInShape + 1) % shapeSize;
+        _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
         _progress = 0;
     }
     index_t endOfStep = _stepSize - _progress;
     for (index_t i = 0, n = _buf.limit(); i < n;) {
-        int value = shape[_indexInShape];
+        int value = _shape.at(_indexInShape);
         // Could allow next block to extend step by using >= here:
         if (endOfStep > n) {
             _buf.fill(i, n, value);
@@ -37,7 +45,7 @@ void Tone::renderImpl() {
         else {
             _buf.fill(i, endOfStep, value);
             i = endOfStep;
-            _indexInShape = (_indexInShape + 1) % shapeSize;
+            _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
             _progress = 0;
             endOfStep += _stepSize;
         }
