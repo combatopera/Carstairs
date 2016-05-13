@@ -6,7 +6,7 @@ class State {
 
     int _midiNote, _velocity;
 
-    long _noteOn, _noteOff;
+    cursor_t _onOrMax, _offOrMax;
 
 #ifdef UNIT_TEST
 public:
