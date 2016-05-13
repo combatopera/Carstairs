@@ -34,7 +34,7 @@ class dizzYM {
 
     cursor_t _sampleCursor;
 
-    Config _config;
+    Config const _config;
 
     State _state;
 
