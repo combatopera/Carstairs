@@ -9,13 +9,13 @@ int shape[] = {1, 0};
 int shapeSize = 2;
 
 Tone::Tone(Config *config, State *state)
-        : Node("Tone", state), _config(config), _indexInShape(0), _progress(0), _stepSize(0) {
+        : Node("Tone", state), _config(config), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
     // Nothing else.
 }
 
 void Tone::resetImpl() {
-    _indexInShape = 0;
-    _progress = 0;
+    _indexInShape = INITIAL_INDEX_IN_SHAPE;
+    _progress = INITIAL_PROGRESS;
 }
 
 void Tone::renderImpl() {

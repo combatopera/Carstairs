@@ -4,9 +4,9 @@
 #include "state.h"
 #include "util/util.h"
 
-cursor_t const INITIAL_CURSOR = 0;
-
 template<typename T> class Node {
+
+    static cursor_t const INITIAL_CURSOR = 0;
 
     cursor_t _cursor;
 
