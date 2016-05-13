@@ -7,7 +7,7 @@
 PortInfo_t::PortInfo_t(index_t ordinal, //
         bool output, //
         bool audio, //
-        const char *name, //
+        char const *name, //
         LADSPA_PortRangeHintDescriptor HintDescriptor, //
         LADSPA_Data LowerBound, //
         LADSPA_Data UpperBound, //

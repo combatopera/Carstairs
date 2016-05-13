@@ -90,6 +90,10 @@ Descriptors::Descriptors() {
     debug("Constructed the Descriptors.");
 }
 
+DSSI_Descriptor const *Descriptors::dssiDescriptor() const {
+    return &_dssiDescriptor;
+}
+
 Descriptors::~Descriptors() {
     debug("Destroying the Descriptors.");
     delete[] _PortDescriptors;
@@ -105,7 +109,7 @@ extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(cursor_t Index) {
     if (Index == 0) {
-        return &descriptors._dssiDescriptor;
+        return descriptors.dssiDescriptor();
     }
     else {
         return 0;

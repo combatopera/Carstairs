@@ -5,17 +5,19 @@
 
 class Descriptors {
 
-    LADSPA_PortDescriptor _PortDescriptors[];
+    LADSPA_PortDescriptor *_PortDescriptors;
 
-    char const *_PortNames[];
+    char const **_PortNames;
 
-    LADSPA_PortRangeHint _PortRangeHints[];
+    LADSPA_PortRangeHint *_PortRangeHints;
 
     LADSPA_Descriptor _ladspaDescriptor;
 
+    DSSI_Descriptor _dssiDescriptor;
+
 public:
 
-    DSSI_Descriptor _dssiDescriptor;
+    DSSI_Descriptor const *dssiDescriptor() const;
 
     Descriptors();
 
