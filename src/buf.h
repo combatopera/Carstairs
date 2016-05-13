@@ -8,6 +8,8 @@ template<typename T> class View {
 
 protected:
 
+    size_t const INITIAL_CAPACITY = 0;
+
     View();
 
     size_t _limit;

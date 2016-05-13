@@ -7,13 +7,13 @@
 #include "util/util.h"
 
 template<typename T> View<T>::View() {
-    _limit = 0;
-    _data = (T *) malloc(0);
+    _limit = INITIAL_CAPACITY;
+    _data = (T *) malloc(INITIAL_CAPACITY * sizeof(T));
 }
 
 template<typename T> Buffer<T>::Buffer(const char *label) {
     debug("Creating Buffer: %s", label);
-    _capacity = 0;
+    _capacity = View<T>::INITIAL_CAPACITY;
     _label = label;
 }
 
