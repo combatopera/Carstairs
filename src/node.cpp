@@ -6,7 +6,7 @@
 #include "state.h"
 
 template<typename T> Node<T>::Node(const char *label, State *state)
-        : _buf(label), _state(state), _cursor(0) {
+        : _cursor(INITIAL_CURSOR), _buf(label), _state(state) {
     // Nothing else.
 }
 

@@ -4,20 +4,24 @@
 #include "state.h"
 #include "util/util.h"
 
+cursor_t const INITIAL_CURSOR = 0;
+
 template<typename T> class Node {
+
+    cursor_t _cursor;
 
 public:
 
-    Node(const char *label, State *state);
+    Node(char const *label, State *state);
 
     virtual ~Node();
 
     void reset() {
-        _cursor = 0;
+        _cursor = INITIAL_CURSOR;
         resetImpl();
     }
 
-    virtual View<T> render(cursor_t newCursor);
+    View<T> render(cursor_t newCursor);
 
     cursor_t cursor() {
         return _cursor;
@@ -28,8 +32,6 @@ protected:
     Buffer<T> _buf;
 
     State *_state;
-
-    cursor_t _cursor;
 
     virtual void resetImpl() = 0;
 
