@@ -3,13 +3,13 @@
 #include <dssi.h>
 #include <ladspa.h>
 
-class Descriptor {
+class Descriptors {
 
-    LADSPA_PortDescriptor *_PortDescriptors;
+    LADSPA_PortDescriptor _PortDescriptors[];
 
-    const char **_PortNames;
+    char const *_PortNames[];
 
-    LADSPA_PortRangeHint *_PortRangeHints;
+    LADSPA_PortRangeHint _PortRangeHints[];
 
     LADSPA_Descriptor _ladspaDescriptor;
 
@@ -17,8 +17,8 @@ public:
 
     DSSI_Descriptor _dssiDescriptor;
 
-    Descriptor();
+    Descriptors();
 
-    ~Descriptor();
+    ~Descriptors();
 
 };

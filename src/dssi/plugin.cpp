@@ -45,9 +45,9 @@ static void cleanup(LADSPA_Handle Instance) {
     debug("Cleaned up.");
 }
 
-Descriptor::Descriptor() {
+Descriptors::Descriptors() {
     _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._values._n];
-    _PortNames = new const char *[PortInfo._values._n];
+    _PortNames = new char const *[PortInfo._values._n];
     _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._values._n];
     for (index_t i = 0; i < PortInfo._values._n; ++i) {
         _PortDescriptors[i] = PortInfo._values.at(i)->_descriptor;
@@ -87,11 +87,11 @@ Descriptor::Descriptor() {
         0,// run_multiple_synths()
         0,// run_multiple_synths_adding()
     };
-    debug("Constructed the Descriptor.");
+    debug("Constructed the Descriptors.");
 }
 
-Descriptor::~Descriptor() {
-    debug("Destroying the Descriptor.");
+Descriptors::~Descriptors() {
+    debug("Destroying the Descriptors.");
     delete[] _PortDescriptors;
     delete[] _PortNames;
     delete[] _PortRangeHints;
@@ -99,13 +99,13 @@ Descriptor::~Descriptor() {
 
 PortInfoEnum PortInfo; // Must be in same file as descriptor for static init order.
 
-static Descriptor descriptor;
+static Descriptors descriptors;
 
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(cursor_t Index) {
     if (Index == 0) {
-        return &descriptor._dssiDescriptor;
+        return &descriptors._dssiDescriptor;
     }
     else {
         return 0;
