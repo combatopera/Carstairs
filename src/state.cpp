@@ -2,9 +2,14 @@
 
 #include <cmath>
 
+#include "config.h"
 #include "util/util.h"
 
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
+
+State::State(Config const *config)
+        : _config(config), _onOrMax(CURSOR_MAX), _offOrMax(CURSOR_MAX) {
+}
 
 void State::reset() {
     _onOrMax = CURSOR_MAX;
