@@ -3,14 +3,19 @@
 #include <ladspa.h>
 
 #include "../buf.h"
+#include "../config.h"
 #include "util.h"
 
 class MinBLEPs {
 
+    int const _scale;
+
 public:
 
-    cursor_t getMinNaiveN(cursor_t naiveX, cursor_t pcmCount);
+    MinBLEPs(Config const *);
 
-    void paste(cursor_t naiveX, View<int> naiveBuf, View<LADSPA_Data> pcmBuf);
+    cursor_t getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const;
+
+    void paste(cursor_t naiveX, View<int> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };

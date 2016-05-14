@@ -4,20 +4,23 @@
 #include <cmath>
 
 #include "../buf.h"
+#include "../config.h"
 #include "util.h"
 
-static int const SCALE = (int) round(2000000 / 44100.);
-
-cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) {
-    return pcmCount * SCALE; // FIXME: Do it properly.
+MinBLEPs::MinBLEPs(Config const *config)
+        : _scale((int) roundf(config->pluginClock() / config->_pcmRate)) {
 }
 
-void MinBLEPs::paste(cursor_t naiveX, View<int> naiveBuf, View<LADSPA_Data> pcmBuf) {
+cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
+    return pcmCount * _scale; // FIXME: Do it properly.
+}
+
+void MinBLEPs::paste(cursor_t naiveX, View<int> naiveBuf, View<LADSPA_Data> pcmBuf) const {
     for (cursor_t pcmI = 0; pcmI < pcmBuf.limit(); ++pcmI) {
         LADSPA_Data acc = 0;
-        for (int s = 0; s < SCALE; ++s) {
-            acc += (LADSPA_Data) naiveBuf.at(pcmI * SCALE + s);
+        for (int s = 0; s < _scale; ++s) {
+            acc += (LADSPA_Data) naiveBuf.at(pcmI * _scale + s);
         }
-        pcmBuf.put(pcmI, acc / SCALE);
+        pcmBuf.put(pcmI, acc / float(_scale));
     }
 }

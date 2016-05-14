@@ -10,7 +10,7 @@
 #include "tone.h"
 
 PCM::PCM(Config const *config, State *state, Tone *tone)
-        : Node("PCM", state), _tone(tone) {
+        : Node("PCM", state), _minBLEPs(config), _tone(tone) {
     // Nothing else.
 }
 
