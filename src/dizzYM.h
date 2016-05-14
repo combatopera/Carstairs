@@ -32,8 +32,6 @@ class dizzYM {
 
     Buffer<LADSPA_Data *> _portValPtrs;
 
-    int _sampleRate;
-
     cursor_t _sampleCursor;
 
     Config const _config;
@@ -46,7 +44,7 @@ class dizzYM {
 
 public:
 
-    dizzYM(int sampleRate);
+    dizzYM(float pcmRate);
 
     void reset();
 

@@ -16,6 +16,12 @@ public:
 
     float const _nominalClock = 2000000;
 
+    float const _pcmRate;
+
+    Config(float pcmRate)
+            : _pcmRate(pcmRate) {
+    }
+
     float pluginClock() const {
         return _nominalClock / YM2149_ATOM_SIZE * float(_atomSize);
     }
