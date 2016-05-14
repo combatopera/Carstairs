@@ -14,7 +14,7 @@ static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, cursor_t S
 
 static void activate(LADSPA_Handle Instance) {
     debug("LADSPA: activate");
-    ((dizzYM *) Instance)->reset();
+    static_cast<dizzYM *>(Instance)->reset();
 }
 
 static void deactivate(LADSPA_Handle Instance) {
@@ -23,7 +23,7 @@ static void deactivate(LADSPA_Handle Instance) {
 
 static void connect_port(LADSPA_Handle Instance, cursor_t Port, LADSPA_Data *DataLocation) {
     debug("LADSPA: connect_port");
-    ((dizzYM *) Instance)->setPortValPtr((int) Port, DataLocation);
+    static_cast<dizzYM *>(Instance)->setPortValPtr((int) Port, DataLocation);
 }
 
 static int get_midi_controller_for_port(LADSPA_Handle, cursor_t Port) {
@@ -32,16 +32,16 @@ static int get_midi_controller_for_port(LADSPA_Handle, cursor_t Port) {
 }
 
 static void run(LADSPA_Handle Instance, cursor_t SampleCount) {
-    ((dizzYM *) Instance)->runSynth(SampleCount, 0, 0);
+    static_cast<dizzYM *>(Instance)->runSynth(SampleCount, 0, 0);
 }
 
 static void run_synth(LADSPA_Handle Instance, cursor_t SampleCount, snd_seq_event_t *Events, cursor_t EventCount) {
-    ((dizzYM *) Instance)->runSynth(SampleCount, Events, EventCount);
+    static_cast<dizzYM *>(Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
 static void cleanup(LADSPA_Handle Instance) {
     debug("LADSPA: cleanup");
-    delete (dizzYM *) Instance;
+    delete static_cast<dizzYM *>(Instance);
     debug("Cleaned up.");
 }
 
