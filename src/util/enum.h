@@ -6,7 +6,7 @@
 
 template<typename T> class Values {
 
-    T *_first;
+    T * const _first;
 
 public:
 
@@ -14,10 +14,10 @@ public:
 
     Values(T *first, index_t ordCursor);
 
-    T *at(index_t i);
+    T *at(index_t i) const;
 
 };
 
 #define ENUM_INSTANTIATE(T) \
-    template T *Values<T>::at(index_t); \
+    template T *Values<T>::at(index_t) const; \
     template Values<T>::Values(T *, size_t);
