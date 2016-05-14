@@ -29,8 +29,8 @@ public:
 
     void noteOff(cursor_t cursor, int midiNote);
 
-    int const *TP() const {
-        return &_TP;
+    int TP() const {
+        return _TP;
     }
 
     cursor_t onOrMax() const {

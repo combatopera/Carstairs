@@ -28,7 +28,7 @@ void Tone::resetImpl() {
 }
 
 void Tone::renderImpl() {
-    _stepSize = _config->_atomSize * *_state->TP();
+    _stepSize = _config->_atomSize * _state->TP();
     if (_progress >= _stepSize) { // Start a new step.
         _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
         _progress = 0;
