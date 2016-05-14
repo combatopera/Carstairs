@@ -6,6 +6,7 @@
 #include "buf.h"
 #include "config.h"
 #include "dssi/port.h"
+#include "node/level.h"
 #include "node/pcm.h"
 #include "node/tone.h"
 #include "state.h"
@@ -39,6 +40,8 @@ class dizzYM {
     State _state;
 
     Tone _tone;
+
+    Level _level;
 
     PCM _chip;
 

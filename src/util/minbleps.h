@@ -16,6 +16,6 @@ public:
 
     cursor_t getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const;
 
-    void paste(cursor_t naiveX, View<int> naiveBuf, View<LADSPA_Data> pcmBuf) const;
+    void paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };

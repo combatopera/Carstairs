@@ -7,6 +7,8 @@
 
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
+Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
+
 State::State(Config const *config)
         : _config(config), _onOrMax(CURSOR_MAX), _offOrMax(CURSOR_MAX) {
 }

@@ -22,7 +22,8 @@ dizzYM::dizzYM(float pcmRate)
         _config(pcmRate), //
         _state(&_config), //
         _tone(&_config, &_state), //
-        _chip(&_config, &_state, &_tone) {
+        _level(&_state, &_tone), //
+        _chip(&_config, &_state, &_level) {
     _portValPtrs.setLimit(PortInfo._values._n);
 }
 

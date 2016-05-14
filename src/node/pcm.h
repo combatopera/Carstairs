@@ -6,13 +6,13 @@
 #include "../node.h"
 #include "../state.h"
 #include "../util/minbleps.h"
-#include "tone.h"
+#include "level.h"
 
 class PCM: public Node<LADSPA_Data> {
 
     MinBLEPs const _minBLEPs;
 
-    Tone * const _tone;
+    Level * const _level;
 
     void resetImpl();
 
@@ -20,6 +20,6 @@ class PCM: public Node<LADSPA_Data> {
 
 public:
 
-    PCM(Config const *, State *, Tone *);
+    PCM(Config const *, State *, Level *);
 
 };

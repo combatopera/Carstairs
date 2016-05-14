@@ -5,7 +5,7 @@
 
 class State {
 
-    static Bounds<int> const TP_BOUNDS;
+    static Bounds<int> const TP_BOUNDS, LEVEL4_BOUNDS;
 
     Config const * const _config;
 
@@ -17,7 +17,7 @@ class State {
 public:
 #endif
 
-    int _TP = TP_BOUNDS._min;
+    int _TP = TP_BOUNDS._min, _level4 = LEVEL4_BOUNDS._max; // TODO: Default level should be _min.
 
 public:
 
@@ -31,6 +31,10 @@ public:
 
     int const *TP() const {
         return &_TP;
+    }
+
+    int level5() const {
+        return _level4 * 2 + 1; // Observe 4-bit 0 is 5-bit 1.
     }
 
 };
