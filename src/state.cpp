@@ -16,16 +16,14 @@ void State::reset() {
     _offOrMax = CURSOR_MAX;
 }
 
-int const REF_MIDI_NOTE = 69, REF_FREQ = 440, SEMITONES = 12, CLOCK = 2000000;
-
 void State::noteOn(cursor_t cursor, int midiNote, int velocity) {
     debug("ON %d %d %d", cursor, midiNote, velocity);
     _midiNote = midiNote;
     _onOrMax = cursor;
     _offOrMax = CURSOR_MAX;
     _velocity = velocity;
-    float freq = REF_FREQ * powf(2, float(midiNote - REF_MIDI_NOTE) / float(SEMITONES));
-    _TP = TP_BOUNDS.clamp((int) roundf(CLOCK / (16 * freq)));
+    float freq = _config->_refFreq * powf(2, float(midiNote - _config->_refMidiNote) / float(_config->_semitones));
+    _TP = TP_BOUNDS.clamp((int) roundf(_config->pluginClock() / (16 * freq)));
 }
 
 void State::noteOff(cursor_t cursor, int midiNote) {
