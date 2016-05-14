@@ -10,9 +10,9 @@
 
 class PCM: public Node<LADSPA_Data> {
 
-    MinBLEPs _minBLEPs;
+    MinBLEPs const _minBLEPs;
 
-    Tone *_tone;
+    Tone * const _tone;
 
     void resetImpl();
 
