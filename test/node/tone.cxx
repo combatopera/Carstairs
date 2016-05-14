@@ -17,8 +17,8 @@
     name.fill(0, n, value);
 
 BOOST_AUTO_TEST_CASE(works) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 3;
     Tone o(&config, &state);
     BUF(24, 1, ones)
@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_CASE(works) {
 }
 
 BOOST_AUTO_TEST_CASE(resume) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 3;
     Tone o(&config, &state);
     BUF(24, 1, ones)
@@ -49,8 +49,8 @@ BOOST_AUTO_TEST_CASE(resume) {
 }
 
 BOOST_AUTO_TEST_CASE(carry) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 1;
     int size = 3 * 8 + 1;
     Tone refOsc(&config, &state); // Must stay in scope for ref to be valid.
@@ -65,8 +65,8 @@ BOOST_AUTO_TEST_CASE(carry) {
 }
 
 BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 1;
     Tone o(&config, &state);
     BUF(4, 1, ones)
@@ -80,8 +80,8 @@ BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
 }
 
 BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 1;
     Tone o(&config, &state);
     BUF(24, 1, ones)
@@ -101,8 +101,8 @@ BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
 }
 
 BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
-    Config config(8);
-    State state;
+    Config config(44100);
+    State state(&config);
     state._TP = 3;
     Tone o(&config, &state);
     BUF(24, 1, ones)
@@ -124,8 +124,9 @@ BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
 }
 
 BOOST_AUTO_TEST_CASE(smallerBlocksThanPeriod) {
-    Config config(1);
-    State state;
+    Config config(44100);
+    config._atomSize = 1;
+    State state(&config);
     state._TP = 5;
     Tone o(&config, &state);
     BUF(24, 1, ones)

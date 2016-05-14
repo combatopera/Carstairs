@@ -6,7 +6,7 @@ class Config {
 
 public:
 
-    int const _atomSize = YM2149_ATOM_SIZE;
+    int _atomSize = YM2149_ATOM_SIZE;
 
     int const _refMidiNote = 69;
 
