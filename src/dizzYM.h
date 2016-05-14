@@ -9,6 +9,7 @@
 #include "node/level.h"
 #include "node/pcm.h"
 #include "node/tone.h"
+#include "program.h"
 #include "state.h"
 #include "util/enum.h"
 #include "util/util.h"
@@ -38,6 +39,8 @@ class dizzYM {
     Config const _config;
 
     State _state;
+
+    Program _program;
 
     Tone _tone;
 

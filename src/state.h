@@ -17,7 +17,7 @@ class State {
 public:
 #endif
 
-    int _TP = TP_BOUNDS._min, _level4 = LEVEL4_BOUNDS._max; // TODO: Default level should be _min.
+    int _TP = TP_BOUNDS._min, _level4 = LEVEL4_BOUNDS._min;
 
 public:
 
@@ -31,6 +31,18 @@ public:
 
     int const *TP() const {
         return &_TP;
+    }
+
+    cursor_t onOrMax() const {
+        return _onOrMax;
+    }
+
+    cursor_t offOrMax() const {
+        return _offOrMax;
+    }
+
+    void setLevel4(int level4) {
+        _level4 = LEVEL4_BOUNDS.clamp(level4);
     }
 
     int level5() const {

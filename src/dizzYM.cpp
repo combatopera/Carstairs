@@ -21,6 +21,7 @@ dizzYM::dizzYM(float pcmRate)
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _config(pcmRate), //
         _state(&_config), //
+        _program(&_state), //
         _tone(&_config, &_state), //
         _level(&_state, &_tone), //
         _chip(&_config, &_state, &_level) {
@@ -57,6 +58,7 @@ void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t even
                 }
             }
         }
+        _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         cursor_t limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
