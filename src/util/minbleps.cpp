@@ -27,22 +27,22 @@ MinBLEPs::MinBLEPs(Config const *config)
     int midpoint = size / 2; // Index of peak of sinc.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
-    Buffer<double> bli("bli", kernelSize);
-    bli.blackman();
+    Buffer<double> absDft("absDft", kernelSize);
+    absDft.blackman();
     {
         Buffer<double> x("x", kernelSize);
         for (int i = 0; i < kernelSize; ++i) {
             x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
         }
         x.sinc();
-        bli.mul(x.begin());
+        absDft.mul(x.begin());
     }
-    bli.mul(1. / minBlepCount * config->_cutoff * 2);
-    bli.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
+    absDft.mul(1. / minBlepCount * config->_cutoff * 2);
+    absDft.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
     // Everything is real after we discard the phase info here:
+    absDft.absDft();
+    // The "real cepstrum" is symmetric apart from its first element:
     /*
-     absdft = np.abs(np.fft.fft(self.bli))
-     # The "real cepstrum" is symmetric apart from its first element:
      realcepstrum = np.fft.ifft(np.log(np.maximum(self.minmag, absdft)))
      # Leave first point, zero max phase part, double min phase part to compensate.
      # The midpoint is shared between parts so it doesn't change:

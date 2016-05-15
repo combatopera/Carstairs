@@ -55,6 +55,8 @@ public:
 
     void add(T value);
 
+    void absDft();
+
     T *begin() {
         return _data;
     }

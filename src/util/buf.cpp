@@ -1,5 +1,6 @@
 #include "buf.h"
 
+#include <fftw3.h>
 #include <ladspa.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -78,6 +79,22 @@ template<> void View<double>::blackman() {
     for (index_t n = 0; n < N; ++n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
+}
+
+static double abs(fftw_complex& c) {
+    return sqrt(c[0] * c[0] + c[1] * c[1]);
+}
+
+template<> void View<double>::absDft() {
+    fftw_complex *data = (fftw_complex *) fftw_malloc(_limit * sizeof(fftw_complex));
+    // Allegedly FFTW_ESTIMATE doesn't trash our _data array:
+    fftw_plan plan = fftw_plan_dft_r2c_1d(int(_limit), _data, data, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] = abs(data[i]);
+    }
+    fftw_destroy_plan(plan);
+    fftw_free(data);
 }
 
 BUF_INSTANTIATE(int)
