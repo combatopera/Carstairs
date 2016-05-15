@@ -3,6 +3,7 @@
 #include <boost/math/common_factor_rt.hpp>
 #include <ladspa.h>
 #include <cmath>
+#include <complex>
 
 #include "../config.h"
 #include "buf.h"
@@ -49,8 +50,15 @@ MinBLEPs::MinBLEPs(Config const *config)
     // The midpoint is shared between parts so it doesn't change:
     realCepstrum.mul(1, midpoint, 2);
     realCepstrum.fill(midpoint + 1, size, 0);
+    {
+        Buffer<std::complex<double>> tmp("tmp", size);
+        tmp.fill(realCepstrum.begin());
+        tmp.fft();
+        tmp.exp();
+        tmp.ifft();
+        realCepstrum.fillReal(tmp.begin()); // It's now a min-phase BLI.
+    }
     /*
-     self.minbli = np.fft.ifft(np.exp(np.fft.fft(realcepstrum))).real
      self.minblep = np.cumsum(self.minbli, dtype = floatdtype)
      # Prepend zeros to simplify naivex2outx calc:
      self.minblep = np.append(np.zeros(scale - 1, floatdtype), self.minblep)

@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <cmath>
+#include <complex>
 #include <cstring>
 
 #include "util.h"
@@ -67,9 +68,15 @@ template<> void View<double>::mul(index_t i, index_t j, double value) {
     }
 }
 
-template<> void View<double>::mul(double *values) {
+template<> void View<double>::mul(double const *values) {
     for (index_t i = 0, n = _limit; i < n; ++i) {
         _data[i] *= values[i];
+    }
+}
+
+template<> void View<std::complex<double>>::fill(double const *values) {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] = values[i];
     }
 }
 
@@ -103,6 +110,26 @@ template<> void View<double>::absDft() {
     fftw_free(data);
 }
 
+template<> void View<std::complex<double>>::fft() {
+    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+}
+
+template<> void View<std::complex<double>>::ifft() {
+    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    FFTW_BACKWARD, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+}
+
+template<> void View<std::complex<double>>::exp() {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] = std::exp(_data[i]);
+    }
+}
+
 template<> void View<double>::ln() {
     for (index_t i = 0, n = _limit; i < n; ++i) {
         _data[i] = log(_data[i]);
@@ -121,7 +148,14 @@ template<> void View<double>::ifft() {
     fftw_free(data);
 }
 
+template<> void View<double>::fillReal(std::complex<double> const *values) {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] = values[i].real();
+    }
+}
+
 BUF_INSTANTIATE(int)
 BUF_INSTANTIATE(LADSPA_Data)
 BUF_INSTANTIATE(LADSPA_Data *)
 BUF_INSTANTIATE(double)
+BUF_INSTANTIATE(std::complex<double>)

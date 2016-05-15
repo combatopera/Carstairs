@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <complex>
 #include <cstring>
 
 #include "util.h"
@@ -39,6 +40,8 @@ public:
         }
     }
 
+    void fill(double const *values);
+
     void range() {
         for (index_t i = 0, n = _limit; i < n; ++i) {
             _data[i] = (T) i;
@@ -53,11 +56,17 @@ public:
 
     void mul(index_t i, index_t j, T value);
 
-    void mul(T *values);
+    void mul(T const *values);
 
     void add(T value);
 
     void absDft();
+
+    void fft();
+
+    void exp();
+
+    void fillReal(std::complex<double> const *);
 
     void ln();
 
