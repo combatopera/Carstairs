@@ -2,8 +2,8 @@
 
 #include <ladspa.h>
 
-#include "buf.h"
 #include "state.h"
+#include "util/buf.h"
 
 template<typename T> Node<T>::Node(const char *label, State *state)
         : _cursor(INITIAL_CURSOR), _buf(label), _state(state) {

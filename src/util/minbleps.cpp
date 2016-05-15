@@ -4,8 +4,8 @@
 #include <ladspa.h>
 #include <cmath>
 
-#include "../buf.h"
 #include "../config.h"
+#include "buf.h"
 #include "util.h"
 
 MinBLEPs::MinBLEPs(Config const *config)

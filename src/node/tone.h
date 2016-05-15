@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../buf.h"
 #include "../config.h"
 #include "../node.h"
 #include "../state.h"
+#include "../util/buf.h"
 
 class Tone: public Node<int> {
 

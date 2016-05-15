@@ -5,7 +5,7 @@
 #include <cmath>
 #include <cstring>
 
-#include "util/util.h"
+#include "util.h"
 
 template<typename T> View<T>::View() {
     _limit = INITIAL_CAPACITY;

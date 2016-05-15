@@ -3,7 +3,6 @@
 #include <alsa/seq_event.h>
 #include <ladspa.h>
 
-#include "buf.h"
 #include "config.h"
 #include "dssi/port.h"
 #include "node/level.h"
@@ -11,6 +10,7 @@
 #include "node/tone.h"
 #include "program.h"
 #include "state.h"
+#include "util/buf.h"
 #include "util/enum.h"
 #include "util/util.h"
 

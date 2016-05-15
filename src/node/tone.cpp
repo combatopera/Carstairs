@@ -1,8 +1,8 @@
 #include "tone.h"
 
-#include "../buf.h"
 #include "../config.h"
 #include "../state.h"
+#include "../util/buf.h"
 #include "../util/util.h"
 
 static class Square: public Buffer<int> {

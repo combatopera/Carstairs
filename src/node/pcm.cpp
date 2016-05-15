@@ -2,10 +2,10 @@
 
 #include <stddef.h>
 
-#include "../buf.h"
 #include "../config.h"
 #include "../node.h"
 #include "../state.h"
+#include "../util/buf.h"
 #include "../util/util.h"
 #include "level.h"
 

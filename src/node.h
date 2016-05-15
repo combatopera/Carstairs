@@ -1,7 +1,7 @@
 #pragma once
 
-#include "buf.h"
 #include "state.h"
+#include "util/buf.h"
 #include "util/util.h"
 
 template<typename T> class Node {

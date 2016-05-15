@@ -2,8 +2,8 @@
 
 #include <ladspa.h>
 
-#include "../buf.h"
 #include "../config.h"
+#include "buf.h"
 #include "util.h"
 
 class MinBLEPs {

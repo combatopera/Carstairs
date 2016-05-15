@@ -4,8 +4,8 @@
 #include <dssi.h>
 #include <ladspa.h>
 
-#include "buf.h"
 #include "node.h"
+#include "util/buf.h"
 #include "util/util.h"
 
 PortInfoEnum::PortInfoEnum(index_t ord)

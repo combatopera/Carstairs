@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-#include "../buf.h"
 #include "../node.h"
 #include "../state.h"
+#include "../util/buf.h"
 #include "../util/util.h"
 #include "tone.h"
 
