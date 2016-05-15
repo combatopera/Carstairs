@@ -2,6 +2,7 @@
 
 #include <ladspa.h>
 #include <stdlib.h>
+#include <cmath>
 #include <cstring>
 
 #include "util/util.h"
@@ -42,6 +43,14 @@ template<typename T> void Buffer<T>::zero() {
 
 template<typename T> void View<T>::copyTo(T *to) {
     memcpy(to, _data, _limit * sizeof(T));
+}
+
+template<> void View<double>::blackman() {
+    size_t N = _limit;
+    double alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
+    for (index_t n = 0; n < N; ++n) {
+        _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
+    }
 }
 
 BUF_INSTANTIATE(int)

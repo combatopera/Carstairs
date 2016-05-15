@@ -40,6 +40,8 @@ public:
         }
     }
 
+    void blackman();
+
     T *begin() {
         return _data;
     }
