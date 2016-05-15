@@ -25,10 +25,12 @@ MinBLEPs::MinBLEPs(Config const *config)
         size <<= 1;
     }
     int midpoint = size / 2; // Index of peak of sinc.
-    double x[kernelSize];
+    Buffer<double> x("x", kernelSize);
     for (int i = 0; i < kernelSize; ++i) {
-        x[i] = (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff;
+        x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
     }
+    Buffer<double> blackman("blackman", kernelSize);
+    blackman.blackman();
     /*
      # If cutoff is .5 the sinc starts and ends with zero.
      # The window is necessary for a reliable integral height later:
