@@ -15,10 +15,10 @@ MinBLEPs::MinBLEPs(Config const *config)
     int pcmRate = int(roundf(config->_pcmRate));
     int minBlepCount = naiveRate / boost::math::gcd(naiveRate, pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
+    // XXX: Use kaiser and/or satisfy min transition?
+    // Closest even order to 4/transition:
+    int order = int(round(4 / config->_transition / 2)) * 2;
     /*
-     # XXX: Use kaiser and/or satisfy min transition?
-     # Closest even order to 4/transition:
-     order = int(self.round(4 / transition / 2)) * 2
      kernelsize = order * scale + 1
      # The fft/ifft are too slow unless size is a power of 2:
      size = 2 ** 0

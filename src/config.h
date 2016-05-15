@@ -18,6 +18,8 @@ public:
 
     float const _pcmRate;
 
+    double const _cutoff = .475, _transition = .05;
+
     Config(float pcmRate)
             : _pcmRate(pcmRate) {
     }
