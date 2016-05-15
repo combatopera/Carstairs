@@ -38,6 +38,14 @@ public:
         }
     }
 
+    void range() {
+        for (index_t i = 0, n = _limit; i < n; ++i) {
+            _data[i] = (T) i;
+        }
+    }
+
+    void sinc();
+
     void blackman();
 
     T *begin() {

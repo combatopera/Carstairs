@@ -2,12 +2,12 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
+#include <cmath>
 
 BOOST_AUTO_TEST_SUITE(TestBuffer)
 
 BOOST_AUTO_TEST_CASE(blackman) {
-    Buffer<double> buf("blackman");
-    buf.setLimit(101);
+    Buffer<double> buf("blackman", 101);
     buf.blackman();
     BOOST_REQUIRE_SMALL(buf.at(0), 1e-16);
     BOOST_REQUIRE_SMALL(buf.at(1), 1e-3);
@@ -20,6 +20,15 @@ BOOST_AUTO_TEST_CASE(blackman) {
     BOOST_REQUIRE_LT(buf.at(49), buf.at(50));
     BOOST_REQUIRE_GT(buf.at(50), buf.at(51));
     BOOST_REQUIRE_GT(buf.at(99), buf.at(100));
+}
+
+BOOST_AUTO_TEST_CASE(sinc) {
+    Buffer<double> buf("sinc", 11);
+    buf.range();
+    buf.sinc();
+    BOOST_REQUIRE_EQUAL(1, buf.at(0));
+    BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(1));
+    BOOST_REQUIRE_EQUAL(sin(M_PI * 10) / (M_PI * 10), buf.at(10));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

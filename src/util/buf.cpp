@@ -47,6 +47,13 @@ template<typename T> void View<T>::copyTo(T *to) {
     memcpy(to, _data, _limit * sizeof(T));
 }
 
+template<> void View<double>::sinc() {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        double x = M_PI * _data[i];
+        _data[i] = x ? sin(x) / x : 1;
+    }
+}
+
 template<> void View<double>::blackman() {
     size_t N = _limit;
     double alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
