@@ -56,3 +56,4 @@ template<> void View<double>::blackman() {
 BUF_INSTANTIATE(int)
 BUF_INSTANTIATE(LADSPA_Data)
 BUF_INSTANTIATE(LADSPA_Data *)
+BUF_INSTANTIATE(double)
