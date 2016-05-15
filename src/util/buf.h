@@ -72,11 +72,11 @@ public:
 
     void ifft();
 
-    T *begin() {
+    T const *begin() const {
         return _data;
     }
 
-    T *end() {
+    T const *end() const {
         return _data + _limit;
     }
 
