@@ -3,10 +3,10 @@
 
 #include "../../src/config.h"
 #include "../../src/node.h"
+#include "../../src/util/buf.h"
 
 #define BOOST_TEST_MODULE Tone
 
-#include "../../src/buf.h"
 #include "../../src/node/tone.h"
 #include "../../src/state.h"
 
