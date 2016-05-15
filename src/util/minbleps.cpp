@@ -38,11 +38,9 @@ MinBLEPs::MinBLEPs(Config const *config)
         bli.mul(x.begin());
     }
     bli.mul(1. / minBlepCount * config->_cutoff * 2);
+    bli.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
+    // Everything is real after we discard the phase info here:
     /*
-     rpad = (size - kernelsize) // 2 # Observe floor of odd difference.
-     lpad = 1 + rpad
-     self.bli = np.concatenate([np.zeros(lpad), self.bli, np.zeros(rpad)])
-     # Everything is real after we discard the phase info here:
      absdft = np.abs(np.fft.fft(self.bli))
      # The "real cepstrum" is symmetric apart from its first element:
      realcepstrum = np.fft.ifft(np.log(np.maximum(self.minmag, absdft)))
