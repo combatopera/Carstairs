@@ -1,20 +1,22 @@
 #include "buf.h"
 
 #include <ladspa.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <cmath>
 #include <cstring>
 
 #include "util.h"
 
-template<typename T> View<T>::View() {
-    _limit = INITIAL_CAPACITY;
-    _data = (T *) malloc(INITIAL_CAPACITY * sizeof(T));
+template<typename T> View<T>::View(const char *label, size_t limit)
+        : _limit(limit) {
+    debug("Creating Buffer: %s", label);
+    _data = (T *) malloc(limit * sizeof(T));
 }
 
-template<typename T> Buffer<T>::Buffer(const char *label) {
-    debug("Creating Buffer: %s", label);
-    _capacity = View<T>::INITIAL_CAPACITY;
+template<typename T> Buffer<T>::Buffer(const char *label, size_t limit)
+        : View<T>(label, limit) {
+    _capacity = limit;
     _label = label;
 }
 

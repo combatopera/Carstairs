@@ -8,9 +8,7 @@ template<typename T> class View {
 
 protected:
 
-    static size_t const INITIAL_CAPACITY = 0;
-
-    View();
+    View(const char *, size_t limit);
 
     size_t _limit;
 
@@ -20,13 +18,13 @@ public:
 
     View(const View<T>& master);
 
-    size_t limit() {
+    size_t limit() const {
         return _limit;
     }
 
     void copyTo(T *to);
 
-    T at(index_t i) {
+    T at(index_t i) const {
         return _data[i];
     }
 
@@ -60,7 +58,7 @@ template<typename T> class Buffer: public View<T> {
 
 public:
 
-    Buffer(const char *label);
+    Buffer(const char *label, size_t limit = 0);
 
     ~Buffer();
 
