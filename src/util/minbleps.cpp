@@ -18,13 +18,14 @@ MinBLEPs::MinBLEPs(Config const *config)
     // XXX: Use kaiser and/or satisfy min transition?
     // Closest even order to 4/transition:
     int order = int(round(4 / config->_transition / 2)) * 2;
+    int kernelsize = order * minBlepCount + 1;
+    // The fft/ifft are too slow unless size is a power of 2:
+    int size = 2; // Can't be the trivial power as we need a midpoint.
+    while (size < kernelsize) {
+        size <<= 1;
+    }
+    int midpoint = size / 2; // Index of peak of sinc.
     /*
-     kernelsize = order * scale + 1
-     # The fft/ifft are too slow unless size is a power of 2:
-     size = 2 ** 0
-     while size < kernelsize:
-     size <<= 1
-     midpoint = size // 2 # Index of peak of sinc.
      x = (np.arange(kernelsize) / (kernelsize - 1) * 2 - 1) * order * cutoff
      # If cutoff is .5 the sinc starts and ends with zero.
      # The window is necessary for a reliable integral height later:
