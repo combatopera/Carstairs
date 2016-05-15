@@ -13,7 +13,7 @@ class State {
 
     int _midiNote = 0, _velocity = 0;
 
-#ifdef UNIT_TEST
+#ifdef DIZZYM_UNIT_TEST
 public:
 #endif
 

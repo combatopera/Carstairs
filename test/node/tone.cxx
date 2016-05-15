@@ -1,16 +1,14 @@
+#include "../../src/node/tone.h"
+
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 
 #include "../../src/config.h"
 #include "../../src/node.h"
+#include "../../src/state.h"
 #include "../../src/util/buf.h"
 
-#define BOOST_TEST_MODULE Tone
-
-#include "../../src/node/tone.h"
-#include "../../src/state.h"
-
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestTone)
 
 #define BUF(n, value, name) Buffer<int> name("name"); \
     name.setLimit(n); \
@@ -146,3 +144,5 @@ BOOST_AUTO_TEST_CASE(smallerBlocksThanPeriod) {
     v = o.render(o.cursor() + 1);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin() + 1, v.begin(), v.end());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
