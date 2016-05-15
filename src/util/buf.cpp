@@ -61,6 +61,12 @@ template<> void View<double>::mul(double value) {
     }
 }
 
+template<> void View<double>::mul(index_t i, index_t j, double value) {
+    for (; i < j; ++i) {
+        _data[i] *= value;
+    }
+}
+
 template<> void View<double>::mul(double *values) {
     for (index_t i = 0, n = _limit; i < n; ++i) {
         _data[i] *= values[i];

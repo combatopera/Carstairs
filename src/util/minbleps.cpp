@@ -45,11 +45,11 @@ MinBLEPs::MinBLEPs(Config const *config)
     realCepstrum.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
     realCepstrum.ln();
     realCepstrum.ifft(); // It's now the real cepstrum.
+    // Leave first point, zero max phase part, double min phase part to compensate.
+    // The midpoint is shared between parts so it doesn't change:
+    realCepstrum.mul(1, midpoint, 2);
+    realCepstrum.fill(midpoint + 1, size, 0);
     /*
-     # Leave first point, zero max phase part, double min phase part to compensate.
-     # The midpoint is shared between parts so it doesn't change:
-     realcepstrum[1:midpoint] *= 2
-     realcepstrum[midpoint + 1:] = 0
      self.minbli = np.fft.ifft(np.exp(np.fft.fft(realcepstrum))).real
      self.minblep = np.cumsum(self.minbli, dtype = floatdtype)
      # Prepend zeros to simplify naivex2outx calc:

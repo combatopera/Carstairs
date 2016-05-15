@@ -51,6 +51,8 @@ public:
 
     void mul(T value);
 
+    void mul(index_t i, index_t j, T value);
+
     void mul(T *values);
 
     void add(T value);
