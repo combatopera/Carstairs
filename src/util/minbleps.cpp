@@ -27,23 +27,25 @@ MinBLEPs::MinBLEPs(Config const *config)
     int midpoint = size / 2; // Index of peak of sinc.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
-    Buffer<double> absDft("absDft", kernelSize);
-    absDft.blackman();
+    Buffer<double> realCepstrum("absDft", kernelSize);
+    realCepstrum.blackman();
     {
         Buffer<double> x("x", kernelSize);
         for (int i = 0; i < kernelSize; ++i) {
             x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
         }
         x.sinc();
-        absDft.mul(x.begin());
+        realCepstrum.mul(x.begin());
     }
-    absDft.mul(1. / minBlepCount * config->_cutoff * 2);
-    absDft.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
+    realCepstrum.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
+    realCepstrum.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
     // Everything is real after we discard the phase info here:
-    absDft.absDft();
+    realCepstrum.absDft();
     // The "real cepstrum" is symmetric apart from its first element:
+    realCepstrum.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
+    realCepstrum.ln();
+    realCepstrum.ifft(); // It's now the real cepstrum.
     /*
-     realcepstrum = np.fft.ifft(np.log(np.maximum(self.minmag, absdft)))
      # Leave first point, zero max phase part, double min phase part to compensate.
      # The midpoint is shared between parts so it doesn't change:
      realcepstrum[1:midpoint] *= 2

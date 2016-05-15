@@ -97,6 +97,24 @@ template<> void View<double>::absDft() {
     fftw_free(data);
 }
 
+template<> void View<double>::ln() {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] = log(_data[i]);
+    }
+}
+
+template<> void View<double>::ifft() {
+    fftw_complex *data = (fftw_complex *) fftw_malloc(_limit * sizeof(fftw_complex));
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        data[i][0] = _data[i];
+        data[i][1] = 0;
+    }
+    fftw_plan plan = fftw_plan_dft_c2r_1d(int(_limit), data, _data, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+    fftw_free(data);
+}
+
 BUF_INSTANTIATE(int)
 BUF_INSTANTIATE(LADSPA_Data)
 BUF_INSTANTIATE(LADSPA_Data *)

@@ -57,6 +57,10 @@ public:
 
     void absDft();
 
+    void ln();
+
+    void ifft();
+
     T *begin() {
         return _data;
     }
