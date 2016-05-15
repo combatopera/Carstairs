@@ -66,6 +66,12 @@ template<> void View<double>::mul(double *values) {
     }
 }
 
+template<> void View<double>::add(double value) {
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        _data[i] += value;
+    }
+}
+
 template<> void View<double>::blackman() {
     size_t N = _limit;
     double alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;

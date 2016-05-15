@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <cstring>
 
 #include "util.h"
 
@@ -52,6 +53,8 @@ public:
 
     void mul(T *values);
 
+    void add(T value);
+
     T *begin() {
         return _data;
     }
@@ -75,6 +78,14 @@ public:
     ~Buffer();
 
     void setLimit(size_t limit);
+
+    void zeroPad(size_t left, size_t right) {
+        size_t mid = this->_limit;
+        setLimit(left + mid + right);
+        memcpy(this->_data + left, this->_data, mid * sizeof(T));
+        this->fill(0, left, 0);
+        this->fill(left + mid, this->_limit, 0);
+    }
 
     void zero();
 

@@ -4,6 +4,8 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <cmath>
 
+#include "../../src/util/util.h"
+
 BOOST_AUTO_TEST_SUITE(TestBuffer)
 
 BOOST_AUTO_TEST_CASE(blackman) {
@@ -29,6 +31,26 @@ BOOST_AUTO_TEST_CASE(sinc) {
     BOOST_REQUIRE_EQUAL(1, buf.at(0));
     BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(1));
     BOOST_REQUIRE_EQUAL(sin(M_PI * 10) / (M_PI * 10), buf.at(10));
+}
+
+BOOST_AUTO_TEST_CASE(zeroPad) {
+    Buffer<double> buf("zeroPad", 3);
+    buf.range();
+    buf.add(1);
+    buf.zeroPad(5, 2);
+    BOOST_REQUIRE_EQUAL(10, buf.limit());
+    index_t i = 0;
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(1, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(2, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(3, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(buf.limit(), i);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
