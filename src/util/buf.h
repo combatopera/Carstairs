@@ -10,7 +10,7 @@ template<typename T> class View {
 
 protected:
 
-    View(const char *, size_t limit);
+    View(char const *, size_t limit);
 
     size_t _limit;
 
@@ -86,11 +86,11 @@ template<typename T> class Buffer: public View<T> {
 
     size_t _capacity;
 
-    const char *_label;
+    char const *_label;
 
 public:
 
-    Buffer(const char *label, size_t limit = 0);
+    Buffer(char const *label, size_t limit = 0);
 
     ~Buffer();
 

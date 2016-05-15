@@ -3,7 +3,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-void debug(const char *format, ...) {
+void debug(char const *format, ...) {
 #ifdef DEBUG_dizzYM
     fprintf(stderr, "[dizzYM] ");
     va_list ap;

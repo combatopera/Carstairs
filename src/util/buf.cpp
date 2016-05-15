@@ -10,13 +10,13 @@
 
 #include "util.h"
 
-template<typename T> View<T>::View(const char *label, size_t limit)
+template<typename T> View<T>::View(char const *label, size_t limit)
         : _limit(limit) {
     debug("Creating Buffer: %s", label);
     _data = (T *) malloc(limit * sizeof(T));
 }
 
-template<typename T> Buffer<T>::Buffer(const char *label, size_t limit)
+template<typename T> Buffer<T>::Buffer(char const *label, size_t limit)
         : View<T>(label, limit) {
     _capacity = limit;
     _label = label;
