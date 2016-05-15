@@ -25,16 +25,20 @@ MinBLEPs::MinBLEPs(Config const *config)
         size <<= 1;
     }
     int midpoint = size / 2; // Index of peak of sinc.
-    Buffer<double> x("x", kernelSize);
-    for (int i = 0; i < kernelSize; ++i) {
-        x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
+    // If cutoff is .5 the sinc starts and ends with zero.
+    // The window is necessary for a reliable integral height later:
+    Buffer<double> bli("bli", kernelSize);
+    bli.blackman();
+    {
+        Buffer<double> x("x", kernelSize);
+        for (int i = 0; i < kernelSize; ++i) {
+            x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
+        }
+        x.sinc();
+        bli.mul(x.begin());
     }
-    Buffer<double> blackman("blackman", kernelSize);
-    blackman.blackman();
+    bli.mul(1. / minBlepCount * config->_cutoff * 2);
     /*
-     # If cutoff is .5 the sinc starts and ends with zero.
-     # The window is necessary for a reliable integral height later:
-     self.bli = np.blackman(kernelsize) * np.sinc(x) / scale * cutoff * 2
      rpad = (size - kernelsize) // 2 # Observe floor of odd difference.
      lpad = 1 + rpad
      self.bli = np.concatenate([np.zeros(lpad), self.bli, np.zeros(rpad)])

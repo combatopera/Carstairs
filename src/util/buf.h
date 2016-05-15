@@ -48,6 +48,10 @@ public:
 
     void blackman();
 
+    void mul(T value);
+
+    void mul(T *values);
+
     T *begin() {
         return _data;
     }
