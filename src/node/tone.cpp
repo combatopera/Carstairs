@@ -10,8 +10,7 @@ static class Square: public Buffer<int> {
 public:
 
     Square()
-            : Buffer("SQUARE") {
-        setLimit(2);
+            : Buffer("SQUARE", 2) {
         put(0, 1);
         put(1, 0);
     }

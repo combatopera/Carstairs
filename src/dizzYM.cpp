@@ -17,7 +17,7 @@ PortInfoEnum::PortInfoEnum(index_t ord)
 }
 
 dizzYM::dizzYM(float pcmRate)
-        : _portValPtrs("_portValPtrs"), //
+        : _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _config(pcmRate), //
         _state(&_config), //
@@ -25,7 +25,6 @@ dizzYM::dizzYM(float pcmRate)
         _tone(&_config, &_state), //
         _level(&_state, &_tone), //
         _chip(&_config, &_state, &_level) {
-    _portValPtrs.setLimit(PortInfo._values._n);
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {

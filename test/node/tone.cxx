@@ -10,8 +10,7 @@
 
 BOOST_AUTO_TEST_SUITE(TestTone)
 
-#define BUF(n, value, name) Buffer<int> name("name"); \
-    name.setLimit(n); \
+#define BUF(n, value, name) Buffer<int> name("name", n); \
     name.fill(0, n, value);
 
 BOOST_AUTO_TEST_CASE(works) {
