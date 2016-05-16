@@ -24,7 +24,7 @@ public:
             : _pcmRate(pcmRate) {
     }
 
-    float pluginClock() const {
+    float workingClock() const {
         return _nominalClock / YM2149_ATOM_SIZE * float(_atomSize);
     }
 

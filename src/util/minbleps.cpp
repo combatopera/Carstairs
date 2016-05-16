@@ -10,9 +10,9 @@
 #include "util.h"
 
 MinBLEPs::MinBLEPs(Config const *config)
-        : _scale((int) roundf(config->pluginClock() / config->_pcmRate)) {
+        : _scale((int) roundf(config->workingClock() / config->_pcmRate)) {
     // FIXME LATER: Do the right thing if these aren't integers.
-    int naiveRate = int(roundf(config->pluginClock()));
+    int naiveRate = int(roundf(config->workingClock()));
     int pcmRate = int(roundf(config->_pcmRate));
     int minBlepCount = naiveRate / boost::math::gcd(naiveRate, pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
