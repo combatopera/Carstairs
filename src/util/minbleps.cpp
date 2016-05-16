@@ -66,9 +66,9 @@ MinBLEPs::MinBLEPs(Config const *config)
     // Append ones so that all mixins have the same length:
     int const mixinSize = (int(accumulator.limit()) + minBlepCount - 1) / minBlepCount;
     accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
+    // The naiverate and outrate will line up at 1 second:
+    int const dualScale = pcmRate / boost::math::gcd(naiveRate, pcmRate);
     /*
-     # The naiverate and outrate will line up at 1 second:
-     dualscale = outrate // fractions.gcd(naiverate, outrate)
      nearest = np.arange(naiverate, dtype = np.int32) * dualscale
      self.naivex2outx = nearest // scale
      self.naivex2shape = self.naivex2outx * scale - nearest + scale - 1
