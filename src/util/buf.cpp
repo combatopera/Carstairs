@@ -59,21 +59,9 @@ template<> void View<double>::mul(index_t i, index_t j, double value) {
     }
 }
 
-template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
-    for (; i < j; ++i) {
-        _data[i] *= value;
-    }
-}
-
 template<> void View<double>::mul(double const *values) {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] *= values[i];
-    }
-}
-
-template<> void View<std::complex<double>>::fill(double const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] = values[i];
     }
 }
 
@@ -101,26 +89,6 @@ template<> void View<double>::fillAbs(std::complex<double> const *values) {
     }
 }
 
-template<> void View<std::complex<double>>::fft() {
-    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
-    FFTW_FORWARD, FFTW_ESTIMATE);
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-}
-
-template<> void View<std::complex<double>>::ifft() {
-    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
-    FFTW_BACKWARD, FFTW_ESTIMATE);
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-}
-
-template<> void View<std::complex<double>>::exp() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] = std::exp(_data[i]);
-    }
-}
-
 template<> void View<double>::ln() {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = log(_data[i]);
@@ -138,6 +106,38 @@ template<> void View<double>::integrate() {
     for (index_t i = 0, n = _limit; i < n; ++i) {
         sum += _data[i];
         _data[i] = sum;
+    }
+}
+
+template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
+    for (; i < j; ++i) {
+        _data[i] *= value;
+    }
+}
+
+template<> void View<std::complex<double>>::fill(double const *values) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = values[i];
+    }
+}
+
+template<> void View<std::complex<double>>::fft() {
+    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+}
+
+template<> void View<std::complex<double>>::ifft() {
+    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    FFTW_BACKWARD, FFTW_ESTIMATE);
+    fftw_execute(plan);
+    fftw_destroy_plan(plan);
+}
+
+template<> void View<std::complex<double>>::exp() {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = std::exp(_data[i]);
     }
 }
 
