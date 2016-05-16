@@ -3,6 +3,7 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <cmath>
+#include <complex>
 
 #include "../../src/util/util.h"
 
@@ -63,6 +64,18 @@ BOOST_AUTO_TEST_CASE(integrate) {
     BOOST_REQUIRE_EQUAL(1 + 2, buf.at(i++));
     BOOST_REQUIRE_EQUAL(1 + 2 + 3, buf.at(i++));
     BOOST_REQUIRE_EQUAL(buf.limit(), i);
+}
+
+BOOST_AUTO_TEST_CASE(fft) {
+    size_t n = 1024;
+    Buffer<std::complex<double>> buf("fft", n);
+    buf.range();
+    buf.fft();
+    buf.ifft();
+    for (index_t i = 0; i < n; ++i) {
+        BOOST_REQUIRE_CLOSE_FRACTION(i, buf.at(i).real() / double(n), 1e-14);
+        BOOST_REQUIRE_SMALL(buf.at(i).imag(), 1e-9);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
