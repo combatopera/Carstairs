@@ -50,14 +50,14 @@ template<typename T> void View<T>::copyTo(T *to) {
 }
 
 template<> void View<double>::sinc() {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         double x = M_PI * _data[i];
         _data[i] = x ? sin(x) / x : 1;
     }
 }
 
 template<> void View<double>::mul(double value) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] *= value;
     }
 }
@@ -75,19 +75,19 @@ template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::compl
 }
 
 template<> void View<double>::mul(double const *values) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] *= values[i];
     }
 }
 
 template<> void View<std::complex<double>>::fill(double const *values) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = values[i];
     }
 }
 
 template<> void View<double>::add(double value) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] += value;
     }
 }
@@ -105,7 +105,7 @@ static double abs(std::complex<double> const& c) {
 }
 
 template<> void View<double>::fillAbs(std::complex<double> const *values) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = abs(values[i]);
     }
 }
@@ -125,20 +125,20 @@ template<> void View<std::complex<double>>::ifft() {
 }
 
 template<> void View<std::complex<double>>::exp() {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = std::exp(_data[i]);
     }
 }
 
 template<> void View<double>::ln() {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = log(_data[i]);
     }
 }
 
 template<> void View<double>::ifft() {
     fftw_complex *data = (fftw_complex *) fftw_malloc(_limit * sizeof(fftw_complex));
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         data[i][0] = _data[i];
         data[i][1] = 0;
     }
@@ -149,7 +149,7 @@ template<> void View<double>::ifft() {
 }
 
 template<> void View<double>::fillReal(std::complex<double> const *values) {
-    for (index_t i = 0, n = _limit; i < n; ++i) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = values[i].real();
     }
 }

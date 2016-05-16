@@ -4,6 +4,8 @@
 #include <climits>
 
 typedef size_t index_t;
+size_t const SIZE_WRAP = size_t(0) - 1;
+
 typedef unsigned long cursor_t;
 cursor_t const CURSOR_MAX = ULONG_MAX;
 
