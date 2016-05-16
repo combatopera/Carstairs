@@ -48,19 +48,16 @@ MinBLEPs::MinBLEPs(Config const *config)
     // The "real cepstrum" is symmetric apart from its first element:
     realCepstrum.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
     realCepstrum.ln();
-    realCepstrum.ifft(); // It's now the real cepstrum.
+    fftAppliance.fill(realCepstrum.begin());
+    fftAppliance.ifft(); // It's now the real cepstrum.
     // Leave first point, zero max phase part, double min phase part to compensate.
     // The midpoint is shared between parts so it doesn't change:
-    realCepstrum.mul(1, midpoint, 2);
-    realCepstrum.fill(midpoint + 1, size, 0);
-    {
-        Buffer<std::complex<double>> tmp("tmp", size);
-        tmp.fill(realCepstrum.begin());
-        tmp.fft();
-        tmp.exp();
-        tmp.ifft();
-        realCepstrum.fillReal(tmp.begin()); // It's now a min-phase BLI.
-    }
+    fftAppliance.mul(1, midpoint, std::complex<double>(2));
+    fftAppliance.fill(midpoint + 1, size, std::complex<double>(0));
+    fftAppliance.fft();
+    fftAppliance.exp();
+    fftAppliance.ifft();
+    realCepstrum.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
     /*
      self.minblep = np.cumsum(self.minbli, dtype = floatdtype)
      # Prepend zeros to simplify naivex2outx calc:
