@@ -39,7 +39,7 @@ MinBLEPs::MinBLEPs(Config const *config)
         accumulator.mul(sinc.begin());
     }
     accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
-    accumulator.zeroPad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2);
+    accumulator.pad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2, 0);
     // Everything is real after we discard the phase info here:
     Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
     fftAppliance.fill(accumulator.begin());
@@ -59,9 +59,9 @@ MinBLEPs::MinBLEPs(Config const *config)
     fftAppliance.ifft();
     accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
     accumulator.integrate(); // It's now a minBLEP!
+    // Prepend zeros to simplify naivex2outx calc:
+    accumulator.pad(minBlepCount - 1, 0, 0);
     /*
-     # Prepend zeros to simplify naivex2outx calc:
-     self.minblep = np.append(np.zeros(scale - 1, floatdtype), self.minblep)
      # Append ones so that all mixins have the same length:
      ones = (-len(self.minblep)) % scale
      self.minblep = np.append(self.minblep, np.ones(ones, floatdtype))

@@ -116,12 +116,12 @@ public:
 
     void setLimit(size_t limit);
 
-    void zeroPad(size_t left, size_t right) {
+    void pad(size_t left, size_t right, T value) {
         size_t mid = this->_limit;
         setLimit(left + mid + right);
         memcpy(this->_data + left, this->_data, mid * sizeof(T));
-        this->fill(0, left, 0);
-        this->fill(left + mid, this->_limit, 0);
+        this->fill(0, left, value);
+        this->fill(left + mid, this->_limit, value);
     }
 
 };
