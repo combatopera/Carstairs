@@ -53,4 +53,16 @@ BOOST_AUTO_TEST_CASE(zeroPad) {
     BOOST_REQUIRE_EQUAL(buf.limit(), i);
 }
 
+BOOST_AUTO_TEST_CASE(integrate) {
+    Buffer<double> buf("integrate", 3);
+    buf.range();
+    buf.add(1);
+    buf.integrate();
+    index_t i = 0;
+    BOOST_REQUIRE_EQUAL(1, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(1 + 2, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(1 + 2 + 3, buf.at(i++));
+    BOOST_REQUIRE_EQUAL(buf.limit(), i);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
