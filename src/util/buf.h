@@ -48,12 +48,6 @@ public:
         }
     }
 
-    void range() {
-        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-            _data[i] = (T) i;
-        }
-    }
-
     void zero() {
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
     }
@@ -71,6 +65,8 @@ public:
         }
         throw "out of bounds";
     }
+
+    void range();
 
     void sinc();
 

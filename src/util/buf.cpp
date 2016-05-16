@@ -109,6 +109,18 @@ template<> void View<double>::integrate() {
     }
 }
 
+template<> void View<double>::range() {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = double(i);
+    }
+}
+
+template<> void View<std::complex<double>>::range() {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = double(i);
+    }
+}
+
 template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
     for (; i < j; ++i) {
         _data[i] *= value;
