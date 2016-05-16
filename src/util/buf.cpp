@@ -154,6 +154,14 @@ template<> void View<double>::fillReal(std::complex<double> const *values) {
     }
 }
 
+template<> void View<double>::integrate() {
+    double sum = 0;
+    for (index_t i = 0, n = _limit; i < n; ++i) {
+        sum += _data[i];
+        _data[i] = sum;
+    }
+}
+
 BUF_INSTANTIATE(int)
 BUF_INSTANTIATE(LADSPA_Data)
 BUF_INSTANTIATE(LADSPA_Data *)

@@ -72,6 +72,8 @@ public:
 
     void ifft();
 
+    void integrate();
+
     T const *begin() const {
         return _data;
     }

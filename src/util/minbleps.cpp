@@ -58,8 +58,8 @@ MinBLEPs::MinBLEPs(Config const *config)
     fftAppliance.exp();
     fftAppliance.ifft();
     realCepstrum.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
+    realCepstrum.integrate(); // It's now a minBLEP!
     /*
-     self.minblep = np.cumsum(self.minbli, dtype = floatdtype)
      # Prepend zeros to simplify naivex2outx calc:
      self.minblep = np.append(np.zeros(scale - 1, floatdtype), self.minblep)
      # Append ones so that all mixins have the same length:
