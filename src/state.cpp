@@ -25,7 +25,7 @@ void State::noteOn(cursor_t cursor, int midiNote, int velocity) {
     _offOrMax = CURSOR_MAX;
     _velocity = velocity;
     float freq = _config->_refFreq * powf(2, float(midiNote - _config->_refMidiNote) / float(_config->_semitones));
-    _TP = TP_BOUNDS.clamp((int) roundf(_config->workingClock() / (16 * freq)));
+    _TP = TP_BOUNDS.clamp((int) roundf(_config->_nominalClock / (16 * freq)));
 }
 
 void State::noteOff(cursor_t cursor, int midiNote) {
