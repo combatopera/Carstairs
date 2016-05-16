@@ -2,6 +2,8 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
+#include <stddef.h>
+#include <array>
 #include <cmath>
 #include <complex>
 
@@ -39,8 +41,8 @@ BOOST_AUTO_TEST_CASE(zeroPad) {
     buf.range();
     buf.add(1);
     buf.zeroPad(5, 2);
-    double expected[] {0, 0, 0, 0, 0, 1, 2, 3, 0, 0};
-    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected, expected + 10, buf.begin(), buf.end());
+    std::array<double, 10> expected {0, 0, 0, 0, 0, 1, 2, 3, 0, 0};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 
 BOOST_AUTO_TEST_CASE(integrate) {
@@ -48,11 +50,8 @@ BOOST_AUTO_TEST_CASE(integrate) {
     buf.range();
     buf.add(1);
     buf.integrate();
-    index_t i = 0;
-    BOOST_REQUIRE_EQUAL(1, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(1 + 2, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(1 + 2 + 3, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(buf.limit(), i);
+    std::array<double, 3> expected {1, 1 + 2, 1 + 2 + 3};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 
 BOOST_AUTO_TEST_CASE(fft) {
