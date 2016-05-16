@@ -28,27 +28,27 @@ MinBLEPs::MinBLEPs(Config const *config)
     int midpoint = size / 2; // Index of peak of sinc.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
-    Buffer<double> realCepstrum("absDft", kernelSize);
-    realCepstrum.blackman();
+    Buffer<double> accumulator("accumulator", kernelSize);
+    accumulator.blackman();
     {
-        Buffer<double> x("x", kernelSize);
+        Buffer<double> sinc("sinc", kernelSize);
         for (int i = 0; i < kernelSize; ++i) {
-            x.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
+            sinc.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
         }
-        x.sinc();
-        realCepstrum.mul(x.begin());
+        sinc.sinc();
+        accumulator.mul(sinc.begin());
     }
-    realCepstrum.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
-    realCepstrum.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
+    accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
+    accumulator.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
     // Everything is real after we discard the phase info here:
     Buffer<std::complex<double>> fftAppliance("fftAppliance", size);
-    fftAppliance.fill(realCepstrum.begin());
+    fftAppliance.fill(accumulator.begin());
     fftAppliance.fft();
-    realCepstrum.fillAbs(fftAppliance.begin());
+    accumulator.fillAbs(fftAppliance.begin());
     // The "real cepstrum" is symmetric apart from its first element:
-    realCepstrum.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
-    realCepstrum.ln();
-    fftAppliance.fill(realCepstrum.begin());
+    accumulator.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
+    accumulator.ln();
+    fftAppliance.fill(accumulator.begin());
     fftAppliance.ifft(); // It's now the real cepstrum.
     // Leave first point, zero max phase part, double min phase part to compensate.
     // The midpoint is shared between parts so it doesn't change:
@@ -57,8 +57,8 @@ MinBLEPs::MinBLEPs(Config const *config)
     fftAppliance.fft();
     fftAppliance.exp();
     fftAppliance.ifft();
-    realCepstrum.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
-    realCepstrum.integrate(); // It's now a minBLEP!
+    accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
+    accumulator.integrate(); // It's now a minBLEP!
     /*
      # Prepend zeros to simplify naivex2outx calc:
      self.minblep = np.append(np.zeros(scale - 1, floatdtype), self.minblep)
