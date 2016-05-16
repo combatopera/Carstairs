@@ -40,32 +40,33 @@ MinBLEPs::MinBLEPs(Config const *config)
     }
     accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
     accumulator.pad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2, 0);
-    // Everything is real after we discard the phase info here:
-    Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
-    fftAppliance.fill(accumulator.begin());
-    fftAppliance.fft();
-    accumulator.fillAbs(fftAppliance.begin());
-    // The "real cepstrum" is symmetric apart from its first element:
-    accumulator.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
-    accumulator.ln();
-    fftAppliance.fill(accumulator.begin());
-    fftAppliance.ifft(); // It's now the real cepstrum.
-    // Leave first point, zero max phase part, double min phase part to compensate.
-    // The midpoint is shared between parts so it doesn't change:
-    fftAppliance.mul(1, midpoint, std::complex<double>(2));
-    fftAppliance.fill(midpoint + 1, fftSize, std::complex<double>(0));
-    fftAppliance.fft();
-    fftAppliance.exp();
-    fftAppliance.ifft();
-    accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
+    {
+        Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
+        fftAppliance.fill(accumulator.begin());
+        fftAppliance.fft();
+        // Everything is real after we discard the phase info here:
+        accumulator.fillAbs(fftAppliance.begin());
+        // The "real cepstrum" is symmetric apart from its first element:
+        accumulator.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
+        accumulator.ln();
+        fftAppliance.fill(accumulator.begin());
+        fftAppliance.ifft(); // It's now the real cepstrum.
+        // Leave first point, zero max phase part, double min phase part to compensate.
+        // The midpoint is shared between parts so it doesn't change:
+        fftAppliance.mul(1, midpoint, std::complex<double>(2));
+        fftAppliance.fill(midpoint + 1, fftSize, std::complex<double>(0));
+        fftAppliance.fft();
+        fftAppliance.exp();
+        fftAppliance.ifft();
+        accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
+    }
     accumulator.integrate(); // It's now a minBLEP!
     // Prepend zeros to simplify naivex2outx calc:
     accumulator.pad(minBlepCount - 1, 0, 0);
+    // Append ones so that all mixins have the same length:
+    int const mixinSize = (int(accumulator.limit()) + minBlepCount - 1) / minBlepCount;
+    accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
     /*
-     # Append ones so that all mixins have the same length:
-     ones = (-len(self.minblep)) % scale
-     self.minblep = np.append(self.minblep, np.ones(ones, floatdtype))
-     self.mixinsize = len(self.minblep) // scale
      # The naiverate and outrate will line up at 1 second:
      dualscale = outrate // fractions.gcd(naiverate, outrate)
      nearest = np.arange(naiverate, dtype = np.int32) * dualscale
