@@ -39,19 +39,8 @@ BOOST_AUTO_TEST_CASE(zeroPad) {
     buf.range();
     buf.add(1);
     buf.zeroPad(5, 2);
-    BOOST_REQUIRE_EQUAL(10, buf.limit());
-    index_t i = 0;
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(1, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(2, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(3, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(0, buf.at(i++));
-    BOOST_REQUIRE_EQUAL(buf.limit(), i);
+    double expected[] {0, 0, 0, 0, 0, 1, 2, 3, 0, 0};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected, expected + 10, buf.begin(), buf.end());
 }
 
 BOOST_AUTO_TEST_CASE(integrate) {
