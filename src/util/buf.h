@@ -60,7 +60,7 @@ public:
 
     void add(T value);
 
-    void absDft();
+    void fillAbs(std::complex<double> const *);
 
     void fft();
 

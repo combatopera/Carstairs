@@ -41,7 +41,10 @@ MinBLEPs::MinBLEPs(Config const *config)
     realCepstrum.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
     realCepstrum.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
     // Everything is real after we discard the phase info here:
-    realCepstrum.absDft();
+    Buffer<std::complex<double>> fftAppliance("fftAppliance", size);
+    fftAppliance.fill(realCepstrum.begin());
+    fftAppliance.fft();
+    realCepstrum.fillAbs(fftAppliance.begin());
     // The "real cepstrum" is symmetric apart from its first element:
     realCepstrum.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
     realCepstrum.ln();

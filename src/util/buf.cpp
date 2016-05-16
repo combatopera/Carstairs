@@ -94,20 +94,14 @@ template<> void View<double>::blackman() {
     }
 }
 
-static double abs(fftw_complex& c) {
-    return sqrt(c[0] * c[0] + c[1] * c[1]);
+static double abs(std::complex<double> const& c) {
+    return sqrt(c.real() * c.real() + c.imag() * c.imag());
 }
 
-template<> void View<double>::absDft() {
-    fftw_complex *data = (fftw_complex *) fftw_malloc(_limit * sizeof(fftw_complex));
-    // Allegedly FFTW_ESTIMATE doesn't trash our _data array:
-    fftw_plan plan = fftw_plan_dft_r2c_1d(int(_limit), _data, data, FFTW_ESTIMATE);
-    fftw_execute(plan);
+template<> void View<double>::fillAbs(std::complex<double> const *values) {
     for (index_t i = 0, n = _limit; i < n; ++i) {
-        _data[i] = abs(data[i]);
+        _data[i] = abs(values[i]);
     }
-    fftw_destroy_plan(plan);
-    fftw_free(data);
 }
 
 template<> void View<std::complex<double>>::fft() {
