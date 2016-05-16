@@ -76,6 +76,10 @@ public:
 
     void integrate();
 
+    void zero() {
+        memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
+    }
+
     T const *begin() const {
         return _data;
     }
@@ -106,10 +110,6 @@ public:
         memcpy(this->_data + left, this->_data, mid * sizeof(T));
         this->fill(0, left, 0);
         this->fill(left + mid, this->_limit, 0);
-    }
-
-    void zero() {
-        memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
     }
 
 };
