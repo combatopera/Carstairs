@@ -44,8 +44,14 @@ public:
 
     void fill(double const *values);
 
+    void fill(T value) {
+        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+            _data[i] = value;
+        }
+    }
+
     void range() {
-        for (index_t i = 0, n = _limit; i < n; ++i) {
+        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
             _data[i] = (T) i;
         }
     }

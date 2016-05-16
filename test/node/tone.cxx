@@ -11,7 +11,7 @@
 BOOST_AUTO_TEST_SUITE(TestTone)
 
 #define BUF(n, value, name) Buffer<int> name("name", n); \
-    name.fill(0, n, value);
+    name.fill(value);
 
 BOOST_AUTO_TEST_CASE(works) {
     Config config(44100);
