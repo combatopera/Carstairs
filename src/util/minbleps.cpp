@@ -12,20 +12,20 @@
 MinBLEPs::MinBLEPs(Config const *config)
         : _scale((int) roundf(config->workingClock() / config->_pcmRate)) {
     // FIXME LATER: Do the right thing if these aren't integers.
-    int naiveRate = int(roundf(config->workingClock()));
-    int pcmRate = int(roundf(config->_pcmRate));
-    int minBlepCount = naiveRate / boost::math::gcd(naiveRate, pcmRate); // FIXME LATER: This could be huge.
+    int const naiveRate = int(roundf(config->workingClock()));
+    int const pcmRate = int(roundf(config->_pcmRate));
+    int const minBlepCount = naiveRate / boost::math::gcd(naiveRate, pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
     // XXX: Use kaiser and/or satisfy min transition?
     // Closest even order to 4/transition:
-    int order = int(round(4 / config->_transition / 2)) * 2;
-    int kernelSize = order * minBlepCount + 1;
+    int const order = int(round(4 / config->_transition / 2)) * 2;
+    int const kernelSize = order * minBlepCount + 1; // Odd.
     // The fft/ifft are too slow unless size is a power of 2:
-    int size = 2; // Can't be the trivial power as we need a midpoint.
-    while (size < kernelSize) {
-        size <<= 1;
+    int fftSize = 2; // Can't be the trivial power as we need a midpoint.
+    while (fftSize < kernelSize) {
+        fftSize <<= 1;
     }
-    int midpoint = size / 2; // Index of peak of sinc.
+    int const midpoint = fftSize / 2; // Index of peak of sinc.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
     Buffer<double> accumulator("accumulator", kernelSize);
@@ -39,9 +39,9 @@ MinBLEPs::MinBLEPs(Config const *config)
         accumulator.mul(sinc.begin());
     }
     accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
-    accumulator.zeroPad((size - kernelSize + 1) / 2, (size - kernelSize - 1) / 2);
+    accumulator.zeroPad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2);
     // Everything is real after we discard the phase info here:
-    Buffer<std::complex<double>> fftAppliance("fftAppliance", size);
+    Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
     fftAppliance.fill(accumulator.begin());
     fftAppliance.fft();
     accumulator.fillAbs(fftAppliance.begin());
@@ -53,7 +53,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     // Leave first point, zero max phase part, double min phase part to compensate.
     // The midpoint is shared between parts so it doesn't change:
     fftAppliance.mul(1, midpoint, std::complex<double>(2));
-    fftAppliance.fill(midpoint + 1, size, std::complex<double>(0));
+    fftAppliance.fill(midpoint + 1, fftSize, std::complex<double>(0));
     fftAppliance.fft();
     fftAppliance.exp();
     fftAppliance.ifft();
