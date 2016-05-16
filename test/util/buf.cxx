@@ -36,12 +36,12 @@ BOOST_AUTO_TEST_CASE(sinc) {
     BOOST_REQUIRE_EQUAL(sin(M_PI * 10) / (M_PI * 10), buf.at(10));
 }
 
-BOOST_AUTO_TEST_CASE(zeroPad) {
-    Buffer<double> buf("zeroPad", 3);
+BOOST_AUTO_TEST_CASE(pad) {
+    Buffer<double> buf("pad", 3);
     buf.range();
     buf.add(1);
-    buf.zeroPad(5, 2);
-    std::array<double, 10> expected {0, 0, 0, 0, 0, 1, 2, 3, 0, 0};
+    buf.pad(5, 2, 8);
+    std::array<double, 10> expected {8, 8, 8, 8, 8, 1, 2, 3, 8, 8};
     BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 
