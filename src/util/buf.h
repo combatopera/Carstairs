@@ -18,7 +18,7 @@ protected:
 
 public:
 
-    View(const View<T>& master);
+    View(View<T> const& master);
 
     size_t limit() const {
         return _limit;

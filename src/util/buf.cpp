@@ -21,7 +21,7 @@ template<typename T> Buffer<T>::Buffer(char const *label, size_t limit)
     _label = label;
 }
 
-template<typename T> View<T>::View(const View<T>& master)
+template<typename T> View<T>::View(View<T> const& master)
         : _limit(master._limit), _data(master._data) {
     // Nothing else.
 }
