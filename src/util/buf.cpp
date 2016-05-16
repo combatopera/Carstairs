@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <cmath>
 #include <complex>
-#include <cstring>
 
 #include "util.h"
 
@@ -39,14 +38,6 @@ template<typename T> void Buffer<T>::setLimit(size_t limit) {
         this->_capacity = limit;
     }
     this->_limit = limit;
-}
-
-template<typename T> void Buffer<T>::zero() {
-    memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
-}
-
-template<typename T> void View<T>::copyTo(T *to) {
-    memcpy(to, _data, _limit * sizeof(T));
 }
 
 template<> void View<double>::sinc() {
@@ -134,18 +125,6 @@ template<> void View<double>::ln() {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = log(_data[i]);
     }
-}
-
-template<> void View<double>::ifft() {
-    fftw_complex *data = (fftw_complex *) fftw_malloc(_limit * sizeof(fftw_complex));
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        data[i][0] = _data[i];
-        data[i][1] = 0;
-    }
-    fftw_plan plan = fftw_plan_dft_c2r_1d(int(_limit), data, _data, FFTW_ESTIMATE);
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-    fftw_free(data);
 }
 
 template<> void View<double>::fillReal(std::complex<double> const *values) {

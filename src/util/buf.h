@@ -24,7 +24,9 @@ public:
         return _limit;
     }
 
-    void copyTo(T *to);
+    void copyTo(T *to) const {
+        memcpy(to, _data, _limit * sizeof(T));
+    }
 
     T at(index_t i) const {
         return _data[i];
@@ -106,7 +108,9 @@ public:
         this->fill(left + mid, this->_limit, 0);
     }
 
-    void zero();
+    void zero() {
+        memset(this->_data, 0, this->_limit * sizeof(T)); // Not portable in float case.
+    }
 
 };
 
