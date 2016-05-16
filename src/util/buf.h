@@ -72,8 +72,6 @@ public:
         throw "out of bounds";
     }
 
-    void fill(double const *values);
-
     void sinc();
 
     void blackman();
@@ -82,23 +80,25 @@ public:
 
     void mul(index_t i, index_t j, T value);
 
-    void mul(T const *values);
+    void mul(T const *);
 
     void add(T value);
 
     void fillAbs(std::complex<double> const *);
 
-    void fft();
-
-    void exp();
-
     void fillReal(std::complex<double> const *);
 
     void ln();
 
+    void integrate();
+
+    void fill(double const *);
+
+    void fft();
+
     void ifft();
 
-    void integrate();
+    void exp();
 
 };
 
