@@ -68,10 +68,15 @@ MinBLEPs::MinBLEPs(Config const *config)
     accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
     // The naiverate and outrate will line up at 1 second:
     int const dualScale = pcmRate / boost::math::gcd(naiveRate, pcmRate);
+    Buffer<int> naivex2outx("naivex2outx", naiveRate);
+    for (int i = 0; i < naiveRate; ++i) {
+        naivex2outx[i] = i * dualScale / minBlepCount;
+    }
+    Buffer<int> naivex2shape("naivex2shape", naiveRate);
+    for (int i = 0; i < naiveRate; ++i) {
+        naivex2shape[i] = naivex2outx[i] * minBlepCount - i * dualScale + minBlepCount - 1;
+    }
     /*
-     nearest = np.arange(naiverate, dtype = np.int32) * dualscale
-     self.naivex2outx = nearest // scale
-     self.naivex2shape = self.naivex2outx * scale - nearest + scale - 1
      self.demultiplexed = np.empty(self.minblep.shape, dtype = self.minblep.dtype)
      for i in xrange(scale):
      self.demultiplexed[i * self.mixinsize:(i + 1) * self.mixinsize] = self.minblep[i::scale]
