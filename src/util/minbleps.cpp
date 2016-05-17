@@ -97,7 +97,7 @@ cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
     return pcmCount * _scale; // FIXME: Do it properly.
 }
 
-cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
+cursor_t MinBLEPs::getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount) const {
     int pcmX = _naiveXToPcmX[naiveX] + pcmCount;
     int shift = pcmX / _pcmRate;
     pcmX -= _pcmRate * shift;
