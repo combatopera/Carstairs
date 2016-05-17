@@ -65,12 +65,6 @@ template<> void View<double>::mul(double const *values) {
     }
 }
 
-template<> void View<double>::add(double value) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] += value;
-    }
-}
-
 template<> void View<double>::blackman() {
     size_t N = _limit;
     double alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
@@ -101,26 +95,32 @@ template<> void View<double>::fillReal(std::complex<double> const *values) {
     }
 }
 
-template<> void View<double>::integrate() {
-    double sum = 0;
-    for (index_t i = 0, n = _limit; i < n; ++i) {
-        sum += _data[i];
-        _data[i] = sum;
-    }
+#define NUMERICS(T) template<> void View<T>::integrate() { \
+    T sum = 0; \
+    for (index_t i = 0, n = _limit; i < n; ++i) { \
+        sum += _data[i]; \
+        _data[i] = sum; \
+    } \
+} \
+template<> void View<T>::differentiate(T context) { \
+    for (index_t i = _limit - 1; i > 0; --i) { \
+        _data[i] -= _data[i - 1]; \
+    } \
+    _data[0] -= context; \
+} \
+template<> void View<T>::range() { \
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+        _data[i] = T(i); \
+    } \
+} \
+template<> void View<T>::add(T value) { \
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+        _data[i] += value; \
+    } \
 }
 
-template<> void View<double>::differentiate(double context) {
-    for (index_t i = _limit - 1; i > 0; --i) {
-        _data[i] -= _data[i - 1];
-    }
-    _data[0] -= context;
-}
-
-template<> void View<double>::range() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] = double(i);
-    }
-}
+NUMERICS(float)
+NUMERICS(double)
 
 template<> void View<std::complex<double>>::range() {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
@@ -134,7 +134,7 @@ template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::compl
     }
 }
 
-template<> void View<std::complex<double>>::fill(double const *values) {
+template<> void View<std::complex<double>>::fillWidening(double const *values) {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = values[i];
     }

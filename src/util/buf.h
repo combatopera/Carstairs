@@ -48,6 +48,12 @@ public:
         }
     }
 
+    void fill(T const *values) {
+        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+            _data[i] = values[i];
+        }
+    }
+
     void zero() {
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
     }
@@ -90,7 +96,7 @@ public:
 
     void integrate();
 
-    void fill(double const *);
+    void fillWidening(double const *);
 
     void fft();
 
