@@ -82,8 +82,11 @@ MinBLEPs::MinBLEPs(Config const *config)
             demultiplexed.put(i * mixinSize + j, accumulator.at(i + minBlepCount * j));
         }
     }
+    Buffer<int> naivex2off("naivex2off", naiveRate);
+    for (int i = 0; i < naiveRate; ++i) {
+        naivex2off.put(i, naivex2shape.at(i) * mixinSize);
+    }
     /*
-     self.naivex2off = self.naivex2shape * self.mixinsize
      self.outx2minnaivex = np.empty(outrate, dtype = self.naivex2outx.dtype)
      for naivex in xrange(naiverate - 1, -1, -1):
      self.outx2minnaivex[self.naivex2outx[naivex]] = naivex
