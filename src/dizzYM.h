@@ -50,7 +50,7 @@ class dizzYM {
 
 public:
 
-    dizzYM(float pcmRate);
+    dizzYM(int pcmRate);
 
     void reset();
 

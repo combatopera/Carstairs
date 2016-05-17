@@ -16,7 +16,7 @@ PortInfoEnum::PortInfoEnum(index_t ord)
     debug("Constructed the PortInfoEnum.");
 }
 
-dizzYM::dizzYM(float pcmRate)
+dizzYM::dizzYM(int pcmRate)
         : _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _config(pcmRate), //

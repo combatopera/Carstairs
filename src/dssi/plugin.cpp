@@ -9,7 +9,7 @@
 
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, cursor_t SampleRate) {
     debug("LADSPA: instantiate");
-    return new dizzYM((float) SampleRate);
+    return new dizzYM(int(SampleRate));
 }
 
 static void activate(LADSPA_Handle Instance) {

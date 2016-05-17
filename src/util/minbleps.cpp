@@ -10,10 +10,9 @@
 #include "util.h"
 
 MinBLEPs::MinBLEPs(Config const *config)
-        : _scale((int) roundf(config->workingClock() / config->_pcmRate)) {
-    // FIXME LATER: Do the right thing if these aren't integers.
-    _naiveRate = int(roundf(config->workingClock()));
-    _pcmRate = int(roundf(config->_pcmRate));
+        : _scale((int) roundf(float(config->naiveRate()) / float(config->_pcmRate))) {
+    _naiveRate = config->naiveRate();
+    _pcmRate = config->_pcmRate;
     int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
     // XXX: Use kaiser and/or satisfy min transition?

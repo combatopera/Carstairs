@@ -14,18 +14,18 @@ public:
 
     int const _semitones = 12;
 
-    float const _nominalClock = 2000000;
+    int const _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
 
-    float const _pcmRate;
+    int const _pcmRate; // DSSI doesn't support non-integer rates.
 
     double const _cutoff = .475, _transition = .05;
 
-    Config(float pcmRate)
+    Config(int pcmRate)
             : _pcmRate(pcmRate) {
     }
 
-    float workingClock() const {
-        return _nominalClock / YM2149_ATOM_SIZE * float(_atomSize);
+    int naiveRate() const {
+        return _nominalClock * _atomSize / YM2149_ATOM_SIZE; // TODO LATER: Enforce exact division.
     }
 
 };
