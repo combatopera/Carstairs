@@ -12,9 +12,9 @@
 MinBLEPs::MinBLEPs(Config const *config)
         : _scale((int) roundf(config->workingClock() / config->_pcmRate)) {
     // FIXME LATER: Do the right thing if these aren't integers.
-    int const naiveRate = int(roundf(config->workingClock()));
-    int const pcmRate = int(roundf(config->_pcmRate));
-    int const minBlepCount = naiveRate / boost::math::gcd(naiveRate, pcmRate); // FIXME LATER: This could be huge.
+    _naiveRate = int(roundf(config->workingClock()));
+    _pcmRate = int(roundf(config->_pcmRate));
+    int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
     // XXX: Use kaiser and/or satisfy min transition?
     // Closest even order to 4/transition:
@@ -67,14 +67,14 @@ MinBLEPs::MinBLEPs(Config const *config)
     int const mixinSize = (int(accumulator.limit()) + minBlepCount - 1) / minBlepCount;
     accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
     // The naiverate and outrate will line up at 1 second:
-    int const dualScale = pcmRate / boost::math::gcd(naiveRate, pcmRate);
-    Buffer<int> naivex2outx("naivex2outx", naiveRate);
-    for (int i = 0; i < naiveRate; ++i) {
-        naivex2outx.put(i, i * dualScale / minBlepCount);
+    int const dualScale = _pcmRate / boost::math::gcd(_naiveRate, _pcmRate);
+    _naiveXToPcmX("_naiveXToPcmX", _naiveRate);
+    for (int i = 0; i < _naiveRate; ++i) {
+        _naiveXToPcmX.put(i, i * dualScale / minBlepCount);
     }
-    Buffer<int> naivex2shape("naivex2shape", naiveRate);
-    for (int i = 0; i < naiveRate; ++i) {
-        naivex2shape.put(i, naivex2outx.at(i) * minBlepCount - i * dualScale + minBlepCount - 1);
+    Buffer<int> naivex2shape("naivex2shape", _naiveRate);
+    for (int i = 0; i < _naiveRate; ++i) {
+        naivex2shape.put(i, _naiveXToPcmX.at(i) * minBlepCount - i * dualScale + minBlepCount - 1);
     }
     Buffer<double> demultiplexed("demultiplexed", mixinSize * minBlepCount);
     for (int i = 0; i < minBlepCount; ++i) {
@@ -82,13 +82,13 @@ MinBLEPs::MinBLEPs(Config const *config)
             demultiplexed.put(i * mixinSize + j, accumulator.at(i + minBlepCount * j));
         }
     }
-    Buffer<int> naivex2off("naivex2off", naiveRate);
-    for (int i = 0; i < naiveRate; ++i) {
+    Buffer<int> naivex2off("naivex2off", _naiveRate);
+    for (int i = 0; i < _naiveRate; ++i) {
         naivex2off.put(i, naivex2shape.at(i) * mixinSize);
     }
-    Buffer<int> outx2minnaivex("outx2minnaivex", pcmRate);
-    for (int naivex = naiveRate - 1; naivex >= 0; --naivex) {
-        outx2minnaivex.put(naivex2outx.at(naivex), naivex);
+    _pcmXToMinNaiveX("outx2minnaivex", _pcmRate);
+    for (int naivex = _naiveRate - 1; naivex >= 0; --naivex) {
+        _pcmXToMinNaiveX.put(_naiveXToPcmX.at(naivex), naivex);
     }
     debug("Finished creating minBLEPs.");
 }
@@ -97,8 +97,12 @@ cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
     return pcmCount * _scale; // FIXME: Do it properly.
 }
 
-cursor_t getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount)/*const*/{
-    return 0;
+cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
+    int pcmX = _naiveXToPcmX[naiveX] + pcmCount;
+    int shift = pcmX / _pcmRate;
+    pcmX -= _pcmRate * shift;
+    naiveX -= _naiveRate * shift;
+    return _pcmXToMinNaiveX[pcmX] - naiveX;
 }
 
 void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {

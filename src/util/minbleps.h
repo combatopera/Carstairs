@@ -10,12 +10,20 @@ class MinBLEPs {
 
     int const _scale;
 
+    int const _pcmRate, _naiveRate;
+
+    Buffer<int> _naiveXToPcmX, _pcmXToMinNaiveX;
+
 public:
 
     MinBLEPs(Config const *);
 
     cursor_t getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const;
 
+    cursor_t getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount) const;
+
     void paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
+
+    void paste2(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };
