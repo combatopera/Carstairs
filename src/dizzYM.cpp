@@ -34,7 +34,9 @@ void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
 void dizzYM::reset() {
     _sampleCursor = INITIAL_SAMPLE_CURSOR;
     _state.reset();
+    // TODO: Reliably reset all nodes.
     _tone.reset();
+    _level.reset();
     _chip.reset();
 }
 
