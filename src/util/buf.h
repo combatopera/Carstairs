@@ -66,6 +66,8 @@ public:
         throw "out of bounds";
     }
 
+    void differentiate(T context);
+
     void range();
 
     void sinc();

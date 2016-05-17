@@ -66,4 +66,13 @@ BOOST_AUTO_TEST_CASE(fft) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(differentiate) {
+    Buffer<double> buf("differentiate", 10);
+    buf.range();
+    buf.put(5, 0);
+    buf.differentiate(2);
+    std::array<double, 10> expected {-2, 1, 1, 1, 1, -4, 6, 1, 1, 1};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

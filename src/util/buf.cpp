@@ -109,6 +109,13 @@ template<> void View<double>::integrate() {
     }
 }
 
+template<> void View<double>::differentiate(double context) {
+    for (index_t i = _limit - 1; i > 0; --i) {
+        _data[i] -= _data[i - 1];
+    }
+    _data[0] -= context;
+}
+
 template<> void View<double>::range() {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = double(i);
