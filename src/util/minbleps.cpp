@@ -41,14 +41,14 @@ MinBLEPs::MinBLEPs(Config const *config)
     accumulator.pad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2, 0);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
-        fftAppliance.fill(accumulator.begin());
+        fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.fft();
         // Everything is real after we discard the phase info here:
         accumulator.fillAbs(fftAppliance.begin());
         // The "real cepstrum" is symmetric apart from its first element:
         accumulator.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
         accumulator.ln();
-        fftAppliance.fill(accumulator.begin());
+        fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.ifft(); // It's now the real cepstrum.
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:
