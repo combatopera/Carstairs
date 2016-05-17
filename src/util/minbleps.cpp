@@ -86,11 +86,10 @@ MinBLEPs::MinBLEPs(Config const *config)
     for (int i = 0; i < naiveRate; ++i) {
         naivex2off.put(i, naivex2shape.at(i) * mixinSize);
     }
-    /*
-     self.outx2minnaivex = np.empty(outrate, dtype = self.naivex2outx.dtype)
-     for naivex in xrange(naiverate - 1, -1, -1):
-     self.outx2minnaivex[self.naivex2outx[naivex]] = naivex
-     */
+    Buffer<int> outx2minnaivex("outx2minnaivex", pcmRate);
+    for (int naivex = naiveRate - 1; naivex >= 0; --naivex) {
+        outx2minnaivex.put(naivex2outx.at(naivex), naivex);
+    }
     debug("Finished creating minBLEPs.");
 }
 
