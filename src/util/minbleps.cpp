@@ -70,11 +70,11 @@ MinBLEPs::MinBLEPs(Config const *config)
     int const dualScale = pcmRate / boost::math::gcd(naiveRate, pcmRate);
     Buffer<int> naivex2outx("naivex2outx", naiveRate);
     for (int i = 0; i < naiveRate; ++i) {
-        naivex2outx[i] = i * dualScale / minBlepCount;
+        naivex2outx.put(i, i * dualScale / minBlepCount);
     }
     Buffer<int> naivex2shape("naivex2shape", naiveRate);
     for (int i = 0; i < naiveRate; ++i) {
-        naivex2shape[i] = naivex2outx[i] * minBlepCount - i * dualScale + minBlepCount - 1;
+        naivex2shape.put(i, naivex2outx.at(i) * minBlepCount - i * dualScale + minBlepCount - 1);
     }
     Buffer<double> demultiplexed("demultiplexed", mixinSize * minBlepCount);
     for (int i = 0; i < minBlepCount; ++i) {
@@ -95,6 +95,10 @@ MinBLEPs::MinBLEPs(Config const *config)
 
 cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
     return pcmCount * _scale; // FIXME: Do it properly.
+}
+
+cursor_t getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount)/*const*/{
+    return 0;
 }
 
 void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
