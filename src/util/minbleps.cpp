@@ -114,3 +114,45 @@ void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pc
         pcmBuf.put(pcmI, acc / float(_scale));
     }
 }
+
+void MinBLEPs::paste2(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
+//    out0 = naivex2outxp[naivex]
+//    dclevel = 0
+//    dcindex = 0
+//    while ampsize:
+//      ampchunk = min(ampsize, naiverate - naivex)
+//      for naivex in xrange(naivex, naivex + ampchunk):
+//        a = ampp[0]
+//        ampp += 1
+//        if a:
+//          i = naivex2outxp[naivex] - out0
+//          mixinp = demultiplexedp + naivex2offp[naivex]
+//          if dcindex <= i: # We can DC-adjust while pasting this mixin.
+//            dccount = i - dcindex
+//            for UNROLL in xrange(dccount):
+//              outp[0] += dclevel
+//              outp += 1
+//            for UNROLL in xrange(mixinsize):
+//              outp[0] += mixinp[0] * a + dclevel
+//              outp += 1
+//              mixinp += 1
+//          else: # The mixin starts before the pending DC adjustment.
+//            dccount = i + mixinsize - dcindex
+//            for UNROLL in xrange(dccount):
+//              outp[0] += dclevel
+//              outp += 1
+//            outp -= mixinsize
+//            for UNROLL in xrange(mixinsize):
+//              outp[0] += mixinp[0] * a
+//              outp += 1
+//              mixinp += 1
+//          dcindex = i + mixinsize
+//          dclevel += a
+//      ampsize -= ampchunk
+//      naivex = 0
+//      out0 -= outrate
+//    dccount = outsize - dcindex
+//    for UNROLL in xrange(dccount):
+//      outp[0] += dclevel
+//      outp += 1
+}
