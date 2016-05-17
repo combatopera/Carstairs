@@ -10,9 +10,11 @@ class MinBLEPs {
 
     int const _scale;
 
-    int const _pcmRate, _naiveRate;
+    int _pcmRate, _naiveRate;
 
-    Buffer<int> _naiveXToPcmX, _pcmXToMinNaiveX;
+    Buffer<int> _naiveXToPcmX {"_naiveXToPcmX"};
+
+    Buffer<int> _pcmXToMinNaiveX {"_pcmXToMinNaiveX"};
 
 public:
 

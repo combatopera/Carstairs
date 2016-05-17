@@ -68,7 +68,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
     // The naiverate and outrate will line up at 1 second:
     int const dualScale = _pcmRate / boost::math::gcd(_naiveRate, _pcmRate);
-    _naiveXToPcmX("_naiveXToPcmX", _naiveRate);
+    _naiveXToPcmX.setLimit(_naiveRate);
     for (int i = 0; i < _naiveRate; ++i) {
         _naiveXToPcmX.put(i, i * dualScale / minBlepCount);
     }
@@ -86,7 +86,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     for (int i = 0; i < _naiveRate; ++i) {
         naivex2off.put(i, naivex2shape.at(i) * mixinSize);
     }
-    _pcmXToMinNaiveX("outx2minnaivex", _pcmRate);
+    _pcmXToMinNaiveX.setLimit(_pcmRate);
     for (int naivex = _naiveRate - 1; naivex >= 0; --naivex) {
         _pcmXToMinNaiveX.put(_naiveXToPcmX.at(naivex), naivex);
     }
@@ -98,11 +98,11 @@ cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
 }
 
 cursor_t MinBLEPs::getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount) const {
-    int pcmX = _naiveXToPcmX[naiveX] + pcmCount;
-    int shift = pcmX / _pcmRate;
+    cursor_t pcmX = _naiveXToPcmX.at(naiveX) + pcmCount;
+    cursor_t shift = pcmX / _pcmRate;
     pcmX -= _pcmRate * shift;
     naiveX -= _naiveRate * shift;
-    return _pcmXToMinNaiveX[pcmX] - naiveX;
+    return _pcmXToMinNaiveX.at(pcmX) - naiveX;
 }
 
 void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
