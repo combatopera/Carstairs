@@ -64,7 +64,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     }
     accumulator.integrate(); // It's now minBlepCount interleaved minBLEPs!
     _minBLEPs.setLimit(accumulator.limit());
-    _minBLEPs.fill(accumulator.begin());
+    _minBLEPs.fillNarrowing(accumulator.begin());
     debug("Finished creating minBLEPs.");
 }
 
