@@ -62,36 +62,9 @@ MinBLEPs::MinBLEPs(Config const *config)
         fftAppliance.ifft();
         accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
     }
-    accumulator.integrate(); // It's now a minBLEP!
-    // Prepend zeros to simplify naivex2outx calc:
-    accumulator.pad(minBlepCount - 1, 0, 0);
-    // Append ones so that all mixins have the same length:
-    int const mixinSize = (int(accumulator.limit()) + minBlepCount - 1) / minBlepCount;
-    accumulator.pad(0, mixinSize * minBlepCount - accumulator.limit(), 1);
-    // The naiverate and outrate will line up at 1 second:
-    int const dualScale = _pcmRate / boost::math::gcd(_naiveRate, _pcmRate);
-    _naiveXToPcmX.setLimit(_naiveRate);
-    for (int i = 0; i < _naiveRate; ++i) {
-        _naiveXToPcmX.put(i, i * dualScale / minBlepCount);
-    }
-    Buffer<int> naivex2shape("naivex2shape", _naiveRate);
-    for (int i = 0; i < _naiveRate; ++i) {
-        naivex2shape.put(i, _naiveXToPcmX.at(i) * minBlepCount - i * dualScale + minBlepCount - 1);
-    }
-    Buffer<double> demultiplexed("demultiplexed", mixinSize * minBlepCount);
-    for (int i = 0; i < minBlepCount; ++i) {
-        for (int j = 0; j < mixinSize; ++j) {
-            demultiplexed.put(i * mixinSize + j, accumulator.at(i + minBlepCount * j));
-        }
-    }
-    Buffer<int> naivex2off("naivex2off", _naiveRate);
-    for (int i = 0; i < _naiveRate; ++i) {
-        naivex2off.put(i, naivex2shape.at(i) * mixinSize);
-    }
-    _pcmXToMinNaiveX.setLimit(_pcmRate);
-    for (int naivex = _naiveRate - 1; naivex >= 0; --naivex) {
-        _pcmXToMinNaiveX.put(_naiveXToPcmX.at(naivex), naivex);
-    }
+    accumulator.integrate(); // It's now minBlepCount interleaved minBLEPs!
+    _minBLEPs.setLimit(accumulator.limit());
+    _minBLEPs.fill(accumulator.begin());
     debug("Finished creating minBLEPs.");
 }
 
