@@ -9,6 +9,14 @@
 #include "buf.h"
 #include "util.h"
 
+static int getEvenFftSize(int minSize) {
+    int evenFftSize = 2; // Smallest even power of 2.
+    while (evenFftSize < minSize) {
+        evenFftSize <<= 1;
+    }
+    return evenFftSize;
+}
+
 MinBLEPs::MinBLEPs(Config const *config)
         : _scale((int) roundf(float(config->naiveRate()) / float(config->_pcmRate))) {
     _naiveRate = config->naiveRate();
@@ -16,29 +24,26 @@ MinBLEPs::MinBLEPs(Config const *config)
     int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
     int const evenOrder = int(round(config->empiricalOrder() * .5)) * 2;
-    int const kernelSize = evenOrder * minBlepCount + 1; // Odd.
-    // The fft/ifft are too slow unless size is a power of 2:
-    int fftSize = 2; // Can't be the trivial power as we need a midpoint.
-    while (fftSize < kernelSize) {
-        fftSize <<= 1;
-    }
-    int const midpoint = fftSize / 2; // Index of peak of sinc.
+    int const oddKernelSize = evenOrder * minBlepCount + 1; // Odd.
+    // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
+    int const evenFftSize = getEvenFftSize(oddKernelSize);
+    int const fftMidpoint = evenFftSize / 2; // Index of peak of sinc.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
-    Buffer<double> accumulator("accumulator", kernelSize);
+    Buffer<double> accumulator("accumulator", oddKernelSize);
     accumulator.blackman();
     {
-        Buffer<double> sinc("sinc", kernelSize);
-        for (int i = 0; i < kernelSize; ++i) {
-            sinc.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * evenOrder * config->_cutoff);
+        Buffer<double> sinc("sinc", oddKernelSize);
+        for (int i = 0; i < oddKernelSize; ++i) {
+            sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config->_cutoff);
         }
         sinc.sinc();
         accumulator.mul(sinc.begin());
     }
     accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
-    accumulator.pad((fftSize - kernelSize + 1) / 2, (fftSize - kernelSize - 1) / 2, 0);
+    accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     {
-        Buffer<std::complex<double>> fftAppliance("fftAppliance", fftSize);
+        Buffer<std::complex<double>> fftAppliance("fftAppliance", evenFftSize);
         fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.fft();
         // Everything is real after we discard the phase info here:
@@ -50,8 +55,8 @@ MinBLEPs::MinBLEPs(Config const *config)
         fftAppliance.ifft(); // It's now the real cepstrum.
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:
-        fftAppliance.mul(1, midpoint, std::complex<double>(2));
-        fftAppliance.fill(midpoint + 1, fftSize, std::complex<double>(0));
+        fftAppliance.mul(1, fftMidpoint, std::complex<double>(2));
+        fftAppliance.fill(fftMidpoint + 1, evenFftSize, std::complex<double>(0));
         fftAppliance.fft();
         fftAppliance.exp();
         fftAppliance.ifft();
