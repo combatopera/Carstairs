@@ -11,6 +11,8 @@ class MinBLEPs {
 
     int const _scale;
 
+    int _minBLEPCount;
+
     int _pcmRate, _naiveRate;
 
     Buffer<int> _naiveXToPcmX {"_naiveXToPcmX"};
@@ -32,6 +34,12 @@ public:
         auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
         auto pcmX = DSSI::cursor(ceil(pcmMark));
         auto distance = double(pcmX) - pcmMark;
+        auto k = unsigned(round(distance * _minBLEPCount));
+        auto pcmRelX = pcmX - pcmRef;
+        for (auto lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
+            target[pcmRelX++] += amp * _minBLEPs.at(k);
+        }
+
     }
 
     void paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;

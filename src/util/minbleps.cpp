@@ -21,10 +21,10 @@ MinBLEPs::MinBLEPs(Config const *config)
         : _scale((int) roundf(float(config->naiveRate()) / float(config->_pcmRate))) {
     _naiveRate = config->naiveRate();
     _pcmRate = config->_pcmRate;
-    int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
-    debug("Creating %d minBLEPs.", minBlepCount);
+    _minBLEPCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
+    debug("Creating %d minBLEPs.", _minBLEPCount);
     int const evenOrder = config->evenEmpiricalOrder();
-    int const oddKernelSize = evenOrder * minBlepCount + 1; // Odd.
+    int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     int const evenFftSize = getEvenFftSize(oddKernelSize);
     int const fftMidpoint = evenFftSize / 2; // Index of peak of sinc.
@@ -40,7 +40,7 @@ MinBLEPs::MinBLEPs(Config const *config)
         sinc.sinc();
         accumulator.mul(sinc.begin());
     }
-    accumulator.mul(1. / minBlepCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
+    accumulator.mul(1. / _minBLEPCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance", evenFftSize);
@@ -62,7 +62,7 @@ MinBLEPs::MinBLEPs(Config const *config)
         fftAppliance.ifft();
         accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
     }
-    accumulator.integrate(); // It's now minBlepCount interleaved minBLEPs!
+    accumulator.integrate(); // It's now _minBLEPCount interleaved minBLEPs!
     _minBLEPs.setLimit(accumulator.limit());
     _minBLEPs.fillNarrowing(accumulator.begin());
     debug("Finished creating minBLEPs.");
