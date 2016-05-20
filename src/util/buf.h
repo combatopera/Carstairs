@@ -98,6 +98,8 @@ public:
 
     void fillWidening(double const *);
 
+    void fillNarrowing(double const *);
+
     void fft();
 
     void ifft();

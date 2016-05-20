@@ -140,6 +140,12 @@ template<> void View<std::complex<double>>::fillWidening(double const *values) {
     }
 }
 
+template<> void View<float>::fillNarrowing(double const *values) {
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = float(values[i]);
+    }
+}
+
 template<> void View<std::complex<double>>::fft() {
     fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
     FFTW_FORWARD, FFTW_ESTIMATE);
