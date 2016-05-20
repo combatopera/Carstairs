@@ -18,7 +18,7 @@ public:
 
     int const _pcmRate; // DSSI doesn't support non-integer rates.
 
-    double const _cutoff = .475, _transition = .05;
+    double const _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
 
     Config(int pcmRate)
             : _pcmRate(pcmRate) {
@@ -26,6 +26,10 @@ public:
 
     int naiveRate() const {
         return _nominalClock * _atomSize / YM2149_ATOM_SIZE; // TODO LATER: Enforce exact division.
+    }
+
+    int empiricalOrder() const {
+        return 4 / _transition; // According to Steven W. Smith.
     }
 
 };

@@ -15,10 +15,8 @@ MinBLEPs::MinBLEPs(Config const *config)
     _pcmRate = config->_pcmRate;
     int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
-    // XXX: Use kaiser and/or satisfy min transition?
-    // Closest even order to 4/transition:
-    int const order = int(round(4 / config->_transition / 2)) * 2;
-    int const kernelSize = order * minBlepCount + 1; // Odd.
+    int const evenOrder = int(round(config->empiricalOrder() * .5)) * 2;
+    int const kernelSize = evenOrder * minBlepCount + 1; // Odd.
     // The fft/ifft are too slow unless size is a power of 2:
     int fftSize = 2; // Can't be the trivial power as we need a midpoint.
     while (fftSize < kernelSize) {
@@ -32,7 +30,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     {
         Buffer<double> sinc("sinc", kernelSize);
         for (int i = 0; i < kernelSize; ++i) {
-            sinc.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * order * config->_cutoff);
+            sinc.put(i, (double(i) / (kernelSize - 1) * 2 - 1) * evenOrder * config->_cutoff);
         }
         sinc.sinc();
         accumulator.mul(sinc.begin());
