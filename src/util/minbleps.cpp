@@ -95,18 +95,6 @@ MinBLEPs::MinBLEPs(Config const *config)
     debug("Finished creating minBLEPs.");
 }
 
-DSSI::cursor MinBLEPs::getMinNaiveN(DSSI::cursor naiveX, DSSI::cursor pcmCount) const {
-    return pcmCount * _scale; // FIXME: Do it properly.
-}
-
-DSSI::cursor MinBLEPs::getMinNaiveN2(DSSI::cursor naiveX, DSSI::cursor pcmCount) const {
-    DSSI::cursor pcmX = _naiveXToPcmX.at(naiveX) + pcmCount;
-    DSSI::cursor shift = pcmX / _pcmRate;
-    pcmX -= _pcmRate * shift;
-    naiveX -= _naiveRate * shift;
-    return _pcmXToMinNaiveX.at(pcmX) - naiveX;
-}
-
 void MinBLEPs::paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
     for (DSSI::cursor pcmI = 0; pcmI < pcmBuf.limit(); ++pcmI) {
         LADSPA_Data acc = 0;

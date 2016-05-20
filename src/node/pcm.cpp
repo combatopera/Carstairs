@@ -6,6 +6,7 @@
 #include "../node.h"
 #include "../state.h"
 #include "../util/buf.h"
+#include "../util/minbleps.h"
 #include "../util/util.h"
 
 PCM::PCM(Config const *config, State *state, Node<float> *naive)
@@ -19,13 +20,13 @@ void PCM::resetImpl() {
 
 void PCM::renderImpl() {
     size_t pcmCount = _buf.limit();
-    DSSI::cursor naiveX = _naive->cursor(), naiveN = _minBLEPs.getMinNaiveN(naiveX, pcmCount);
-    View<float> naive = _naive->render(naiveX + naiveN);
+    DSSI::cursor newNaiveX = _minBLEPs.pcmXToNaiveX(cursor() + pcmCount);
+    View<float> naive = _naive->render(newNaiveX);
     _derivative.setLimit(naive.limit());
     _derivative.fill(naive.begin());
     _derivative.differentiate(_dc);
     if (naive.limit()) { // Otherwise _dc doesn't change.
         _dc = naive.at(naive.limit() - 1);
     }
-    _minBLEPs.paste(naiveX, naive, _buf);
+    //_minBLEPs.paste(naiveX, naive, _buf);
 }
