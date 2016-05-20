@@ -6,9 +6,9 @@
 
 template<typename T> class Node {
 
-    static cursor_t const INITIAL_CURSOR = 0;
+    static DSSI::cursor const INITIAL_CURSOR = 0;
 
-    cursor_t _cursor;
+    DSSI::cursor _cursor;
 
 public:
 
@@ -21,9 +21,9 @@ public:
         resetImpl();
     }
 
-    View<T> render(cursor_t newCursor);
+    View<T> render(DSSI::cursor newCursor);
 
-    cursor_t cursor() {
+    DSSI::cursor cursor() {
         return _cursor;
     }
 
@@ -42,4 +42,4 @@ protected:
 #define NODE_INSTANTIATE(T) \
     template Node<T>::Node(char const *, State *); \
     template Node<T>::~Node(); \
-    template View<T> Node<T>::render(cursor_t);
+    template View<T> Node<T>::render(DSSI::cursor);

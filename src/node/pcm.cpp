@@ -19,7 +19,7 @@ void PCM::resetImpl() {
 
 void PCM::renderImpl() {
     size_t pcmCount = _buf.limit();
-    cursor_t naiveX = _naive->cursor(), naiveN = _minBLEPs.getMinNaiveN(naiveX, pcmCount);
+    DSSI::cursor naiveX = _naive->cursor(), naiveN = _minBLEPs.getMinNaiveN(naiveX, pcmCount);
     View<float> naive = _naive->render(naiveX + naiveN);
     _derivative.setLimit(naive.limit());
     _derivative.fill(naive.begin());

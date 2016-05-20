@@ -30,11 +30,11 @@ extern PortInfoEnum PortInfo;
 
 class dizzYM {
 
-    static cursor_t const INITIAL_SAMPLE_CURSOR = 0;
+    static DSSI::cursor const INITIAL_SAMPLE_CURSOR = 0;
 
     Buffer<LADSPA_Data *> _portValPtrs;
 
-    cursor_t _sampleCursor;
+    DSSI::cursor _sampleCursor;
 
     Config const _config;
 
@@ -56,6 +56,6 @@ public:
 
     void setPortValPtr(int, LADSPA_Data *);
 
-    void runSynth(cursor_t, snd_seq_event_t *, cursor_t);
+    void runSynth(DSSI::cursor, snd_seq_event_t *, DSSI::cursor);
 
 };

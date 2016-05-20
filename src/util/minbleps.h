@@ -20,12 +20,12 @@ public:
 
     MinBLEPs(Config const *);
 
-    cursor_t getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const;
+    DSSI::cursor getMinNaiveN(DSSI::cursor naiveX, DSSI::cursor pcmCount) const;
 
-    cursor_t getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount) const;
+    DSSI::cursor getMinNaiveN2(DSSI::cursor naiveX, DSSI::cursor pcmCount) const;
 
-    void paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
+    void paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
-    void paste2(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
+    void paste2(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };

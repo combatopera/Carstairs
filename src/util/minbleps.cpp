@@ -95,20 +95,20 @@ MinBLEPs::MinBLEPs(Config const *config)
     debug("Finished creating minBLEPs.");
 }
 
-cursor_t MinBLEPs::getMinNaiveN(cursor_t naiveX, cursor_t pcmCount) const {
+DSSI::cursor MinBLEPs::getMinNaiveN(DSSI::cursor naiveX, DSSI::cursor pcmCount) const {
     return pcmCount * _scale; // FIXME: Do it properly.
 }
 
-cursor_t MinBLEPs::getMinNaiveN2(cursor_t naiveX, cursor_t pcmCount) const {
-    cursor_t pcmX = _naiveXToPcmX.at(naiveX) + pcmCount;
-    cursor_t shift = pcmX / _pcmRate;
+DSSI::cursor MinBLEPs::getMinNaiveN2(DSSI::cursor naiveX, DSSI::cursor pcmCount) const {
+    DSSI::cursor pcmX = _naiveXToPcmX.at(naiveX) + pcmCount;
+    DSSI::cursor shift = pcmX / _pcmRate;
     pcmX -= _pcmRate * shift;
     naiveX -= _naiveRate * shift;
     return _pcmXToMinNaiveX.at(pcmX) - naiveX;
 }
 
-void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
-    for (cursor_t pcmI = 0; pcmI < pcmBuf.limit(); ++pcmI) {
+void MinBLEPs::paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
+    for (DSSI::cursor pcmI = 0; pcmI < pcmBuf.limit(); ++pcmI) {
         LADSPA_Data acc = 0;
         for (int s = 0; s < _scale; ++s) {
             acc += naiveBuf.at(pcmI * _scale + s);
@@ -117,7 +117,7 @@ void MinBLEPs::paste(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pc
     }
 }
 
-void MinBLEPs::paste2(cursor_t naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
+void MinBLEPs::paste2(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const {
 //    out0 = naivex2outxp[naivex]
 //    dclevel = 0
 //    dcindex = 0

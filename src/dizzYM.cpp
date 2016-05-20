@@ -40,11 +40,11 @@ void dizzYM::reset() {
     _chip.reset();
 }
 
-void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t eventCount) {
+void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cursor eventCount) {
     if (0 == _sampleCursor || eventCount) {
         debug("%d -> %d", _sampleCursor, _sampleCursor + blockSize);
     }
-    for (cursor_t indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
+    for (DSSI::cursor indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
             switch (events[eventIndex].type) {
@@ -61,7 +61,7 @@ void dizzYM::runSynth(cursor_t blockSize, snd_seq_event_t *events, cursor_t even
         }
         _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
-        cursor_t limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
+        DSSI::cursor limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }

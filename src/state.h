@@ -9,7 +9,7 @@ class State {
 
     Config const * const _config;
 
-    cursor_t _onOrMax, _offOrMax;
+    DSSI::cursor _onOrMax, _offOrMax;
 
     int _midiNote = 0, _velocity = 0;
 
@@ -25,19 +25,19 @@ public:
 
     void reset();
 
-    void noteOn(cursor_t cursor, int midiNote, int velocity);
+    void noteOn(DSSI::cursor cursor, int midiNote, int velocity);
 
-    void noteOff(cursor_t cursor, int midiNote);
+    void noteOff(DSSI::cursor cursor, int midiNote);
 
     int TP() const {
         return _TP;
     }
 
-    cursor_t onOrMax() const {
+    DSSI::cursor onOrMax() const {
         return _onOrMax;
     }
 
-    cursor_t offOrMax() const {
+    DSSI::cursor offOrMax() const {
         return _offOrMax;
     }
 

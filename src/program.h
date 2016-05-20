@@ -13,6 +13,6 @@ public:
             : _state(state) {
     }
 
-    void fire(cursor_t cursor);
+    void fire(DSSI::cursor cursor);
 
 };

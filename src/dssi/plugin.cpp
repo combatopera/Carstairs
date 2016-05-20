@@ -7,7 +7,7 @@
 #include "../util/util.h"
 #include "port.h"
 
-static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, cursor_t SampleRate) {
+static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::cursor SampleRate) {
     debug("LADSPA: instantiate");
     return new dizzYM(int(SampleRate));
 }
@@ -21,21 +21,21 @@ static void deactivate(LADSPA_Handle Instance) {
     debug("LADSPA: deactivate");
 }
 
-static void connect_port(LADSPA_Handle Instance, cursor_t Port, LADSPA_Data *DataLocation) {
+static void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLocation) {
     debug("LADSPA: connect_port");
     static_cast<dizzYM *>(Instance)->setPortValPtr((int) Port, DataLocation);
 }
 
-static int get_midi_controller_for_port(LADSPA_Handle, cursor_t Port) {
+static int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
     debug("DSSI: get_midi_controller_for_port");
     return PortInfo._values.at(Port)->_controllers;
 }
 
-static void run(LADSPA_Handle Instance, cursor_t SampleCount) {
+static void run(LADSPA_Handle Instance, DSSI::cursor SampleCount) {
     static_cast<dizzYM *>(Instance)->runSynth(SampleCount, 0, 0);
 }
 
-static void run_synth(LADSPA_Handle Instance, cursor_t SampleCount, snd_seq_event_t *Events, cursor_t EventCount) {
+static void run_synth(LADSPA_Handle Instance, DSSI::cursor SampleCount, snd_seq_event_t *Events, DSSI::cursor EventCount) {
     static_cast<dizzYM *>(Instance)->runSynth(SampleCount, Events, EventCount);
 }
 
@@ -107,7 +107,7 @@ static Descriptors descriptors;
 
 extern "C" {
 
-const DSSI_Descriptor *dssi_descriptor(cursor_t Index) {
+const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
     if (Index == 0) {
         return descriptors.dssiDescriptor();
     }
