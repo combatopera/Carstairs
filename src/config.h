@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 class Config {
 
     static int const YM2149_ATOM_SIZE = 8;
@@ -28,8 +30,9 @@ public:
         return _nominalClock * _atomSize / YM2149_ATOM_SIZE; // TODO LATER: Enforce exact division.
     }
 
-    int empiricalOrder() const {
-        return 4 / _transition; // According to Steven W. Smith.
+    int evenEmpiricalOrder() const {
+        double const empirical = 4 / _transition; // According to Steven W. Smith.
+        return int(round(empirical / 2)) * 2; // Closest even int to empirical.
     }
 
 };

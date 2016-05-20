@@ -9,10 +9,6 @@
 #include "buf.h"
 #include "util.h"
 
-static int closestEven(int n) {
-    return int(round(n * .5)) * 2;
-}
-
 static int getEvenFftSize(int minSize) {
     int evenFftSize = 2; // Smallest even power of 2.
     while (evenFftSize < minSize) {
@@ -27,7 +23,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     _pcmRate = config->_pcmRate;
     int const minBlepCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", minBlepCount);
-    int const evenOrder = closestEven(config->empiricalOrder());
+    int const evenOrder = config->evenEmpiricalOrder();
     int const oddKernelSize = evenOrder * minBlepCount + 1; // Odd.
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     int const evenFftSize = getEvenFftSize(oddKernelSize);
