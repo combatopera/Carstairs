@@ -69,9 +69,7 @@ template<> void View<double>::blackman() {
     for (index_t n = 0; n < M; ++n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
-    for (index_t n = M; n < N; ++n) { // Mirror to avoid significant precision artifacts.
-        _data[n] = _data[N - 1 - n];
-    }
+    mirror(); // Avoid significant precision artifacts.
 }
 
 static double abs(std::complex<double> const& c) {
@@ -122,6 +120,7 @@ template<> void View<T>::add(T value) { \
 
 NUMERICS(float)
 NUMERICS(double)
+NUMERICS(int)
 
 template<> void View<std::complex<double>>::range() {
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {

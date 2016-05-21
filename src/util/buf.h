@@ -55,6 +55,14 @@ public:
         }
     }
 
+    void mirror() {
+        assert(_limit & 1);
+        index_t const last = _limit - 1;
+        for (index_t i = last / 2 - 1; SIZE_WRAP != i; --i) {
+            _data[last - i] = _data[i];
+        }
+    }
+
     void zero() {
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
     }

@@ -7,6 +7,14 @@
 
 BOOST_AUTO_TEST_SUITE(TestBuffer)
 
+BOOST_AUTO_TEST_CASE(mirror) {
+    Buffer<int> buf("mirror", 11);
+    buf.range();
+    buf.mirror();
+    std::array<int, 11> expected {0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
+}
+
 BOOST_AUTO_TEST_CASE(blackman) {
     Buffer<double> buf("blackman", 101);
     buf.blackman();
