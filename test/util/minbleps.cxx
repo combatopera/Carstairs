@@ -11,6 +11,8 @@ struct F {
 
     F() {
         _config._nominalClock = 15;
+        _config._cutoff = .475;
+        _config._transition = .05;
     }
 
 };

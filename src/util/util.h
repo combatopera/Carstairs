@@ -30,3 +30,9 @@ public:
     }
 
 };
+
+#ifdef DIZZYM_UNIT_TEST
+#define prodconst
+#else
+#define prodconst const
+#endif

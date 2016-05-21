@@ -2,13 +2,15 @@
 
 #include <cmath>
 
+#include "util/util.h"
+
 class Config {
 
     static int const YM2149_ATOM_SIZE = 8;
 
 public:
 
-    int _atomSize = YM2149_ATOM_SIZE;
+    int prodconst _atomSize = YM2149_ATOM_SIZE;
 
     int const _refMidiNote = 69;
 
@@ -16,11 +18,11 @@ public:
 
     int const _semitones = 12;
 
-    int _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
+    int prodconst _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
 
     int const _pcmRate; // DSSI doesn't support non-integer rates.
 
-    double const _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
+    double prodconst _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
 
     Config(int pcmRate)
             : _pcmRate(pcmRate) {
