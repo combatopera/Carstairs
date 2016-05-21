@@ -27,16 +27,19 @@ BOOST_AUTO_TEST_CASE(blackman) {
 }
 
 BOOST_AUTO_TEST_CASE(sinc) {
-    Buffer<double> buf("sinc", 11);
+    Buffer<double> buf("sinc", 101);
     buf.range();
-    buf.add(-5);
+    buf.add(-50);
     buf.sinc();
     // Same way numpy does it:
-    BOOST_REQUIRE_EQUAL(sin(M_PI * -5) / (M_PI * -5), buf.at(0));
-    BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(4));
-    BOOST_REQUIRE_EQUAL(1, buf.at(5));
-    BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(6));
-    BOOST_REQUIRE_EQUAL(sin(M_PI * 5) / (M_PI * 5), buf.at(10));
+    BOOST_REQUIRE_EQUAL(sin(M_PI * -10) / (M_PI * -10), buf.at(40));
+    BOOST_REQUIRE_EQUAL(sin(M_PI * -1) / (M_PI * -1), buf.at(49));
+    BOOST_REQUIRE_EQUAL(1, buf.at(50));
+    BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(51));
+    BOOST_REQUIRE_EQUAL(sin(M_PI * 10) / (M_PI * 10), buf.at(60));
+    for (int i = 0; i < 50; ++i) {
+        BOOST_REQUIRE_EQUAL(buf.at(i), buf.at(100 - i));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(pad) {
