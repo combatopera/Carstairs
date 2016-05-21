@@ -5,14 +5,23 @@
 
 BOOST_AUTO_TEST_SUITE(TestTone)
 
+struct F {
+
+    Config _config {44100};
+
+    F() {
+        _config._atomSize = 8;
+    }
+
+};
+
 #define BUF(n, value, name) Buffer<int> name("name", n); \
     name.fill(value);
 
-BOOST_AUTO_TEST_CASE(works) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(works, F) {
+    State state(&_config);
     state._TP = 3;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(96);
@@ -25,11 +34,10 @@ BOOST_AUTO_TEST_CASE(works) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin(24), v.end());
 }
 
-BOOST_AUTO_TEST_CASE(resume) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(resume, F) {
+    State state(&_config);
     state._TP = 3;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(25);
@@ -40,15 +48,14 @@ BOOST_AUTO_TEST_CASE(resume) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin(1), v.begin(23), v.end());
 }
 
-BOOST_AUTO_TEST_CASE(carry) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(carry, F) {
+    State state(&_config);
     state._TP = 1;
     int size = 3 * 8 + 1;
-    Tone refOsc(&config, &state); // Must stay in scope for ref to be valid.
+    Tone refOsc(&_config, &state); // Must stay in scope for ref to be valid.
     View<int> ref = refOsc.render(size);
     for (int n = 0; n <= size; ++n) {
-        Tone o(&config, &state);
+        Tone o(&_config, &state);
         View<int> v = o.render(n);
         BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin(v.limit()), v.begin(), v.end());
         v = o.render(size);
@@ -56,11 +63,10 @@ BOOST_AUTO_TEST_CASE(carry) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(endExistingStepAtEndOfBlock, F) {
+    State state(&_config);
     state._TP = 1;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(4, 1, ones)
     BUF(4, 0, zeros)
     View<int> v = o.render(4);
@@ -71,11 +77,10 @@ BOOST_AUTO_TEST_CASE(endExistingStepAtEndOfBlock) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin(), v.end());
 }
 
-BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
+    State state(&_config);
     state._TP = 1;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(16);
@@ -92,11 +97,10 @@ BOOST_AUTO_TEST_CASE(increasePeriodOnBoundary) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(1), v.begin(33), v.end());
 }
 
-BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
-    Config config(44100);
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
+    State state(&_config);
     state._TP = 3;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(48);
@@ -115,12 +119,11 @@ BOOST_AUTO_TEST_CASE(decreasePeriodOnBoundary) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(1), v.begin(18), v.end());
 }
 
-BOOST_AUTO_TEST_CASE(smallerBlocksThanPeriod) {
-    Config config(44100);
-    config._atomSize = 1;
-    State state(&config);
+BOOST_FIXTURE_TEST_CASE(smallerBlocksThanPeriod, F) {
+    _config._atomSize = 1;
+    State state(&_config);
     state._TP = 5;
-    Tone o(&config, &state);
+    Tone o(&_config, &state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(4);
