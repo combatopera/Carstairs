@@ -30,16 +30,20 @@ public:
         return DSSI::cursor(floor(double(pcmX - 1) / _pcmRate * _naiveRate) + 1);
     }
 
-    void pasteOne(DSSI::cursor naiveX, float amp, DSSI::cursor pcmRef, float *target) const {
+    void pasteOne(DSSI::cursor naiveX, float amp, DSSI::cursor pcmRef, View<float> target) const {
         auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
+        // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto pcmX = DSSI::cursor(ceil(pcmMark));
         auto distance = double(pcmX) - pcmMark;
         auto k = unsigned(round(distance * _minBLEPCount));
-        auto pcmRelX = pcmX - pcmRef;
+        auto targetPtr = const_cast<float *>(target.begin() + (pcmX - pcmRef));
+        // The target must be big enough for a minBLEP at maximum pcmX:
         for (auto lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
-            target[pcmRelX++] += amp * _minBLEPs.at(k);
+            *targetPtr++ += amp * _minBLEPs.at(k);
         }
-
+        for (auto end = target.end(); targetPtr != end;) {
+            *targetPtr++ += amp;
+        }
     }
 
     void paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
