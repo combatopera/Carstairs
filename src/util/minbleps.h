@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ladspa.h>
+#include <stddef.h>
 #include <cmath>
 
 #include "../config.h"
@@ -15,10 +16,6 @@ class MinBLEPs {
 
     int _pcmRate, _naiveRate;
 
-    Buffer<int> _naiveXToPcmX {"_naiveXToPcmX"};
-
-    Buffer<int> _pcmXToMinNaiveX {"_pcmXToMinNaiveX"};
-
     Buffer<float> _minBLEPs {"_minBLEPs"};
 
 public:
@@ -30,13 +27,18 @@ public:
         return DSSI::cursor(floor(double(pcmX - 1) / _pcmRate * _naiveRate) + 1);
     }
 
+    size_t minBLEPSize(int minBLEPIndex) const {
+        return (_minBLEPs.limit() - minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
+    }
+
     void pasteOne(DSSI::cursor naiveX, float amp, DSSI::cursor pcmRef, View<float> target) const {
         auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
-        auto pcmX = DSSI::cursor(ceil(pcmMark));
+        auto pcmX = DSSI::cursor(ceil(pcmMark)), pcmRelX = pcmX - pcmRef;
         auto distance = double(pcmX) - pcmMark;
         auto k = unsigned(round(distance * _minBLEPCount));
-        auto targetPtr = const_cast<float *>(target.begin() + (pcmX - pcmRef));
+        auto targetPtr = const_cast<float *>(target.begin(int(pcmRelX)));
+        target.begin(int(pcmRelX + minBLEPSize(k))); // Bounds check.
         // The target must be big enough for a minBLEP at maximum pcmX:
         for (auto lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
@@ -47,7 +49,5 @@ public:
     }
 
     void paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
-
-    void paste2(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };
