@@ -31,6 +31,7 @@ BOOST_AUTO_TEST_CASE(sinc) {
     buf.range();
     buf.add(-5);
     buf.sinc();
+    // Same way numpy does it:
     BOOST_REQUIRE_EQUAL(sin(M_PI * -5) / (M_PI * -5), buf.at(0));
     BOOST_REQUIRE_EQUAL(sin(M_PI) / M_PI, buf.at(4));
     BOOST_REQUIRE_EQUAL(1, buf.at(5));
