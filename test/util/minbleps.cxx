@@ -27,6 +27,19 @@ BOOST_FIXTURE_TEST_CASE(BLI, F) {
     BOOST_REQUIRE_CLOSE_FRACTION(.19, minBLEPs._BLI.at(200), 1e-15);
 }
 
+BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
+    BOOST_REQUIRE_EQUAL(1e-50, _config._rcepsAddBeforeLog);
+    MinBLEPs minBLEPs1(&_config);
+    _config._rcepsAddBeforeLog = 0;
+    MinBLEPs minBLEPs0(&_config);
+    BOOST_REQUIRE_EQUAL(512, minBLEPs0._realCepstrum.limit());
+    BOOST_REQUIRE_EQUAL(512, minBLEPs1._realCepstrum.limit());
+    for (int i = 0; i < 512; ++i) {
+        BOOST_CHECK_SMALL(minBLEPs0._realCepstrum.at(i).imag(), 1e-12);
+        BOOST_CHECK_SMALL(minBLEPs1._realCepstrum.at(i).imag(), 1e-13);
+    }
+}
+
 BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
     MinBLEPs minBLEPs(&_config);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
