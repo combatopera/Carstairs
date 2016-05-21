@@ -2,12 +2,8 @@
 
 #include <fftw3.h>
 #include <ladspa.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <cmath>
-#include <complex>
-
-#include "util.h"
 
 template<typename T> View<T>::View(char const *label, size_t limit)
         : _limit(limit) {
@@ -67,9 +63,14 @@ template<> void View<double>::mul(double const *values) {
 
 template<> void View<double>::blackman() {
     size_t N = _limit;
-    double alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
-    for (index_t n = 0; n < N; ++n) {
+    assert(N & 1);
+    double const alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
+    size_t M = (N + 1) / 2; // Size of unique part.
+    for (index_t n = 0; n < M; ++n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
+    }
+    for (index_t n = M; n < N; ++n) { // Mirror to avoid significant precision artifacts.
+        _data[n] = _data[N - 1 - n];
     }
 }
 

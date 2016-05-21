@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(blackman) {
     BOOST_REQUIRE_GT(buf.at(50), buf.at(51));
     BOOST_REQUIRE_GT(buf.at(99), buf.at(100));
     for (int i = 0; i < 50; ++i) {
-        BOOST_REQUIRE_CLOSE_FRACTION(buf.at(i), buf.at(100 - i), 1e-13);
+        BOOST_REQUIRE_EQUAL(buf.at(i), buf.at(100 - i));
     }
 }
 
