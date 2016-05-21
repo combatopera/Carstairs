@@ -13,9 +13,13 @@ class MinBLEPs {
 
     int const _scale;
 
-    int _minBLEPCount;
-
     int _pcmRate, _naiveRate;
+
+#ifdef DIZZYM_UNIT_TEST
+public:
+#endif
+
+    int _minBLEPCount;
 
     Buffer<float> _minBLEPs {"_minBLEPs"};
 

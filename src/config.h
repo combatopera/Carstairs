@@ -16,7 +16,7 @@ public:
 
     int const _semitones = 12;
 
-    int const _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
+    int _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
 
     int const _pcmRate; // DSSI doesn't support non-integer rates.
 
