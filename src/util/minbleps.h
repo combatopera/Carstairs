@@ -16,7 +16,11 @@ class MinBLEPs {
     int _pcmRate, _naiveRate;
 
 #ifdef DIZZYM_UNIT_TEST
+
 public:
+
+    Buffer<double> _BLI {"_BLI"};
+
 #endif
 
     int _minBLEPCount;

@@ -5,6 +5,17 @@
 
 BOOST_AUTO_TEST_SUITE(TestMinBLEPs)
 
+BOOST_AUTO_TEST_CASE(BLI) {
+    Config config(6);
+    config._nominalClock = 15;
+    MinBLEPs minBLEPs(&config);
+    BOOST_REQUIRE_EQUAL(401, minBLEPs._BLI.limit());
+    for (int i = 0; i < 200; ++i) {
+        BOOST_REQUIRE_EQUAL(minBLEPs._BLI.at(i), minBLEPs._BLI.at(400 - i));
+    }
+    BOOST_REQUIRE_CLOSE_FRACTION(.19, minBLEPs._BLI.at(200), 1e-15);
+}
+
 BOOST_AUTO_TEST_CASE(minBLEPSize) {
     Config config(6);
     config._nominalClock = 15;

@@ -21,20 +21,27 @@ MinBLEPs::MinBLEPs(Config const *config)
     int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     int const evenFftSize = getEvenFftSize(oddKernelSize);
-    int const fftMidpoint = evenFftSize / 2; // Index of peak of sinc.
+    int const fftMidpoint = evenFftSize / 2; // Index of peak of sinc after padding.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
     Buffer<double> accumulator("accumulator", oddKernelSize);
     accumulator.blackman();
     {
         Buffer<double> sinc("sinc", oddKernelSize);
-        for (int i = 0; i < oddKernelSize; ++i) {
+        int const uniqueLimit = (oddKernelSize + 1) / 2;
+        for (int i = 0; i < uniqueLimit; ++i) {
             sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config->_cutoff);
         }
+        assert(!sinc.at(uniqueLimit - 1));
+        sinc.mirror(); // Logically values should be negated, but doesn't matter because sinc symmetric.
         sinc.sinc();
         accumulator.mul(sinc.begin());
     }
     accumulator.mul(1. / _minBLEPCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
+#ifdef DIZZYM_UNIT_TEST
+    _BLI.setLimit(oddKernelSize);
+    _BLI.fill(accumulator.begin());
+#endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance", evenFftSize);
