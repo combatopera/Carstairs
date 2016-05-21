@@ -2,12 +2,8 @@
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
-#include <stddef.h>
 #include <array>
 #include <cmath>
-#include <complex>
-
-#include "../../src/util/util.h"
 
 BOOST_AUTO_TEST_SUITE(TestBuffer)
 
@@ -25,6 +21,9 @@ BOOST_AUTO_TEST_CASE(blackman) {
     BOOST_REQUIRE_LT(buf.at(49), buf.at(50));
     BOOST_REQUIRE_GT(buf.at(50), buf.at(51));
     BOOST_REQUIRE_GT(buf.at(99), buf.at(100));
+    for (int i = 0; i < 50; ++i) {
+        BOOST_REQUIRE_CLOSE_FRACTION(buf.at(i), buf.at(100 - i), 1e-13);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(sinc) {
