@@ -3,11 +3,6 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 
-#include "../../src/config.h"
-#include "../../src/node.h"
-#include "../../src/state.h"
-#include "../../src/util/buf.h"
-
 BOOST_AUTO_TEST_SUITE(TestTone)
 
 #define BUF(n, value, name) Buffer<int> name("name", n); \
@@ -55,9 +50,9 @@ BOOST_AUTO_TEST_CASE(carry) {
     for (int n = 0; n <= size; ++n) {
         Tone o(&config, &state);
         View<int> v = o.render(n);
-        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin(int(v.limit())), v.begin(), v.end());
+        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin(v.limit()), v.begin(), v.end());
         v = o.render(size);
-        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.end(-int(v.limit())), ref.end(), v.begin(), v.end());
+        BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.end(v.limit()), ref.end(), v.begin(), v.end());
     }
 }
 

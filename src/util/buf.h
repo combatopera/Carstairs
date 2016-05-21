@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <cassert>
 #include <complex>
 #include <cstring>
 
@@ -58,18 +59,14 @@ public:
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
     }
 
-    T const *begin(int off = 0) const {
-        if (off >= 0 && size_t(off) <= _limit) {
-            return _data + off;
-        }
-        throw "out of bounds";
+    T const *begin(size_t off = 0) const {
+        assert(off <= _limit);
+        return _data + off;
     }
 
-    T const *end(int off = 0) const {
-        if (off <= 0 && size_t(-off) <= _limit) {
-            return _data + _limit + off;
-        }
-        throw "out of bounds";
+    T const *end(size_t off = 0) const {
+        assert(off <= _limit);
+        return _data + _limit - off;
     }
 
     void differentiate(T context);
