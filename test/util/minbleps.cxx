@@ -5,10 +5,18 @@
 
 BOOST_AUTO_TEST_SUITE(TestMinBLEPs)
 
-BOOST_AUTO_TEST_CASE(BLI) {
-    Config config(6);
-    config._nominalClock = 15;
-    MinBLEPs minBLEPs(&config);
+struct F {
+
+    Config _config {6};
+
+    F() {
+        _config._nominalClock = 15;
+    }
+
+};
+
+BOOST_FIXTURE_TEST_CASE(BLI, F) {
+    MinBLEPs minBLEPs(&_config);
     BOOST_REQUIRE_EQUAL(401, minBLEPs._BLI.limit());
     for (int i = 0; i < 200; ++i) {
         BOOST_REQUIRE_EQUAL(minBLEPs._BLI.at(i), minBLEPs._BLI.at(400 - i));
@@ -16,10 +24,8 @@ BOOST_AUTO_TEST_CASE(BLI) {
     BOOST_REQUIRE_CLOSE_FRACTION(.19, minBLEPs._BLI.at(200), 1e-15);
 }
 
-BOOST_AUTO_TEST_CASE(minBLEPSize) {
-    Config config(6);
-    config._nominalClock = 15;
-    MinBLEPs minBLEPs(&config);
+BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
+    MinBLEPs minBLEPs(&_config);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
     BOOST_REQUIRE_EQUAL(103, minBLEPs.minBLEPSize(0));
@@ -29,10 +35,8 @@ BOOST_AUTO_TEST_CASE(minBLEPSize) {
     BOOST_REQUIRE_EQUAL(102, minBLEPs.minBLEPSize(4));
 }
 
-BOOST_AUTO_TEST_CASE(pcmXToNaiveX) {
-    Config config(6);
-    config._nominalClock = 15;
-    MinBLEPs minBLEPs(&config);
+BOOST_FIXTURE_TEST_CASE(pcmXToNaiveX, F) {
+    MinBLEPs minBLEPs(&_config);
     BOOST_REQUIRE_EQUAL(1, minBLEPs.pcmXToNaiveX(1));
     BOOST_REQUIRE_EQUAL(3, minBLEPs.pcmXToNaiveX(2));
     BOOST_REQUIRE_EQUAL(6, minBLEPs.pcmXToNaiveX(3));
