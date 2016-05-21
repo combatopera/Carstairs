@@ -1,7 +1,6 @@
 #include "minbleps.h"
 
 #include <boost/math/common_factor_rt.hpp>
-#include <complex>
 
 static int getEvenFftSize(int minSize) {
     int evenFftSize = 2; // Smallest even power of 2.
@@ -43,6 +42,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     _BLI.fill(accumulator.begin());
 #endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
+    assert(int(accumulator.limit()) == evenFftSize);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance", evenFftSize);
         fftAppliance.fillWidening(accumulator.begin());
@@ -50,10 +50,14 @@ MinBLEPs::MinBLEPs(Config const *config)
         // Everything is real after we discard the phase info here:
         accumulator.fillAbs(fftAppliance.begin());
         // The "real cepstrum" is symmetric apart from its first element:
-        accumulator.add(1e-50); // Avoid taking log of zero. XXX: Why add not clamp?
+        accumulator.add(config->_rcepsAddBeforeLog); // Avoid taking log of zero. XXX: Why add not clamp?
         accumulator.ln();
         fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.ifft(); // It's now the real cepstrum.
+#ifdef DIZZYM_UNIT_TEST
+        _realCepstrum.setLimit(evenFftSize);
+        _realCepstrum.fill(fftAppliance.begin());
+#endif
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:
         fftAppliance.mul(1, fftMidpoint, std::complex<double>(2));

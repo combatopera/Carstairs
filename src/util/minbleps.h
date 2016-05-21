@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <cassert>
 #include <cmath>
+#include <complex>
 
 #include "../config.h"
 #include "buf.h"
@@ -20,6 +21,8 @@ class MinBLEPs {
 public:
 
     Buffer<double> _BLI {"_BLI"};
+
+    Buffer<std::complex<double>> _realCepstrum {"_realCepstrum"};
 
 #endif
 

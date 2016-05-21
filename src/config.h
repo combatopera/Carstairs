@@ -29,6 +29,8 @@ public:
 
     double prodconst _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
 
+    double prodconst _rcepsAddBeforeLog = 1e-50;
+
     Config(int pcmRate)
             : _pcmRate(pcmRate) {
     }
