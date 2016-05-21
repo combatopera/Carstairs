@@ -10,6 +10,7 @@ struct F {
     Config _config {6};
 
     F() {
+        _config._atomSize = Config::YM2149_ATOM_SIZE;
         _config._nominalClock = 15;
         _config._cutoff = .475;
         _config._transition = .05;

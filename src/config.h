@@ -1,10 +1,15 @@
 #pragma once
 
+#include <cassert>
 #include <cmath>
 
 #include "util/util.h"
 
 class Config {
+
+#ifdef DIZZYM_UNIT_TEST
+public:
+#endif
 
     static int const YM2149_ATOM_SIZE = 8;
 
@@ -29,7 +34,8 @@ public:
     }
 
     int naiveRate() const {
-        return _nominalClock * _atomSize / YM2149_ATOM_SIZE; // TODO LATER: Enforce exact division.
+        assert(!((_nominalClock * _atomSize) % YM2149_ATOM_SIZE));
+        return _nominalClock * _atomSize / YM2149_ATOM_SIZE;
     }
 
     int evenEmpiricalOrder() const {
