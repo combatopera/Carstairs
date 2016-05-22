@@ -103,4 +103,16 @@ BOOST_AUTO_TEST_CASE(fillWidening) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 
+BOOST_AUTO_TEST_CASE(rceps) {
+    Buffer<double> buf("rceps", 10);
+    buf.range();
+    {
+        Buffer<std::complex<double>> fftAppliance("fftAppliance");
+        buf.rceps(fftAppliance, 0);
+    }
+    for (int i = 1; i < 5; ++i) {
+        BOOST_CHECK_EQUAL(buf.at(i), buf.at(10 - i));
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
