@@ -29,6 +29,6 @@ class PCM: public Node<LADSPA_Data> {
 
 public:
 
-    PCM(Config const&, State *, Node<float>&);
+    PCM(Config const&, State&, Node<float>&);
 
 };

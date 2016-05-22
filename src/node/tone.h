@@ -11,7 +11,7 @@ class Tone: public Node<int> {
 
     static int const INITIAL_PROGRESS = 0;
 
-    Config const * const _config;
+    Config const& _config;
 
     View<int> _shape;
 
@@ -23,6 +23,6 @@ class Tone: public Node<int> {
 
 public:
 
-    Tone(Config const *config, State *state);
+    Tone(Config const& config, State& state);
 
 };

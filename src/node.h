@@ -12,7 +12,7 @@ template<typename T> class Node {
 
 public:
 
-    Node(char const *label, State *state);
+    Node(char const *label, State& state);
 
     virtual ~Node();
 
@@ -31,7 +31,7 @@ protected:
 
     Buffer<T> _buf;
 
-    State *_state;
+    State& _state;
 
     virtual void resetImpl() = 0;
 
@@ -40,6 +40,6 @@ protected:
 };
 
 #define NODE_INSTANTIATE(T) \
-    template Node<T>::Node(char const *, State *); \
+    template Node<T>::Node(char const *, State&); \
     template Node<T>::~Node(); \
     template View<T> Node<T>::render(DSSI::cursor);

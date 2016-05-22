@@ -1,6 +1,6 @@
 #include "pcm.h"
 
-PCM::PCM(Config const& config, State *state, Node<float>& naive)
+PCM::PCM(Config const& config, State& state, Node<float>& naive)
         : Node("PCM", state), _minBLEPs(config), _naive(naive), _dc(INITIAL_DC), _overflowIndex(0) {
     // Nothing else.
 }

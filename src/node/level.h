@@ -17,7 +17,7 @@ class Level: public Node<float> {
 
 public:
 
-    Level(Config const& config, State *state, Tone& tone)
+    Level(Config const& config, State& state, Tone& tone)
             : Node("Level", state), _maxAmp(config._maxAmp), _tone(tone) {
     }
 
