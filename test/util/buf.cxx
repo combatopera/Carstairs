@@ -51,11 +51,11 @@ BOOST_AUTO_TEST_CASE(sinc) {
 }
 
 BOOST_AUTO_TEST_CASE(pad) {
-    Buffer<double> buf("pad", 3);
+    Buffer<double> buf("pad", 5);
     buf.range();
     buf.add(1);
-    buf.pad(5, 2, 8);
-    std::array<double, 10> expected {8, 8, 8, 8, 8, 1, 2, 3, 8, 8};
+    buf.pad(2, 3, 8);
+    std::array<double, 10> expected {8, 8, 1, 2, 3, 4, 5, 8, 8, 8};
     BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 

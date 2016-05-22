@@ -130,7 +130,7 @@ public:
     void pad(size_t left, size_t right, T value) {
         size_t mid = this->_limit;
         setLimit(left + mid + right);
-        memcpy(this->_data + left, this->_data, mid * sizeof(T));
+        memmove(this->_data + left, this->_data, mid * sizeof(T));
         this->fill(0, left, value);
         this->fill(left + mid, this->_limit, value);
     }
