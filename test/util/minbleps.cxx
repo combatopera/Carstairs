@@ -53,6 +53,17 @@ BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(minBLEPs, F) {
+    MinBLEPs minBLEPs(&_config);
+    BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
+    for (int i = 0; i < 3; ++i) {
+        BOOST_CHECK_SMALL(minBLEPs._minBLEPs.at(i), 1e-4f);
+    }
+    for (int i = 500; i < 512; ++i) {
+        BOOST_CHECK_CLOSE_FRACTION(1, minBLEPs._minBLEPs.at(i), 1e-4f);
+    }
+}
+
 BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
     MinBLEPs minBLEPs(&_config);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
