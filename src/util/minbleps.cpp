@@ -38,20 +38,11 @@ MinBLEPs::MinBLEPs(Config const *config)
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     assert(int(accumulator.limit()) == evenFftSize);
     {
-        Buffer<std::complex<double>> fftAppliance("fftAppliance", evenFftSize);
-        fftAppliance.fillWidening(accumulator.begin());
-        fftAppliance.fft();
-        // Everything is real after we discard the phase info here:
-        accumulator.fillAbs(fftAppliance.begin());
-        // The "real cepstrum" is symmetric apart from its first element:
-        accumulator.add(config->_rcepsAddBeforeLog); // Avoid taking log of zero. XXX: Why add not clamp?
-        accumulator.ln();
-        fftAppliance.fillWidening(accumulator.begin());
-        fftAppliance.ifft(); // It's now the real cepstrum.
+        Buffer<std::complex<double>> fftAppliance("fftAppliance");
+        accumulator.rceps(fftAppliance, config->_rcepsAddBeforeLog);
 #ifdef DIZZYM_UNIT_TEST
         _realCepstrum.snapshot(fftAppliance);
 #endif
-        accumulator.fillReal(fftAppliance.begin()); // MathWorks rceps does this too.
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:
         accumulator.mul(1, fftMidpoint, 2);

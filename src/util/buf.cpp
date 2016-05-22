@@ -170,6 +170,7 @@ template<> void View<double>::rceps(Buffer<std::complex<double>>& fftAppliance, 
     fftAppliance.setLimit(_limit);
     fftAppliance.fillWidening(begin());
     fftAppliance.fft();
+    // Everything is real after we discard the phase info here:
     fillAbs(fftAppliance.begin());
     add(addBeforeLog); // Avoid taking log of zero. XXX: Why add not clamp?
     ln();
