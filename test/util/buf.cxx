@@ -89,4 +89,18 @@ BOOST_AUTO_TEST_CASE(differentiate) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
 }
 
+BOOST_AUTO_TEST_CASE(fillWidening) {
+    Buffer<double> buf("fillWidening", 10);
+    Buffer<std::complex<double>> cbuf("fillWidening", 10);
+    buf.range();
+    cbuf.fillWidening(buf.begin());
+    for (int i = 0; i < 10; ++i) {
+        BOOST_CHECK_EQUAL(i, cbuf.at(i).real());
+        BOOST_CHECK_EQUAL(0, cbuf.at(i).imag());
+    }
+    buf.fillReal(cbuf.begin());
+    std::array<double, 10> expected {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), buf.begin(), buf.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
