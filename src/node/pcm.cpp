@@ -1,10 +1,6 @@
 #include "pcm.h"
 
-#include <stddef.h>
-
-#include "../util/util.h"
-
-PCM::PCM(Config const& config, State *state, Node<float> *naive)
+PCM::PCM(Config const& config, State *state, Node<float>& naive)
         : Node("PCM", state), _minBLEPs(config), _naive(naive), _dc(INITIAL_DC) {
     // Nothing else.
 }
@@ -14,15 +10,25 @@ void PCM::resetImpl() {
 }
 
 void PCM::renderImpl() {
-    size_t pcmCount = _buf.limit();
-    DSSI::cursor newNaiveX = _minBLEPs.pcmXToNaiveX(cursor() + pcmCount);
-    View<float> naive = _naive->render(newNaiveX);
+    auto pcmRef = cursor();
+    auto pcmCount = _buf.limit();
+    auto naiveRef = _naive.cursor();
+    auto naive = _naive.render(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
+    auto naiveN = naive.limit();
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
-    if (naive.limit()) { // Otherwise _dc doesn't change.
-        _dc = naive.at(naive.limit() - 1);
+    _minBLEPs.pastePrepare(naiveRef + naiveN - 1, pcmRef);
+    _target.setLimit(_minBLEPs.targetLimit());
+    _target.fill(_dc);
+    for (unsigned i = 0; i < naiveN; ++i) {
+        auto amp = _derivative.at(i);
+        if (amp) {
+            _minBLEPs.pastePrepare(naiveRef + i, pcmRef);
+            _minBLEPs.pastePerform(amp, _target);
+        }
     }
-    for (DSSI::cursor pcmI = 0; pcmI < pcmCount; ++pcmI) {
-        _buf.put(pcmI, naive.at(pcmI * 2000000 / 44100));
+    _buf.fill(_target.begin());
+    if (naiveN) { // Otherwise _dc doesn't change.
+        _dc = naive.at(naiveN - 1);
     }
 }

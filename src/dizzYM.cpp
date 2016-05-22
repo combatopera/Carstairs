@@ -1,12 +1,8 @@
 #include "dizzYM.h"
 
-#include <alsa/seq_event.h>
 #include <dssi.h>
-#include <ladspa.h>
 
 #include "node.h"
-#include "util/buf.h"
-#include "util/util.h"
 
 PortInfoEnum::PortInfoEnum(index_t ord)
         : _output {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
@@ -24,7 +20,7 @@ dizzYM::dizzYM(int pcmRate)
         _program(&_state), //
         _tone(&_config, &_state), //
         _level(&_state, &_tone), //
-        _chip(_config, &_state, &_level) {
+        _chip(_config, &_state, _level) {
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {

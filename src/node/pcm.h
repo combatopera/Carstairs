@@ -12,11 +12,11 @@ class PCM: public Node<LADSPA_Data> {
 
     constexpr static float INITIAL_DC = 0;
 
-    MinBLEPs const _minBLEPs;
+    MinBLEPs _minBLEPs;
 
-    Node<float> * const _naive;
+    Node<float>& _naive;
 
-    Buffer<float> _derivative {"_derivative"};
+    Buffer<float> _derivative {"_derivative"}, _target {"_target"};
 
     float _dc;
 
@@ -26,6 +26,6 @@ class PCM: public Node<LADSPA_Data> {
 
 public:
 
-    PCM(Config const&, State *, Node<float> *);
+    PCM(Config const&, State *, Node<float>&);
 
 };
