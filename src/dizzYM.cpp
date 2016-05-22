@@ -16,7 +16,7 @@ dizzYM::dizzYM(int pcmRate)
         : _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _config(pcmRate), //
-        _state(&_config), //
+        _state(_config), //
         _program(&_state), //
         _tone(&_config, &_state), //
         _level(_config, &_state, _tone), //

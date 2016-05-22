@@ -7,7 +7,7 @@ class State {
 
     static Bounds<int> const TP_BOUNDS, LEVEL4_BOUNDS;
 
-    Config const * const _config;
+    Config const& _config;
 
     DSSI::cursor _onOrMax, _offOrMax;
 
@@ -21,7 +21,7 @@ public:
 
 public:
 
-    State(Config const *);
+    State(Config const&);
 
     void reset();
 
