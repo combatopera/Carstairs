@@ -1,18 +1,14 @@
 #pragma once
 
-#include <ladspa.h>
 #include <stddef.h>
 #include <cassert>
 #include <cmath>
-#include <complex>
 
 #include "../config.h"
 #include "buf.h"
 #include "util.h"
 
 class MinBLEPs {
-
-    int const _scale;
 
     int _pcmRate, _naiveRate;
 
@@ -61,7 +57,5 @@ public:
             *targetPtr++ += amp;
         }
     }
-
-    void paste(DSSI::cursor naiveX, View<float> naiveBuf, View<LADSPA_Data> pcmBuf) const;
 
 };
