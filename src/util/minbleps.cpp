@@ -43,15 +43,7 @@ MinBLEPs::MinBLEPs(Config const *config)
 #ifdef DIZZYM_UNIT_TEST
         _realCepstrum.snapshot(fftAppliance);
 #endif
-        // Leave first point, zero max phase part, double min phase part to compensate.
-        // The midpoint is shared between parts so it doesn't change:
-        accumulator.mul(1, fftMidpoint, 2);
-        accumulator.fill(fftMidpoint + 1, evenFftSize, 0);
-        fftAppliance.fillWidening(accumulator.begin());
-        fftAppliance.fft();
-        fftAppliance.exp();
-        fftAppliance.ifft();
-        accumulator.fillReal(fftAppliance.begin()); // It's now a min-phase BLI.
+        accumulator.minPhaseFromRceps(fftAppliance); // It's now a min-phase BLI.
     }
     accumulator.integrate(); // It's now _minBLEPCount interleaved minBLEPs!
     _minBLEPs.setLimit(accumulator.limit());

@@ -177,6 +177,8 @@ template<> void View<double>::rceps(Buffer<std::complex<double>>& fftAppliance, 
 template<> void View<double>::minPhaseFromRceps(Buffer<std::complex<double>>& fftAppliance) {
     assert(!(_limit & 1));
     size_t midpoint = _limit / 2;
+    // Leave first point, zero max phase part, double min phase part to compensate.
+    // The midpoint is shared between parts so it doesn't change:
     mul(1, midpoint, 2);
     fill(midpoint + 1, _limit, 0);
     fftAppliance.setLimit(_limit);
