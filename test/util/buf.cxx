@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(fft) {
     buf.fft();
     buf.ifft();
     for (index_t i = 0; i < n; ++i) {
-        BOOST_REQUIRE_CLOSE_FRACTION(i, buf.at(i).real() / double(n), 1e-14);
+        BOOST_REQUIRE_CLOSE_FRACTION(i, buf.at(i).real(), 1e-14);
         BOOST_REQUIRE_SMALL(buf.at(i).imag(), 1e-9);
     }
 }
@@ -112,6 +112,16 @@ BOOST_AUTO_TEST_CASE(rceps) {
     }
     for (int i = 1; i < 5; ++i) {
         BOOST_CHECK_EQUAL(buf.at(i), buf.at(10 - i));
+    }
+    Buffer<double> rceps("rceps");
+    rceps.snapshot(buf);
+    {
+        Buffer<std::complex<double>> fftAppliance("fftAppliance");
+        buf.minPhaseFromRceps(fftAppliance);
+        buf.rceps(fftAppliance, 0);
+    }
+    for (int i = 0; i < 10; ++i) {
+        BOOST_CHECK_CLOSE_FRACTION(rceps.at(i), buf.at(i), 1e-14);
     }
 }
 

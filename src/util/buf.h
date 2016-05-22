@@ -7,6 +7,8 @@
 
 #include "util.h"
 
+template<typename T> class Buffer;
+
 template<typename T> class View {
 
 protected:
@@ -112,6 +114,8 @@ public:
     void exp();
 
     void rceps(Buffer<std::complex<double>>& fftAppliance, double addBeforeLog);
+
+    void minPhaseFromRceps(Buffer<std::complex<double>>& fftAppliance);
 
 };
 

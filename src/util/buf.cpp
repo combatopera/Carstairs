@@ -43,12 +43,6 @@ template<> void View<double>::sinc() {
     }
 }
 
-template<> void View<double>::mul(double value) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] *= value;
-    }
-}
-
 template<> void View<double>::mul(index_t i, index_t j, double value) {
     for (; i < j; ++i) {
         _data[i] *= value;
@@ -116,17 +110,17 @@ template<> void View<T>::add(T value) { \
     for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
         _data[i] += value; \
     } \
+} \
+template<> void View<T>::mul(T value) { \
+    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+        _data[i] *= value; \
+    } \
 }
 
 NUMERICS(float)
 NUMERICS(double)
 NUMERICS(int)
-
-template<> void View<std::complex<double>>::range() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        _data[i] = double(i);
-    }
-}
+NUMERICS(std::complex<double>)
 
 template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
     for (; i < j; ++i) {
@@ -158,6 +152,7 @@ template<> void View<std::complex<double>>::ifft() {
     FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
+    mul(std::complex<double>(1 / double(_limit))); // How numpy does it.
 }
 
 template<> void View<std::complex<double>>::exp() {
@@ -177,6 +172,19 @@ template<> void View<double>::rceps(Buffer<std::complex<double>>& fftAppliance, 
     fftAppliance.fillWidening(begin());
     fftAppliance.ifft();
     fillReal(fftAppliance.begin()); // MathWorks rceps does this too.
+}
+
+template<> void View<double>::minPhaseFromRceps(Buffer<std::complex<double>>& fftAppliance) {
+    assert(!(_limit & 1));
+    size_t midpoint = _limit / 2;
+    mul(1, midpoint, 2);
+    fill(midpoint + 1, _limit, 0);
+    fftAppliance.setLimit(_limit);
+    fftAppliance.fillWidening(begin());
+    fftAppliance.fft();
+    fftAppliance.exp();
+    fftAppliance.ifft();
+    fillReal(fftAppliance.begin());
 }
 
 BUF_INSTANTIATE(int)
