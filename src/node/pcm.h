@@ -7,6 +7,7 @@
 #include "../state.h"
 #include "../util/buf.h"
 #include "../util/minbleps.h"
+#include "../util/util.h"
 
 class PCM: public Node<LADSPA_Data> {
 
@@ -19,6 +20,8 @@ class PCM: public Node<LADSPA_Data> {
     Buffer<float> _derivative {"_derivative"}, _target {"_target"};
 
     float _dc;
+
+    index_t _overflowIndex;
 
     void resetImpl();
 
