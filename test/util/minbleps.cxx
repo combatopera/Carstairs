@@ -14,6 +14,7 @@ struct F {
         _config._nominalClock = 15;
         _config._cutoff = .475;
         _config._transition = .05;
+        BOOST_REQUIRE_EQUAL(_config._minBLEPCount = 5, _config.idealMinBLEPCount());
     }
 
 };
@@ -25,6 +26,14 @@ BOOST_FIXTURE_TEST_CASE(BLI, F) {
         BOOST_REQUIRE_EQUAL(minBLEPs._BLI.at(i), minBLEPs._BLI.at(400 - i));
     }
     BOOST_REQUIRE_CLOSE_FRACTION(.19, minBLEPs._BLI.at(200), 1e-15);
+    minBLEPs._BLI.integrate();
+    for (int i = 380; i < 390; ++i) {
+        BOOST_CHECK_CLOSE_FRACTION(1, minBLEPs._BLI.at(i), 1e-4);
+    }
+    for (int i = 390; i < 400; ++i) {
+        BOOST_CHECK_CLOSE_FRACTION(1, minBLEPs._BLI.at(i), 1e-5);
+    }
+    BOOST_CHECK_CLOSE_FRACTION(1, minBLEPs._BLI.at(400), 1e-6);
 }
 
 BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {

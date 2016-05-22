@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/math/common_factor_rt.hpp>
 #include <cassert>
 #include <cmath>
 
@@ -31,6 +32,8 @@ public:
 
     double prodconst _rcepsAddBeforeLog = 1e-50;
 
+    int prodconst _minBLEPCount = 1000;
+
     Config(int pcmRate)
             : _pcmRate(pcmRate) {
     }
@@ -43,6 +46,11 @@ public:
     int evenEmpiricalOrder() const {
         double const empirical = 4 / _transition; // According to Steven W. Smith.
         return int(round(empirical / 2)) * 2; // Closest even int to empirical.
+    }
+
+    int idealMinBLEPCount() const {
+        int naiveRate = this->naiveRate();
+        return naiveRate / boost::math::gcd(naiveRate, _pcmRate);
     }
 
 };

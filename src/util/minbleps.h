@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <cassert>
 #include <cmath>
+#include <complex>
 
 #include "../config.h"
 #include "buf.h"
@@ -22,7 +23,7 @@ public:
 
 #endif
 
-    int _minBLEPCount;
+    int const _minBLEPCount;
 
     Buffer<float> _minBLEPs {"_minBLEPs"};
 

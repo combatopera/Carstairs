@@ -1,8 +1,5 @@
 #include "minbleps.h"
 
-#include <boost/math/common_factor_rt.hpp>
-#include <complex>
-
 static int getEvenFftSize(int minSize) {
     int evenFftSize = 2; // Smallest even power of 2.
     while (evenFftSize < minSize) {
@@ -11,10 +8,10 @@ static int getEvenFftSize(int minSize) {
     return evenFftSize;
 }
 
-MinBLEPs::MinBLEPs(Config const *config) {
+MinBLEPs::MinBLEPs(Config const *config)
+        : _minBLEPCount(config->_minBLEPCount) {
     _naiveRate = config->naiveRate();
     _pcmRate = config->_pcmRate;
-    _minBLEPCount = _naiveRate / boost::math::gcd(_naiveRate, _pcmRate); // FIXME LATER: This could be huge.
     debug("Creating %d minBLEPs.", _minBLEPCount);
     int const evenOrder = config->evenEmpiricalOrder();
     int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
@@ -38,7 +35,7 @@ MinBLEPs::MinBLEPs(Config const *config) {
     }
     accumulator.mul(1. / _minBLEPCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
 #ifdef DIZZYM_UNIT_TEST
-            _BLI.snapshot(accumulator);
+    _BLI.snapshot(accumulator);
 #endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     assert(int(accumulator.limit()) == evenFftSize);
