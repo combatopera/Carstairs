@@ -166,6 +166,18 @@ template<> void View<std::complex<double>>::exp() {
     }
 }
 
+template<> void View<double>::rceps(Buffer<std::complex<double>>& fftAppliance, double addBeforeLog) {
+    fftAppliance.setLimit(_limit);
+    fftAppliance.fillWidening(begin());
+    fftAppliance.fft();
+    fillAbs(fftAppliance.begin());
+    add(addBeforeLog); // Avoid taking log of zero. XXX: Why add not clamp?
+    ln();
+    fftAppliance.fillWidening(begin());
+    fftAppliance.ifft();
+    fillReal(fftAppliance.begin()); // MathWorks rceps does this too.
+}
+
 BUF_INSTANTIATE(int)
 BUF_INSTANTIATE(LADSPA_Data)
 BUF_INSTANTIATE(LADSPA_Data *)

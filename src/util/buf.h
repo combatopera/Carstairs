@@ -111,6 +111,8 @@ public:
 
     void exp();
 
+    void rceps(Buffer<std::complex<double>>& fftAppliance, double addBeforeLog);
+
 };
 
 template<typename T> class Buffer: public View<T> {
