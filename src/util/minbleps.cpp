@@ -15,7 +15,6 @@ MinBLEPs::MinBLEPs(Config const *config)
     int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     int const evenFftSize = getEvenFftSize(oddKernelSize);
-    int const fftMidpoint = evenFftSize / 2; // Index of peak of sinc after padding.
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
     Buffer<double> accumulator("accumulator", oddKernelSize);
