@@ -5,11 +5,11 @@
 
 class Program {
 
-    State * const _state;
+    State& _state;
 
 public:
 
-    Program(State *state)
+    Program(State& state)
             : _state(state) {
     }
 

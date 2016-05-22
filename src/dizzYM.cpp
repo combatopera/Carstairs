@@ -17,7 +17,7 @@ dizzYM::dizzYM(int pcmRate)
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _config(pcmRate), //
         _state(_config), //
-        _program(&_state), //
+        _program(_state), //
         _tone(&_config, &_state), //
         _level(_config, &_state, _tone), //
         _chip(_config, &_state, _level) {
