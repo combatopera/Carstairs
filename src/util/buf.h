@@ -52,9 +52,7 @@ public:
     }
 
     void fill(T const *values) {
-        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-            _data[i] = values[i];
-        }
+        memcpy(_data, values, _limit * sizeof(T));
     }
 
     void mirror() {
