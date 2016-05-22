@@ -38,9 +38,9 @@ BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
     BOOST_REQUIRE_EQUAL(512, minBLEPs1._realCepstrum.limit());
     BOOST_REQUIRE_EQUAL(512, minBLEPs2._realCepstrum.limit());
     for (int i = 0; i < 512; ++i) {
-        BOOST_CHECK_SMALL(minBLEPs0._realCepstrum.at(i).imag(), 1e-12);
-        BOOST_CHECK_SMALL(minBLEPs1._realCepstrum.at(i).imag(), 1e-13);
-        BOOST_CHECK_SMALL(minBLEPs2._realCepstrum.at(i).imag(), 1e-16);
+        BOOST_CHECK_SMALL(minBLEPs0._realCepstrum.at(i).imag(), 1e-5);
+        BOOST_CHECK_SMALL(minBLEPs1._realCepstrum.at(i).imag(), 1e-5);
+        BOOST_CHECK_SMALL(minBLEPs2._realCepstrum.at(i).imag(), 1e-14);
     }
 }
 
