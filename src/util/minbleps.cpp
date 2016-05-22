@@ -38,8 +38,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     }
     accumulator.mul(1. / _minBLEPCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
 #ifdef DIZZYM_UNIT_TEST
-    _BLI.setLimit(oddKernelSize);
-    _BLI.fill(accumulator.begin());
+    _BLI.snapshot(accumulator);
 #endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
     assert(int(accumulator.limit()) == evenFftSize);
@@ -55,8 +54,7 @@ MinBLEPs::MinBLEPs(Config const *config)
         fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.ifft(); // It's now the real cepstrum.
 #ifdef DIZZYM_UNIT_TEST
-        _realCepstrum.setLimit(evenFftSize);
-        _realCepstrum.fill(fftAppliance.begin());
+        _realCepstrum.snapshot(fftAppliance);
 #endif
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:

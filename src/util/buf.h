@@ -135,6 +135,11 @@ public:
         this->fill(left + mid, this->_limit, value);
     }
 
+    void snapshot(View<T> that) {
+        setLimit(that.limit());
+        fill(that.begin());
+    }
+
 };
 
 #define BUF_INSTANTIATE(T) \
