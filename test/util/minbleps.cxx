@@ -20,7 +20,7 @@ struct F {
 };
 
 BOOST_FIXTURE_TEST_CASE(BLI, F) {
-    MinBLEPs minBLEPs(&_config);
+    MinBLEPs minBLEPs(_config);
     BOOST_REQUIRE_EQUAL(401, minBLEPs._BLI.limit());
     for (int i = 0; i < 200; ++i) {
         BOOST_REQUIRE_EQUAL(minBLEPs._BLI.at(i), minBLEPs._BLI.at(400 - i));
@@ -38,11 +38,11 @@ BOOST_FIXTURE_TEST_CASE(BLI, F) {
 
 BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
     BOOST_REQUIRE_EQUAL(1e-50, _config._rcepsAddBeforeLog);
-    MinBLEPs minBLEPs1(&_config);
+    MinBLEPs minBLEPs1(_config);
     _config._rcepsAddBeforeLog = 0;
-    MinBLEPs minBLEPs0(&_config);
+    MinBLEPs minBLEPs0(_config);
     _config._rcepsAddBeforeLog = .5;
-    MinBLEPs minBLEPs2(&_config);
+    MinBLEPs minBLEPs2(_config);
     BOOST_REQUIRE_EQUAL(512, minBLEPs0._realCepstrum.limit());
     BOOST_REQUIRE_EQUAL(512, minBLEPs1._realCepstrum.limit());
     BOOST_REQUIRE_EQUAL(512, minBLEPs2._realCepstrum.limit());
@@ -54,7 +54,7 @@ BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(minBLEPs, F) {
-    MinBLEPs minBLEPs(&_config);
+    MinBLEPs minBLEPs(_config);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
     for (int i = 0; i < 3; ++i) {
         BOOST_CHECK_SMALL(minBLEPs._minBLEPs.at(i), 1e-4f);
@@ -65,7 +65,7 @@ BOOST_FIXTURE_TEST_CASE(minBLEPs, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
-    MinBLEPs minBLEPs(&_config);
+    MinBLEPs minBLEPs(_config);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
     BOOST_REQUIRE_EQUAL(103, minBLEPs.minBLEPSize(0));
@@ -76,7 +76,7 @@ BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(pcmXToNaiveX, F) {
-    MinBLEPs minBLEPs(&_config);
+    MinBLEPs minBLEPs(_config);
     BOOST_REQUIRE_EQUAL(1, minBLEPs.pcmXToNaiveX(1));
     BOOST_REQUIRE_EQUAL(3, minBLEPs.pcmXToNaiveX(2));
     BOOST_REQUIRE_EQUAL(6, minBLEPs.pcmXToNaiveX(3));

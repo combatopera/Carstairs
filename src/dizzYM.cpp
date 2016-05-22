@@ -24,7 +24,7 @@ dizzYM::dizzYM(int pcmRate)
         _program(&_state), //
         _tone(&_config, &_state), //
         _level(&_state, &_tone), //
-        _chip(&_config, &_state, &_level) {
+        _chip(_config, &_state, &_level) {
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {

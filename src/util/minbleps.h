@@ -11,7 +11,7 @@
 
 class MinBLEPs {
 
-    int _pcmRate, _naiveRate;
+    int const _pcmRate, _naiveRate;
 
 #ifdef DIZZYM_UNIT_TEST
 
@@ -29,7 +29,7 @@ public:
 
 public:
 
-    MinBLEPs(Config const *);
+    MinBLEPs(Config const&);
 
     DSSI::cursor pcmXToNaiveX(DSSI::cursor pcmX) const {
         // First naiveX that doesn't affect pcmX prior to that given:

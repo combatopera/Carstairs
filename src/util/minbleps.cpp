@@ -8,11 +8,11 @@ static int getEvenFftSize(int minSize) {
     return evenFftSize;
 }
 
-MinBLEPs::MinBLEPs(Config const *config)
-        : _pcmRate(config->_pcmRate), _naiveRate(config->naiveRate()), _minBLEPCount(config->_minBLEPCount) {
+MinBLEPs::MinBLEPs(Config const& config)
+        : _pcmRate(config._pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
     debug("Creating %d minBLEPs.", _minBLEPCount);
-    int const evenOrder = config->evenEmpiricalOrder();
-    int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
+    int const evenOrder = config.evenEmpiricalOrder();
+    int const oddKernelSize = evenOrder * _minBLEPCount + 1;
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     int const evenFftSize = getEvenFftSize(oddKernelSize);
     // If cutoff is .5 the sinc starts and ends with zero.
@@ -23,14 +23,14 @@ MinBLEPs::MinBLEPs(Config const *config)
         Buffer<double> sinc("sinc", oddKernelSize);
         int const uniqueLimit = (oddKernelSize + 1) / 2;
         for (int i = 0; i < uniqueLimit; ++i) {
-            sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config->_cutoff);
+            sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config._cutoff);
         }
         assert(!sinc.at(uniqueLimit - 1));
         sinc.mirror(); // Logically values should be negated, but doesn't matter because sinc symmetric.
         sinc.sinc();
         accumulator.mul(sinc.begin());
     }
-    accumulator.mul(1. / _minBLEPCount * config->_cutoff * 2); // It's now a band-limited impulse (BLI).
+    accumulator.mul(1. / _minBLEPCount * config._cutoff * 2); // It's now a band-limited impulse (BLI).
 #ifdef DIZZYM_UNIT_TEST
     _BLI.snapshot(accumulator);
 #endif
@@ -38,7 +38,7 @@ MinBLEPs::MinBLEPs(Config const *config)
     assert(int(accumulator.limit()) == evenFftSize);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance");
-        accumulator.rceps(fftAppliance, config->_rcepsAddBeforeLog);
+        accumulator.rceps(fftAppliance, config._rcepsAddBeforeLog);
 #ifdef DIZZYM_UNIT_TEST
         _realCepstrum.snapshot(fftAppliance);
 #endif
