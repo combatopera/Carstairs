@@ -45,6 +45,10 @@ public:
         }
     }
 
+    void fill(index_t i, index_t j, T const *values) {
+        memmove(_data + i, values, (j - i) * sizeof(T));
+    }
+
     void fill(T value) {
         for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
             _data[i] = value;

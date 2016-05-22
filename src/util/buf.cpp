@@ -180,7 +180,7 @@ template<> void View<double>::minPhaseFromRceps(Buffer<std::complex<double>>& ff
     // Leave first point, zero max phase part, double min phase part to compensate.
     // The midpoint is shared between parts so it doesn't change:
     mul(1, midpoint, 2);
-    fill(midpoint + 1, _limit, 0);
+    fill(midpoint + 1, _limit, double(0));
     fftAppliance.setLimit(_limit);
     fftAppliance.fillWidening(begin());
     fftAppliance.fft();
