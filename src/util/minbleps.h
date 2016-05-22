@@ -40,10 +40,6 @@ public:
         return DSSI::cursor(floor(double(pcmX - 1) / _pcmRate * _naiveRate) + 1);
     }
 
-    size_t minBLEPSize(int minBLEPIndex) const {
-        return (_minBLEPs.limit() - minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
-    }
-
     void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
         auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
@@ -54,8 +50,12 @@ public:
         _minBLEPIndex = unsigned(round(distance * _minBLEPCount));
     }
 
+    size_t minBLEPSize() const {
+        return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
+    }
+
     size_t targetLimit() const {
-        return _pcmRelX + minBLEPSize(_minBLEPIndex);
+        return _pcmRelX + minBLEPSize();
     }
 
     void pastePerform(float amp, View<float> target) const {
