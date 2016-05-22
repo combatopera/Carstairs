@@ -137,7 +137,7 @@ public:
 
     void snapshot(View<T> that) {
         setLimit(that.limit());
-        fill(that.begin());
+        this->fill(that.begin());
     }
 
 };
