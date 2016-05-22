@@ -19,7 +19,7 @@ dizzYM::dizzYM(int pcmRate)
         _state(&_config), //
         _program(&_state), //
         _tone(&_config, &_state), //
-        _level(&_state, &_tone), //
+        _level(_config, &_state, _tone), //
         _chip(_config, &_state, _level) {
 }
 

@@ -1,12 +1,15 @@
 #pragma once
 
+#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 #include "tone.h"
 
 class Level: public Node<float> {
 
-    Tone * const _tone;
+    float const _maxAmp;
+
+    Tone& _tone;
 
     void resetImpl();
 
@@ -14,8 +17,8 @@ class Level: public Node<float> {
 
 public:
 
-    Level(State *state, Tone * tone)
-            : Node("Level", state), _tone(tone) {
+    Level(Config const& config, State *state, Tone& tone)
+            : Node("Level", state), _maxAmp(config._maxAmp), _tone(tone) {
     }
 
 };

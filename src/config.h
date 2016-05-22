@@ -34,6 +34,8 @@ public:
 
     int prodconst _minBLEPCount = 1000;
 
+    float const _maxAmp = .5;
+
     Config(int pcmRate)
             : _pcmRate(pcmRate) {
     }
