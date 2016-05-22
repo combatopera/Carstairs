@@ -27,6 +27,10 @@ public:
 
     Buffer<float> _minBLEPs {"_minBLEPs"};
 
+    DSSI::cursor _pcmRelX;
+
+    unsigned _minBLEPIndex;
+
 public:
 
     MinBLEPs(Config const&);
@@ -40,18 +44,25 @@ public:
         return (_minBLEPs.limit() - minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
     }
 
-    void pasteOne(DSSI::cursor naiveX, float amp, DSSI::cursor pcmRef, View<float> target) const {
+    void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
         auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto pcmX = DSSI::cursor(ceil(pcmMark));
         assert(pcmRef <= pcmX);
-        DSSI::cursor pcmRelX = pcmX - pcmRef;
+        _pcmRelX = pcmX - pcmRef;
         auto distance = double(pcmX) - pcmMark;
-        auto k = unsigned(round(distance * _minBLEPCount));
-        auto targetPtr = const_cast<float *>(target.begin(pcmRelX));
-        target.begin(pcmRelX + minBLEPSize(k)); // Bounds check.
+        _minBLEPIndex = unsigned(round(distance * _minBLEPCount));
+    }
+
+    size_t targetLimit() const {
+        return _pcmRelX + minBLEPSize(_minBLEPIndex);
+    }
+
+    void pastePerform(float amp, View<float> target) const {
+        auto targetPtr = const_cast<float *>(target.begin(_pcmRelX));
+        target.begin(targetLimit()); // Bounds check.
         // The target must be big enough for a minBLEP at maximum pcmX:
-        for (auto lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
+        for (index_t k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
         }
         for (auto end = target.end(); targetPtr != end;) {
