@@ -9,9 +9,7 @@ static int getEvenFftSize(int minSize) {
 }
 
 MinBLEPs::MinBLEPs(Config const *config)
-        : _minBLEPCount(config->_minBLEPCount) {
-    _naiveRate = config->naiveRate();
-    _pcmRate = config->_pcmRate;
+        : _pcmRate(config->_pcmRate), _naiveRate(config->naiveRate()), _minBLEPCount(config->_minBLEPCount) {
     debug("Creating %d minBLEPs.", _minBLEPCount);
     int const evenOrder = config->evenEmpiricalOrder();
     int const oddKernelSize = evenOrder * _minBLEPCount + 1; // Odd.
