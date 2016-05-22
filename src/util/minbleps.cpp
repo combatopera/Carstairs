@@ -56,10 +56,12 @@ MinBLEPs::MinBLEPs(Config const *config)
 #ifdef DIZZYM_UNIT_TEST
         _realCepstrum.snapshot(fftAppliance);
 #endif
+        accumulator.fillReal(fftAppliance.begin()); // MathWorks rceps does this too.
         // Leave first point, zero max phase part, double min phase part to compensate.
         // The midpoint is shared between parts so it doesn't change:
-        fftAppliance.mul(1, fftMidpoint, std::complex<double>(2));
-        fftAppliance.fill(fftMidpoint + 1, evenFftSize, std::complex<double>(0));
+        accumulator.mul(1, fftMidpoint, 2);
+        accumulator.fill(fftMidpoint + 1, evenFftSize, 0);
+        fftAppliance.fillWidening(accumulator.begin());
         fftAppliance.fft();
         fftAppliance.exp();
         fftAppliance.ifft();
