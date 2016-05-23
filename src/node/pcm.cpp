@@ -24,7 +24,7 @@ void PCM::renderImpl() {
     _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
     _pcm.setLimit(_minBLEPs.pcmCountWithOverflow());
     _pcm.fill(overflowCount, _pcm.limit(), _dc);
-    for (unsigned i = 0; i < naiveCount; ++i) {
+    for (index_t i = 0; i < naiveCount; ++i) {
         auto amp = _derivative.at(i);
         if (amp) {
             _minBLEPs.pastePrepare(naiveRef + i, pcmRef);
