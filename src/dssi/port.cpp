@@ -1,9 +1,5 @@
 #include "port.h"
 
-#include <ladspa.h>
-
-#include "../util/util.h"
-
 PortInfo_t::PortInfo_t(index_t ordinal, //
         bool output, //
         bool audio, //

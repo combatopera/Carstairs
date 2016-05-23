@@ -1,7 +1,6 @@
 #include "plugin.h"
 
 #include <alsa/seq_event.h>
-#include <ladspa.h>
 
 #include "../dizzYM.h"
 #include "../util/util.h"
