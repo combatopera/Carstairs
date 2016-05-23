@@ -101,11 +101,6 @@ template<> void View<T>::differentiate(T context) { \
     } \
     _data[0] -= context; \
 } \
-template<> void View<T>::range() { \
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
-        _data[i] = T(i); \
-    } \
-} \
 template<> void View<T>::add(T value) { \
     for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
         _data[i] += value; \
@@ -121,6 +116,24 @@ NUMERICS(float)
 NUMERICS(double)
 NUMERICS(int)
 NUMERICS(std::complex<double>)
+
+template<> void View<int>::range() {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = int(i);
+    }
+}
+
+template<> void View<double>::range() {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = double(i);
+    }
+}
+
+template<> void View<std::complex<double>>::range() {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+        _data[i] = double(i);
+    }
+}
 
 template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
     for (; i < j; ++i) {
