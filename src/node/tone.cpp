@@ -1,10 +1,5 @@
 #include "tone.h"
 
-#include "../config.h"
-#include "../state.h"
-#include "../util/buf.h"
-#include "../util/util.h"
-
 static class Square: public Buffer<int> {
 
 public:
@@ -32,9 +27,9 @@ void Tone::renderImpl() {
         _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
         _progress = 0;
     }
-    index_t endOfStep = _stepSize - _progress;
-    for (index_t i = 0, n = _buf.limit(); i < n;) {
-        int value = _shape.at(_indexInShape);
+    unsigned endOfStep = _stepSize - _progress;
+    for (unsigned i = 0, n = unsigned(_buf.limit()); i < n;) {
+        auto value = _shape.at(_indexInShape);
         // Could allow next block to extend step by using >= here:
         if (endOfStep > n) {
             _buf.fill(i, n, value);
