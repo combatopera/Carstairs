@@ -28,7 +28,7 @@ void Tone::renderImpl() {
         _progress = 0;
     }
     unsigned endOfStep = _stepSize - _progress;
-    for (unsigned i = 0, n = unsigned(_buf.limit()); i < n;) {
+    for (index_t i = 0, n = _buf.limit(); i < n;) {
         auto value = _shape.at(_indexInShape);
         // Could allow next block to extend step by using >= here:
         if (endOfStep > n) {
