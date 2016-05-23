@@ -50,7 +50,7 @@ public:
     }
 
     void fill(T value) {
-        for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+        for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
             _data[i] = value;
         }
     }
@@ -61,8 +61,8 @@ public:
 
     void mirror() {
         assert(_limit & 1);
-        index_t const last = _limit - 1;
-        for (index_t i = last / 2 - 1; SIZE_WRAP != i; --i) {
+        auto const last = _limit - 1;
+        for (auto i = last / 2 - 1; SIZE_WRAP != i; --i) {
             _data[last - i] = _data[i];
         }
     }
@@ -136,7 +136,7 @@ public:
     void setLimit(size_t limit);
 
     void pad(size_t left, size_t right, T value) {
-        size_t mid = this->_limit;
+        auto const mid = this->_limit;
         setLimit(left + mid + right);
         memmove(this->_data + left, this->_data, mid * sizeof(T));
         this->fill(0, left, value);
