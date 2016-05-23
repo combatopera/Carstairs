@@ -19,9 +19,9 @@ struct F {
     name.fill(value);
 
 BOOST_FIXTURE_TEST_CASE(works, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 3;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(96);
@@ -35,9 +35,9 @@ BOOST_FIXTURE_TEST_CASE(works, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(resume, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 3;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(25);
@@ -49,13 +49,13 @@ BOOST_FIXTURE_TEST_CASE(resume, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(carry, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 1;
     int size = 3 * 8 + 1;
-    Tone refOsc(&_config, &state); // Must stay in scope for ref to be valid.
+    Tone refOsc(_config, state); // Must stay in scope for ref to be valid.
     View<int> ref = refOsc.render(size);
     for (int n = 0; n <= size; ++n) {
-        Tone o(&_config, &state);
+        Tone o(_config, state);
         View<int> v = o.render(n);
         BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin(v.limit()), v.begin(), v.end());
         v = o.render(size);
@@ -64,9 +64,9 @@ BOOST_FIXTURE_TEST_CASE(carry, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(endExistingStepAtEndOfBlock, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 1;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(4, 1, ones)
     BUF(4, 0, zeros)
     View<int> v = o.render(4);
@@ -78,9 +78,9 @@ BOOST_FIXTURE_TEST_CASE(endExistingStepAtEndOfBlock, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 1;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(16);
@@ -98,9 +98,9 @@ BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
-    State state(&_config);
+    State state(_config);
     state._TP = 3;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(48);
@@ -121,9 +121,9 @@ BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
 
 BOOST_FIXTURE_TEST_CASE(smallerBlocksThanPeriod, F) {
     _config._atomSize = 1;
-    State state(&_config);
+    State state(_config);
     state._TP = 5;
-    Tone o(&_config, &state);
+    Tone o(_config, state);
     BUF(24, 1, ones)
     BUF(24, 0, zeros)
     View<int> v = o.render(4);
