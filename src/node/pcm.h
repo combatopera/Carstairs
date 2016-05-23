@@ -17,7 +17,7 @@ class PCM: public Node<LADSPA_Data> {
 
     Node<float>& _naive;
 
-    Buffer<float> _derivative {"_derivative"}, _target {"_target"};
+    Buffer<float> _derivative {"_derivative"}, _pcm {"_pcm"};
 
     float _dc;
 

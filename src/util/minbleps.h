@@ -54,18 +54,18 @@ public:
         return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
     }
 
-    size_t targetLimit() const {
+    size_t pcmCountWithOverflow() const {
         return _pcmRelX + minBLEPSize();
     }
 
-    void pastePerform(float amp, View<float> target) const {
-        auto targetPtr = const_cast<float *>(target.begin(_pcmRelX));
-        target.begin(targetLimit()); // Bounds check.
+    void pastePerform(float amp, View<float> pcmBuf) const {
+        auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
+        pcmBuf.begin(pcmCountWithOverflow()); // Bounds check.
         // The target must be big enough for a minBLEP at maximum pcmX:
         for (index_t k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
         }
-        for (auto end = target.end(); targetPtr != end;) {
+        for (auto end = pcmBuf.end(); targetPtr != end;) {
             *targetPtr++ += amp;
         }
     }

@@ -8,7 +8,7 @@ PCM::PCM(Config const& config, State& state, Node<float>& naive)
 void PCM::resetImpl() {
     _dc = INITIAL_DC;
     _overflowIndex = 0;
-    _target.setLimit(0);
+    _pcm.setLimit(0); // Clear any overflow.
 }
 
 void PCM::renderImpl() {
@@ -16,24 +16,24 @@ void PCM::renderImpl() {
     auto pcmCount = _buf.limit();
     auto naiveRef = _naive.cursor();
     auto naive = _naive.render(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
-    auto naiveN = naive.limit();
+    auto naiveCount = naive.limit();
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
-    _minBLEPs.pastePrepare(naiveRef + naiveN - 1, pcmRef);
-    auto overflowSize = _target.limit() - _overflowIndex;
-    _target.fill(0, overflowSize, _target.begin(_overflowIndex));
-    _target.setLimit(_minBLEPs.targetLimit());
-    _target.fill(overflowSize, _target.limit(), _dc);
-    for (unsigned i = 0; i < naiveN; ++i) {
+    _minBLEPs.pastePrepare(naiveRef + naiveCount - 1, pcmRef);
+    auto overflowCount = _pcm.limit() - _overflowIndex;
+    _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
+    _pcm.setLimit(_minBLEPs.pcmCountWithOverflow());
+    _pcm.fill(overflowCount, _pcm.limit(), _dc);
+    for (unsigned i = 0; i < naiveCount; ++i) {
         auto amp = _derivative.at(i);
         if (amp) {
             _minBLEPs.pastePrepare(naiveRef + i, pcmRef);
-            _minBLEPs.pastePerform(amp, _target);
+            _minBLEPs.pastePerform(amp, _pcm);
         }
     }
-    _buf.fill(_target.begin());
+    _buf.fill(_pcm.begin());
     _overflowIndex = pcmCount;
-    if (naiveN) { // Otherwise _dc doesn't change.
-        _dc = naive.at(naiveN - 1);
+    if (naiveCount) { // Otherwise _dc doesn't change.
+        _dc = naive.at(naiveCount - 1);
     }
 }
