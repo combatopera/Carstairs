@@ -45,7 +45,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
         for (; eventIndex < eventCount && events[eventIndex].time.tick <= indexInBlock; ++eventIndex) {
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
-                    snd_seq_ev_note_t *n = &events[eventIndex].data.note;
+                    auto n = &events[eventIndex].data.note;
                     _state.noteOn(_sampleCursor + events[eventIndex].time.tick, n->note, n->velocity);
                     break;
                 }
@@ -57,7 +57,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
         }
         _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
-        DSSI::cursor limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
+        auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
         _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }

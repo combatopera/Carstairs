@@ -12,7 +12,7 @@ template<typename T> class Node {
 
 public:
 
-    Node(char const *label, State& state);
+    Node(char const *label, State&);
 
     virtual ~Node();
 

@@ -2,9 +2,6 @@
 
 #include <cmath>
 
-#include "config.h"
-#include "util/util.h"
-
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
@@ -24,7 +21,7 @@ void State::noteOn(DSSI::cursor cursor, int midiNote, int velocity) {
     _onOrMax = cursor;
     _offOrMax = DSSI::CURSOR_MAX;
     _velocity = velocity;
-    float freq = _config._refFreq * powf(2, float(midiNote - _config._refMidiNote) / float(_config._semitones));
+    auto freq = _config._refFreq * powf(2, float(midiNote - _config._refMidiNote) / float(_config._semitones));
     _TP = TP_BOUNDS.clamp((int) roundf(float(_config._nominalClock) / (16 * freq)));
 }
 
