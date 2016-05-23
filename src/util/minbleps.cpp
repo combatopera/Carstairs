@@ -1,7 +1,7 @@
 #include "minbleps.h"
 
 static int getEvenFftSize(int minSize) {
-    int evenFftSize = 2; // Smallest even power of 2.
+    auto evenFftSize = 2; // Smallest even power of 2.
     while (evenFftSize < minSize) {
         evenFftSize <<= 1;
     }
@@ -11,18 +11,18 @@ static int getEvenFftSize(int minSize) {
 MinBLEPs::MinBLEPs(Config const& config)
         : _pcmRate(config._pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
     debug("Creating %d minBLEPs.", _minBLEPCount);
-    int const evenOrder = config.evenEmpiricalOrder();
-    int const oddKernelSize = evenOrder * _minBLEPCount + 1;
+    auto const evenOrder = config.evenEmpiricalOrder();
+    auto const oddKernelSize = evenOrder * _minBLEPCount + 1;
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
-    int const evenFftSize = getEvenFftSize(oddKernelSize);
+    auto const evenFftSize = getEvenFftSize(oddKernelSize);
     // If cutoff is .5 the sinc starts and ends with zero.
     // The window is necessary for a reliable integral height later:
     Buffer<double> accumulator("accumulator", oddKernelSize);
     accumulator.blackman();
     {
         Buffer<double> sinc("sinc", oddKernelSize);
-        int const uniqueLimit = (oddKernelSize + 1) / 2;
-        for (int i = 0; i < uniqueLimit; ++i) {
+        auto const uniqueLimit = (oddKernelSize + 1) / 2;
+        for (auto i = 0; i < uniqueLimit; ++i) {
             sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config._cutoff);
         }
         assert(!sinc.at(uniqueLimit - 1));
