@@ -41,12 +41,12 @@ public:
     }
 
     void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
-        auto pcmMark = double(naiveX) / _naiveRate * _pcmRate;
+        auto const pcmMark = double(naiveX) / _naiveRate * _pcmRate;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
-        auto pcmX = DSSI::cursor(ceil(pcmMark));
+        auto const pcmX = DSSI::cursor(ceil(pcmMark));
         assert(pcmRef <= pcmX);
         _pcmRelX = pcmX - pcmRef;
-        auto distance = double(pcmX) - pcmMark;
+        auto const distance = double(pcmX) - pcmMark;
         _minBLEPIndex = unsigned(round(distance * _minBLEPCount));
     }
 
@@ -65,7 +65,7 @@ public:
         for (index_t k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
         }
-        for (auto end = pcmBuf.end(); targetPtr != end;) {
+        for (auto const end = pcmBuf.end(); targetPtr != end;) {
             *targetPtr++ += amp;
         }
     }
