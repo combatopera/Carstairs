@@ -2,6 +2,15 @@
 
 #include <dssi.h>
 #include <ladspa.h>
+#include <climits>
+
+namespace DSSI {
+
+typedef unsigned long cursor;
+
+cursor const CURSOR_MAX = ULONG_MAX;
+
+}
 
 class Descriptors {
 

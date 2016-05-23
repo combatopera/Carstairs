@@ -6,6 +6,7 @@
 #include <complex>
 
 #include "../config.h"
+#include "../dssi/plugin.h"
 #include "buf.h"
 #include "util.h"
 

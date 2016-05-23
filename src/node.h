@@ -1,8 +1,8 @@
 #pragma once
 
+#include "dssi/plugin.h"
 #include "state.h"
 #include "util/buf.h"
-#include "util/util.h"
 
 template<typename T> class Node {
 

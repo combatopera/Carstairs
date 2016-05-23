@@ -1,6 +1,7 @@
 #pragma once
 
 #include "config.h"
+#include "dssi/plugin.h"
 #include "util/util.h"
 
 class State {

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "dssi/plugin.h"
 #include "state.h"
-#include "util/util.h"
 
 class Program {
 
