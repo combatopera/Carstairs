@@ -37,8 +37,8 @@ template<typename T> void Buffer<T>::setLimit(size_t limit) {
 }
 
 template<> void View<double>::sinc() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
-        double x = M_PI * _data[i];
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+        auto const x = M_PI * _data[i];
         _data[i] = x ? sin(x) / x : 1;
     }
 }
@@ -50,16 +50,16 @@ template<> void View<double>::mul(index_t i, index_t j, double value) {
 }
 
 template<> void View<double>::mul(double const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] *= values[i];
     }
 }
 
 template<> void View<double>::blackman() {
-    size_t N = _limit;
+    auto const N = _limit;
     assert(N & 1);
-    double const alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
-    size_t M = (N + 1) / 2; // Size of unique part.
+    auto const alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
+    auto const M = (N + 1) / 2; // Size of unique part.
     for (index_t n = 0; n < M; ++n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
@@ -71,19 +71,19 @@ static double abs(std::complex<double> const& c) {
 }
 
 template<> void View<double>::fillAbs(std::complex<double> const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = abs(values[i]);
     }
 }
 
 template<> void View<double>::ln() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = log(_data[i]);
     }
 }
 
 template<> void View<double>::fillReal(std::complex<double> const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = values[i].real();
     }
 }
@@ -96,23 +96,23 @@ template<> void View<double>::fillReal(std::complex<double> const *values) {
     } \
 } \
 template<> void View<T>::differentiate(T context) { \
-    for (index_t i = _limit - 1; i > 0; --i) { \
+    for (auto i = _limit - 1; i > 0; --i) { \
         _data[i] -= _data[i - 1]; \
     } \
     _data[0] -= context; \
 } \
 template<> void View<T>::range() { \
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
         _data[i] = T(i); \
     } \
 } \
 template<> void View<T>::add(T value) { \
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
         _data[i] += value; \
     } \
 } \
 template<> void View<T>::mul(T value) { \
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) { \
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
         _data[i] *= value; \
     } \
 }
@@ -129,26 +129,26 @@ template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::compl
 }
 
 template<> void View<std::complex<double>>::fillWidening(double const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = values[i];
     }
 }
 
 template<> void View<float>::fillNarrowing(double const *values) {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = float(values[i]);
     }
 }
 
 template<> void View<std::complex<double>>::fft() {
-    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    auto plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
     FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 }
 
 template<> void View<std::complex<double>>::ifft() {
-    fftw_plan plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
+    auto plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
     FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
@@ -156,7 +156,7 @@ template<> void View<std::complex<double>>::ifft() {
 }
 
 template<> void View<std::complex<double>>::exp() {
-    for (index_t i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
         _data[i] = std::exp(_data[i]);
     }
 }
@@ -176,7 +176,7 @@ template<> void View<double>::rceps(Buffer<std::complex<double>>& fftAppliance, 
 
 template<> void View<double>::minPhaseFromRceps(Buffer<std::complex<double>>& fftAppliance) {
     assert(!(_limit & 1));
-    size_t midpoint = _limit / 2;
+    auto const midpoint = _limit / 2;
     // Leave first point, zero max phase part, double min phase part to compensate.
     // The midpoint is shared between parts so it doesn't change:
     mul(1, midpoint, 2);
