@@ -16,7 +16,7 @@ public:
 
 public:
 
-    int prodconst _atomSize = YM2149_ATOM_SIZE;
+    int final _atomSize = YM2149_ATOM_SIZE;
 
     int const _refMidiNote = 69;
 
@@ -24,15 +24,15 @@ public:
 
     int const _semitones = 12;
 
-    int prodconst _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
+    int final _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
 
     int const _pcmRate; // DSSI doesn't support non-integer rates.
 
-    double prodconst _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
+    double final _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
 
-    double prodconst _rcepsAddBeforeLog = 1e-50;
+    double final _rcepsAddBeforeLog = 1e-50;
 
-    int prodconst _minBLEPCount = 1000;
+    int final _minBLEPCount = 1000;
 
     float const _maxAmp = .5;
 

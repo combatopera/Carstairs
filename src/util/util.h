@@ -32,7 +32,7 @@ public:
 };
 
 #ifdef DIZZYM_UNIT_TEST
-#define prodconst
+#define final
 #else
-#define prodconst const
+#define final const
 #endif
