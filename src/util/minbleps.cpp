@@ -2,8 +2,8 @@
 
 #include "util.h"
 
-static int getEvenFftSize(int minSize) {
-    auto evenFftSize = 2; // Smallest even power of 2.
+static sizex getEvenFftSize(sizex const minSize) {
+    auto evenFftSize = sizex(2); // Smallest even power of 2.
     while (evenFftSize < minSize) {
         evenFftSize <<= 1;
     }
@@ -37,7 +37,7 @@ MinBLEPs::MinBLEPs(Config const& config)
     _BLI.snapshot(accumulator);
 #endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
-    assert(int(accumulator.limit()) == evenFftSize);
+    assert(accumulator.limit() == evenFftSize);
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance");
         accumulator.rceps(fftAppliance, config._rcepsAddBeforeLog);
