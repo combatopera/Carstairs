@@ -8,9 +8,9 @@ void Level::resetImpl() {
 }
 
 void Level::renderImpl() {
-    auto amp = powf(2, (float(_state.level5()) - 31) / 4) * _maxAmp;
-    auto binary = _tone.render(cursor() + _buf.limit());
-    for (sizex i = 0, n = _buf.limit(); i < n; ++i) {
+    auto const amp = powf(2, (float(_state.level5()) - 31) / 4) * _maxAmp;
+    auto const binary = _tone.render(cursor() + _buf.limit());
+    for (auto i = _buf.limit() - 1; SIZEX_NEG != i; --i) {
         _buf.put(i, float(binary.at(i) * 2 - 1) * amp);
     }
 }
