@@ -3,6 +3,7 @@
 #include <alsa/seq_event.h>
 
 #include "../dizzYM.h"
+#include "../util/buf.h"
 #include "../util/util.h"
 #include "port.h"
 
@@ -48,7 +49,7 @@ Descriptors::Descriptors() {
     _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._values._n];
     _PortNames = new char const *[PortInfo._values._n];
     _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._values._n];
-    for (sizex i = 0; i < PortInfo._values._n; ++i) {
+    for (auto i = PortInfo._values._n - 1; SIZEX_NEG != i; --i) {
         _PortDescriptors[i] = PortInfo._values.at(i)->_descriptor;
         _PortNames[i] = PortInfo._values.at(i)->_name;
         _PortRangeHints[i] = PortInfo._values.at(i)->_rangeHint; // Copy.
