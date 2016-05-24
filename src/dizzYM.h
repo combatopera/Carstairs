@@ -22,7 +22,7 @@ public:
 
     Values<PortInfo_t> _values;
 
-    PortInfoEnum(index_t ord = 0);
+    PortInfoEnum(sizex ord = 0);
 
 };
 
