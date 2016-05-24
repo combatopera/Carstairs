@@ -1,10 +1,5 @@
 #pragma once
 
-#include <stddef.h>
-
-typedef size_t index_t;
-size_t const SIZE_WRAP = size_t(0) - 1;
-
 void debug(char const *format, ...);
 
 template<typename T> class Bounds {
