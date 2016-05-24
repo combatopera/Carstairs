@@ -27,7 +27,7 @@ static void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data 
 
 static int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
     debug("DSSI: get_midi_controller_for_port");
-    return PortInfo._values.at(Port)->_controllers;
+    return PortInfo._values.at(sizex(Port))->_controllers;
 }
 
 static void run(LADSPA_Handle Instance, DSSI::cursor SampleCount) {
@@ -48,7 +48,7 @@ Descriptors::Descriptors() {
     _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._values._n];
     _PortNames = new char const *[PortInfo._values._n];
     _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._values._n];
-    for (index_t i = 0; i < PortInfo._values._n; ++i) {
+    for (sizex i = 0; i < PortInfo._values._n; ++i) {
         _PortDescriptors[i] = PortInfo._values.at(i)->_descriptor;
         _PortNames[i] = PortInfo._values.at(i)->_name;
         _PortRangeHints[i] = PortInfo._values.at(i)->_rangeHint; // Copy.
