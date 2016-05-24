@@ -62,7 +62,7 @@ template<> void View<double>::blackman() {
     assert(N & 1);
     auto const alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
     auto const M = (N + 1) / 2; // Size of unique part.
-    for (sizex n = 0; n < M; ++n) {
+    for (auto n = M - 1; SIZEX_NEG != n; --n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
     mirror(); // Avoid significant precision artifacts.
@@ -92,7 +92,8 @@ template<> void View<double>::fillReal(std::complex<double> const *values) {
 
 #define NUMERICS(T) template<> void View<T>::integrate() { \
     T sum = 0; \
-    for (sizex i = 0, n = _limit; i < n; ++i) { \
+    auto const n = _limit; \
+    for (sizex i = 0; i < n; ++i) { \
         sum += _data[i]; \
         _data[i] = sum; \
     } \
