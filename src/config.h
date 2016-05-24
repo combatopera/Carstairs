@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cmath>
 
+#include "util/buf.h"
 #include "util/util.h"
 
 class Config {

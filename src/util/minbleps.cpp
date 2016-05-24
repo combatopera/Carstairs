@@ -1,5 +1,7 @@
 #include "minbleps.h"
 
+#include "util.h"
+
 static int getEvenFftSize(int minSize) {
     auto evenFftSize = 2; // Smallest even power of 2.
     while (evenFftSize < minSize) {
@@ -22,7 +24,7 @@ MinBLEPs::MinBLEPs(Config const& config)
     {
         Buffer<double> sinc("sinc", oddKernelSize);
         auto const uniqueLimit = (oddKernelSize + 1) / 2;
-        for (auto i = 0; i < uniqueLimit; ++i) {
+        for (auto i = uniqueLimit - 1; SIZEX_NEG != i; --i) {
             sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config._cutoff);
         }
         assert(!sinc.at(uniqueLimit - 1));
