@@ -13,7 +13,7 @@ template<typename T> Node<T>::~Node() {
 
 template<typename T> View<T> Node<T>::render(DSSI::cursor newCursor) {
     if (_cursor < newCursor) {
-        _buf.setLimit(newCursor - _cursor);
+        _buf.setLimit(sizex(newCursor - _cursor));
         renderImpl();
         _cursor = newCursor;
     }
