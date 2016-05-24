@@ -28,7 +28,7 @@ public:
 
     Buffer<float> _minBLEPs {"_minBLEPs"};
 
-    DSSI::cursor _pcmRelX;
+    sizex _pcmRelX;
 
     unsigned _minBLEPIndex;
 
@@ -46,16 +46,16 @@ public:
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto const pcmX = DSSI::cursor(ceil(pcmMark));
         assert(pcmRef <= pcmX);
-        _pcmRelX = pcmX - pcmRef;
+        _pcmRelX = sizex(pcmX - pcmRef);
         auto const distance = double(pcmX) - pcmMark;
         _minBLEPIndex = unsigned(round(distance * _minBLEPCount));
     }
 
-    size_t minBLEPSize() const {
+    sizex minBLEPSize() const {
         return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
     }
 
-    size_t pcmCountWithOverflow() const {
+    sizex pcmCountWithOverflow() const {
         return _pcmRelX + minBLEPSize();
     }
 
@@ -63,7 +63,7 @@ public:
         auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
         pcmBuf.begin(pcmCountWithOverflow()); // Bounds check.
         // The target must be big enough for a minBLEP at maximum pcmX:
-        for (index_t k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
+        for (sizex k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
         }
         for (auto const end = pcmBuf.end(); targetPtr != end;) {
