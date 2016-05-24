@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stddef.h>
-
-#include "util.h"
+#include "buf.h"
 
 template<typename T> class Values {
 
@@ -10,14 +8,14 @@ template<typename T> class Values {
 
 public:
 
-    size_t const _n;
+    sizex const _n;
 
-    Values(T *first, index_t ordCursor);
+    Values(T *first, sizex ordCursor);
 
-    T *at(index_t i) const;
+    T *at(sizex i) const;
 
 };
 
 #define ENUM_INSTANTIATE(T) \
-    template T *Values<T>::at(index_t) const; \
-    template Values<T>::Values(T *, size_t);
+    template T *Values<T>::at(sizex) const; \
+    template Values<T>::Values(T *, sizex);
