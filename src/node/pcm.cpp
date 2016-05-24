@@ -12,20 +12,20 @@ void PCM::resetImpl() {
 }
 
 void PCM::renderImpl() {
-    auto pcmRef = cursor();
-    auto pcmCount = _buf.limit();
-    auto naiveRef = _naive.cursor();
-    auto naive = _naive.render(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
-    auto naiveCount = naive.limit();
+    auto const pcmRef = cursor();
+    auto const pcmCount = _buf.limit();
+    auto const naiveRef = _naive.cursor();
+    auto const naive = _naive.render(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
+    auto const naiveCount = naive.limit();
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
     _minBLEPs.pastePrepare(naiveRef + naiveCount - 1, pcmRef);
-    auto overflowCount = _pcm.limit() - _overflowIndex;
+    auto const overflowCount = _pcm.limit() - _overflowIndex;
     _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
     _pcm.setLimit(_minBLEPs.pcmCountWithOverflow());
     _pcm.fill(overflowCount, _pcm.limit(), _dc);
     for (sizex i = 0; i < naiveCount; ++i) {
-        auto amp = _derivative.at(i);
+        auto const amp = _derivative.at(i);
         if (amp) {
             _minBLEPs.pastePrepare(naiveRef + i, pcmRef);
             _minBLEPs.pastePerform(amp, _pcm);
