@@ -1,6 +1,6 @@
 #include "port.h"
 
-PortInfo_t::PortInfo_t(index_t ordinal, //
+PortInfo_t::PortInfo_t(sizex ordinal, //
         bool output, //
         bool audio, //
         char const *name, //
