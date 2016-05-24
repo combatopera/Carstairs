@@ -5,13 +5,15 @@
 #include <stdlib.h>
 #include <cmath>
 
-template<typename T> View<T>::View(char const *label, size_t limit)
+#include "util.h"
+
+template<typename T> View<T>::View(char const *label, sizex limit)
         : _limit(limit) {
     debug("Creating Buffer: %s", label);
     _data = (T *) malloc(limit * sizeof(T));
 }
 
-template<typename T> Buffer<T>::Buffer(char const *label, size_t limit)
+template<typename T> Buffer<T>::Buffer(char const *label, sizex limit)
         : View<T>(label, limit) {
     _capacity = limit;
     _label = label;
@@ -27,7 +29,7 @@ template<typename T> Buffer<T>::~Buffer() {
     free(this->_data);
 }
 
-template<typename T> void Buffer<T>::setLimit(size_t limit) {
+template<typename T> void Buffer<T>::setLimit(sizex limit) {
     if (limit > this->_capacity) {
         debug("Resizing %s to: %d", _label, limit);
         this->_data = (T *) realloc(this->_data, limit * sizeof(T));
@@ -37,20 +39,20 @@ template<typename T> void Buffer<T>::setLimit(size_t limit) {
 }
 
 template<> void View<double>::sinc() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         auto const x = M_PI * _data[i];
         _data[i] = x ? sin(x) / x : 1;
     }
 }
 
-template<> void View<double>::mul(index_t i, index_t j, double value) {
+template<> void View<double>::mul(sizex i, sizex j, double value) {
     for (; i < j; ++i) {
         _data[i] *= value;
     }
 }
 
 template<> void View<double>::mul(double const *values) {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] *= values[i];
     }
 }
@@ -60,7 +62,7 @@ template<> void View<double>::blackman() {
     assert(N & 1);
     auto const alpha = .16, a0 = (1 - alpha) / 2, a1 = .5, a2 = alpha / 2;
     auto const M = (N + 1) / 2; // Size of unique part.
-    for (index_t n = 0; n < M; ++n) {
+    for (sizex n = 0; n < M; ++n) {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
     mirror(); // Avoid significant precision artifacts.
@@ -71,26 +73,26 @@ static double abs(std::complex<double> const& c) {
 }
 
 template<> void View<double>::fillAbs(std::complex<double> const *values) {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = abs(values[i]);
     }
 }
 
 template<> void View<double>::ln() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = log(_data[i]);
     }
 }
 
 template<> void View<double>::fillReal(std::complex<double> const *values) {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = values[i].real();
     }
 }
 
 #define NUMERICS(T) template<> void View<T>::integrate() { \
     T sum = 0; \
-    for (index_t i = 0, n = _limit; i < n; ++i) { \
+    for (sizex i = 0, n = _limit; i < n; ++i) { \
         sum += _data[i]; \
         _data[i] = sum; \
     } \
@@ -102,12 +104,12 @@ template<> void View<T>::differentiate(T context) { \
     _data[0] -= context; \
 } \
 template<> void View<T>::add(T value) { \
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) { \
         _data[i] += value; \
     } \
 } \
 template<> void View<T>::mul(T value) { \
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) { \
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) { \
         _data[i] *= value; \
     } \
 }
@@ -118,37 +120,37 @@ NUMERICS(int)
 NUMERICS(std::complex<double>)
 
 template<> void View<int>::range() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = int(i);
     }
 }
 
 template<> void View<double>::range() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = double(i);
     }
 }
 
 template<> void View<std::complex<double>>::range() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = double(i);
     }
 }
 
-template<> void View<std::complex<double>>::mul(index_t i, index_t j, std::complex<double> value) {
+template<> void View<std::complex<double>>::mul(sizex i, sizex j, std::complex<double> value) {
     for (; i < j; ++i) {
         _data[i] *= value;
     }
 }
 
 template<> void View<std::complex<double>>::fillWidening(double const *values) {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = values[i];
     }
 }
 
 template<> void View<float>::fillNarrowing(double const *values) {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = float(values[i]);
     }
 }
@@ -169,7 +171,7 @@ template<> void View<std::complex<double>>::ifft() {
 }
 
 template<> void View<std::complex<double>>::exp() {
-    for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = std::exp(_data[i]);
     }
 }

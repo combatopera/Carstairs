@@ -5,7 +5,9 @@
 #include <complex>
 #include <cstring>
 
-#include "util.h"
+typedef unsigned sizex;
+
+sizex const SIZEX_NEG = sizex(0) - 1;
 
 template<typename T> class Buffer;
 
@@ -13,9 +15,9 @@ template<typename T> class View {
 
 protected:
 
-    View(char const *, size_t limit);
+    View(char const *, sizex limit);
 
-    size_t _limit;
+    sizex _limit;
 
     T *_data;
 
@@ -23,7 +25,7 @@ public:
 
     View(View<T> const& master);
 
-    size_t limit() const {
+    sizex limit() const {
         return _limit;
     }
 
@@ -31,26 +33,26 @@ public:
         memcpy(to, _data, _limit * sizeof(T));
     }
 
-    T at(index_t i) const {
+    T at(sizex i) const {
         return _data[i];
     }
 
-    void put(index_t i, T value) {
+    void put(sizex i, T value) {
         _data[i] = value;
     }
 
-    void fill(index_t i, index_t j, T value) {
+    void fill(sizex i, sizex j, T value) {
         for (; i < j; ++i) {
             _data[i] = value;
         }
     }
 
-    void fill(index_t i, index_t j, T const *values) {
+    void fill(sizex i, sizex j, T const *values) {
         memmove(_data + i, values, (j - i) * sizeof(T));
     }
 
     void fill(T value) {
-        for (auto i = _limit - 1; SIZE_WRAP != i; --i) {
+        for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
             _data[i] = value;
         }
     }
@@ -62,7 +64,7 @@ public:
     void mirror() {
         assert(_limit & 1);
         auto const last = _limit - 1;
-        for (auto i = last / 2 - 1; SIZE_WRAP != i; --i) {
+        for (auto i = last / 2 - 1; SIZEX_NEG != i; --i) {
             _data[last - i] = _data[i];
         }
     }
@@ -71,12 +73,12 @@ public:
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
     }
 
-    T const *begin(size_t off = 0) const {
+    T const *begin(sizex off = 0) const {
         assert(off <= _limit);
         return _data + off;
     }
 
-    T const *end(size_t off = 0) const {
+    T const *end(sizex off = 0) const {
         assert(off <= _limit);
         return _data + _limit - off;
     }
@@ -91,7 +93,7 @@ public:
 
     void mul(T value);
 
-    void mul(index_t i, index_t j, T value);
+    void mul(sizex i, sizex j, T value);
 
     void mul(T const *);
 
@@ -123,19 +125,19 @@ public:
 
 template<typename T> class Buffer: public View<T> {
 
-    size_t _capacity;
+    sizex _capacity;
 
     char const *_label;
 
 public:
 
-    Buffer(char const *label, size_t limit = 0);
+    Buffer(char const *label, sizex limit = 0);
 
     ~Buffer();
 
-    void setLimit(size_t limit);
+    void setLimit(sizex limit);
 
-    void pad(size_t left, size_t right, T value) {
+    void pad(sizex left, sizex right, T value) {
         auto const mid = this->_limit;
         setLimit(left + mid + right);
         memmove(this->_data + left, this->_data, mid * sizeof(T));
