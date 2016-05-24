@@ -7,7 +7,6 @@
 #include "../state.h"
 #include "../util/buf.h"
 #include "../util/minbleps.h"
-#include "../util/util.h"
 
 class PCM: public Node<LADSPA_Data> {
 
@@ -21,7 +20,7 @@ class PCM: public Node<LADSPA_Data> {
 
     float _dc;
 
-    index_t _overflowIndex;
+    sizex _overflowIndex;
 
     void resetImpl();
 
