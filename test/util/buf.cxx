@@ -69,12 +69,12 @@ BOOST_AUTO_TEST_CASE(integrate) {
 }
 
 BOOST_AUTO_TEST_CASE(fft) {
-    size_t n = 1024;
+    sizex n = 1024;
     Buffer<std::complex<double>> buf("fft", n);
     buf.range();
     buf.fft();
     buf.ifft();
-    for (index_t i = 0; i < n; ++i) {
+    for (sizex i = 0; i < n; ++i) {
         BOOST_REQUIRE_CLOSE_FRACTION(i, buf.at(i).real(), 1e-14);
         BOOST_REQUIRE_SMALL(buf.at(i).imag(), 1e-9);
     }
