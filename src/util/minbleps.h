@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stddef.h>
 #include <cassert>
 #include <cmath>
 #include <complex>
@@ -8,7 +7,6 @@
 #include "../config.h"
 #include "../dssi/plugin.h"
 #include "buf.h"
-#include "util.h"
 
 class MinBLEPs {
 
@@ -30,7 +28,7 @@ public:
 
     sizex _pcmRelX;
 
-    unsigned _minBLEPIndex;
+    sizex _minBLEPIndex;
 
 public:
 
@@ -48,7 +46,7 @@ public:
         assert(pcmRef <= pcmX);
         _pcmRelX = sizex(pcmX - pcmRef);
         auto const distance = double(pcmX) - pcmMark;
-        _minBLEPIndex = unsigned(round(distance * _minBLEPCount));
+        _minBLEPIndex = sizex(round(distance * _minBLEPCount));
     }
 
     sizex minBLEPSize() const {
@@ -63,7 +61,8 @@ public:
         auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
         pcmBuf.begin(pcmCountWithOverflow()); // Bounds check.
         // The target must be big enough for a minBLEP at maximum pcmX:
-        for (sizex k = _minBLEPIndex, lim = _minBLEPs.limit(); k < lim; k += _minBLEPCount) {
+        auto const lim = _minBLEPs.limit();
+        for (auto k = _minBLEPIndex; k < lim; k += _minBLEPCount) {
             *targetPtr++ += amp * _minBLEPs.at(k);
         }
         for (auto const end = pcmBuf.end(); targetPtr != end;) {
