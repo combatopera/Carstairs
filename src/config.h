@@ -32,7 +32,7 @@ public:
 
     double final _rcepsAddBeforeLog = 1e-50;
 
-    int final _minBLEPCount = 1000;
+    sizex final _minBLEPCount = 1000;
 
     float const _maxAmp = .5;
 
