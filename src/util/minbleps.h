@@ -22,7 +22,7 @@ public:
 
 #endif
 
-    int const _minBLEPCount;
+    sizex const _minBLEPCount;
 
     Buffer<float> _minBLEPs {"_minBLEPs"};
 

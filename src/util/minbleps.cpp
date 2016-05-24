@@ -10,7 +10,7 @@ static int getEvenFftSize(int minSize) {
 
 MinBLEPs::MinBLEPs(Config const& config)
         : _pcmRate(config._pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
-    debug("Creating %d minBLEPs.", _minBLEPCount);
+    debug("Creating %u minBLEPs.", _minBLEPCount);
     auto const evenOrder = config.evenEmpiricalOrder();
     auto const oddKernelSize = evenOrder * _minBLEPCount + 1;
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
