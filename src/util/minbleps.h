@@ -37,28 +37,34 @@ public:
 
     class Paster {
 
-        MinBLEPs const& _minBLEPs;
+        View<float> const _minBLEPs;
+
+        sizex const _naiveRate, _pcmRate, _minBLEPCount;
 
         sizex _pcmRelX, _minBLEPIndex;
 
     public:
 
         Paster(MinBLEPs const& minBLEPs)
-                : _minBLEPs(minBLEPs), _pcmRelX(), _minBLEPIndex() {
+                : _minBLEPs(minBLEPs._minBLEPs), //
+                _naiveRate(minBLEPs._naiveRate), //
+                _pcmRate(minBLEPs._pcmRate), //
+                _minBLEPCount(minBLEPs._minBLEPCount), //
+                _pcmRelX(), _minBLEPIndex() {
         }
 
         void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
-            auto const pcmMark = double(naiveX) / _minBLEPs._naiveRate * _minBLEPs._pcmRate;
+            auto const pcmMark = double(naiveX) / _naiveRate * _pcmRate;
             // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
             auto const pcmX = DSSI::cursor(ceil(pcmMark));
             assert(pcmRef <= pcmX);
             _pcmRelX = sizex(pcmX - pcmRef);
             auto const distance = double(pcmX) - pcmMark;
-            _minBLEPIndex = sizex(round(distance * _minBLEPs._minBLEPCount));
+            _minBLEPIndex = sizex(round(distance * _minBLEPCount));
         }
 
         sizex minBLEPSize() const {
-            return (_minBLEPs._minBLEPs.limit() - _minBLEPIndex + _minBLEPs._minBLEPCount - 1) / _minBLEPs._minBLEPCount;
+            return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
         }
 
         sizex pcmCountWithOverflow() const {
@@ -69,9 +75,10 @@ public:
             auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
             pcmBuf.begin(pcmCountWithOverflow()); // Bounds check.
             // The target must be big enough for a minBLEP at maximum pcmX:
-            auto const lim = _minBLEPs._minBLEPs.limit();
-            for (auto k = _minBLEPIndex; k < lim; k += _minBLEPs._minBLEPCount) {
-                *targetPtr++ += amp * _minBLEPs._minBLEPs.at(k);
+            auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
+            auto const srcPtr = _minBLEPs.begin();
+            for (auto k = _minBLEPIndex; k < lim; k += step) {
+                *targetPtr++ += amp * srcPtr[k];
             }
             for (auto const end = pcmBuf.end(); targetPtr != end;) {
                 *targetPtr++ += amp;
