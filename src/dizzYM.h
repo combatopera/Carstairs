@@ -4,6 +4,7 @@
 #include <ladspa.h>
 
 #include "config.h"
+#include "dssi/plugin.h"
 #include "dssi/port.h"
 #include "node/level.h"
 #include "node/pcm.h"
@@ -12,17 +13,16 @@
 #include "state.h"
 #include "util/buf.h"
 #include "util/enum.h"
-#include "util/util.h"
 
 class PortInfoEnum {
 
 public:
 
-    PortInfo_t _output, _sustain;
+    PortInfo_t _output, _alpha, _beta;
 
     Values<PortInfo_t> _values;
 
-    PortInfoEnum(sizex ord = 0);
+    PortInfoEnum(Config const&, sizex ord = 0);
 
 };
 
@@ -36,8 +36,6 @@ class dizzYM {
 
     DSSI::cursor _sampleCursor;
 
-    Config const _config;
-
     State _state;
 
     Program _program;
@@ -50,7 +48,7 @@ class dizzYM {
 
 public:
 
-    dizzYM(int pcmRate);
+    dizzYM(Config const&, int pcmRate);
 
     void reset();
 

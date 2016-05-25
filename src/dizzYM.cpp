@@ -3,24 +3,27 @@
 #include <dssi.h>
 
 #include "node.h"
+#include "util/util.h"
 
-PortInfoEnum::PortInfoEnum(sizex ord)
-        : _output {ord++, true, true, "Output", 0, 0, 0, DSSI_NONE}, //
-        _sustain {ord++, false, false, "Sustain (on/off)",
-        LADSPA_HINT_DEFAULT_MINIMUM | LADSPA_HINT_INTEGER | LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE, 0, 1, DSSI_CC(64)}, //
+PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
+        : _output {ord++, true, true, "Output", 0, //
+                0, 0, DSSI_NONE}, //
+        _alpha {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+                -1, 1, DSSI_CC(config._alphaCC)}, //
+        _beta {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+                -1, 1, DSSI_CC(config._betaCC)}, //
         _values {&_output, ord} {
     debug("Constructed the PortInfoEnum.");
 }
 
-dizzYM::dizzYM(int pcmRate)
+dizzYM::dizzYM(Config const& config, int const pcmRate)
         : _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
-        _config(pcmRate), //
-        _state(_config), //
+        _state(config), //
         _program(_state), //
-        _tone(_config, _state), //
-        _level(_config, _state, _tone), //
-        _chip(_config, _state, _level) {
+        _tone(config, _state), //
+        _level(config, _state, _tone), //
+        _chip(config, _state, _level, pcmRate) {
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
