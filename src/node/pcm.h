@@ -12,7 +12,7 @@ class PCM: public Node<LADSPA_Data> {
 
     constexpr static float INITIAL_DC = 0;
 
-    MinBLEPs _minBLEPs;
+    MinBLEPs const _minBLEPs;
 
     MinBLEPs::Paster _paster;
 
