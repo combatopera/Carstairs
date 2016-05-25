@@ -28,7 +28,7 @@ public:
 
 public:
 
-    MinBLEPs(Config const&);
+    MinBLEPs(Config const&, int pcmRate);
 
     DSSI::cursor pcmXToNaiveX(DSSI::cursor pcmX) const {
         // First naiveX that doesn't affect pcmX prior to that given:

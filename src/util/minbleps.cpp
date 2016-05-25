@@ -10,8 +10,8 @@ static sizex getEvenFftSize(sizex const minSize) {
     return evenFftSize;
 }
 
-MinBLEPs::MinBLEPs(Config const& config)
-        : _pcmRate(config._pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
+MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
+        : _pcmRate(pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
     debug("Creating %u minBLEPs.", _minBLEPCount);
     auto const evenOrder = config.evenEmpiricalOrder();
     auto const oddKernelSize = evenOrder * _minBLEPCount + 1;
