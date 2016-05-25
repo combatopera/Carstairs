@@ -1,7 +1,7 @@
 #include "pcm.h"
 
-PCM::PCM(Config const& config, State& state, Node<float>& naive)
-        : Node("PCM", state), _minBLEPs(config), _paster(_minBLEPs), _naive(naive), _dc(INITIAL_DC), _overflowIndex(0) {
+PCM::PCM(Config const& config, State& state, Node<float>& naive, int pcmRate)
+        : Node("PCM", state), _minBLEPs(config, pcmRate), _paster(_minBLEPs), _naive(naive), _dc(INITIAL_DC), _overflowIndex(0) {
     // Nothing else.
 }
 
