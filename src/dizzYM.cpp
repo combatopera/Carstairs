@@ -16,8 +16,8 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
     debug("Constructed the PortInfoEnum.");
 }
 
-dizzYM::dizzYM(Config const& config, int const pcmRate)
-        : _portValPtrs("_portValPtrs", PortInfo._values._n), //
+dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
+        : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _sampleCursor(INITIAL_SAMPLE_CURSOR), //
         _state(config), //
         _program(_state), //
@@ -61,7 +61,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
         _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(PortInfo._output._ordinal) + indexInBlock);
+        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._output._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;

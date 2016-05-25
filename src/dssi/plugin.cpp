@@ -10,9 +10,11 @@
 
 static Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
+static PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
+
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::cursor SampleRate) {
     debug("LADSPA: instantiate");
-    return new dizzYM(CONFIG, int(SampleRate));
+    return new dizzYM(CONFIG, PortInfo, int(SampleRate));
 }
 
 static void activate(LADSPA_Handle Instance) {
@@ -104,9 +106,7 @@ Descriptors::~Descriptors() {
     delete[] _PortRangeHints;
 }
 
-PortInfoEnum PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
-
-static Descriptors descriptors;
+static Descriptors const descriptors;
 
 extern "C" {
 

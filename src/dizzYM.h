@@ -26,11 +26,11 @@ public:
 
 };
 
-extern PortInfoEnum PortInfo;
-
 class dizzYM {
 
     static DSSI::cursor const INITIAL_SAMPLE_CURSOR = 0;
+
+    PortInfoEnum const& _PortInfo;
 
     Buffer<LADSPA_Data *> _portValPtrs;
 
@@ -48,7 +48,7 @@ class dizzYM {
 
 public:
 
-    dizzYM(Config const&, int pcmRate);
+    dizzYM(Config const&, PortInfoEnum const&, int pcmRate);
 
     void reset();
 
