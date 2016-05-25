@@ -2,14 +2,17 @@
 
 #include <alsa/seq_event.h>
 
+#include "../config.h"
 #include "../dizzYM.h"
 #include "../util/buf.h"
 #include "../util/util.h"
 #include "port.h"
 
+static Config const CONFIG; // Must be in same file as PortInfo for static init order.
+
 static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::cursor SampleRate) {
     debug("LADSPA: instantiate");
-    return new dizzYM(int(SampleRate));
+    return new dizzYM(CONFIG, int(SampleRate));
 }
 
 static void activate(LADSPA_Handle Instance) {
@@ -101,7 +104,7 @@ Descriptors::~Descriptors() {
     delete[] _PortRangeHints;
 }
 
-PortInfoEnum PortInfo; // Must be in same file as descriptor for static init order.
+PortInfoEnum PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
 static Descriptors descriptors;
 
