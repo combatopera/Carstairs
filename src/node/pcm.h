@@ -14,6 +14,8 @@ class PCM: public Node<LADSPA_Data> {
 
     MinBLEPs _minBLEPs;
 
+    MinBLEPs::Paster _paster;
+
     Node<float>& _naive;
 
     Buffer<float> _derivative {"_derivative"}, _pcm {"_pcm"};

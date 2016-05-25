@@ -1,7 +1,7 @@
 #include "pcm.h"
 
 PCM::PCM(Config const& config, State& state, Node<float>& naive)
-        : Node("PCM", state), _minBLEPs(config), _naive(naive), _dc(INITIAL_DC), _overflowIndex(0) {
+        : Node("PCM", state), _minBLEPs(config), _paster(_minBLEPs), _naive(naive), _dc(INITIAL_DC), _overflowIndex(0) {
     // Nothing else.
 }
 
@@ -19,16 +19,16 @@ void PCM::renderImpl() {
     auto const naiveCount = naive.limit();
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
-    _minBLEPs.pastePrepare(naiveRef + naiveCount - 1, pcmRef);
+    _paster.pastePrepare(naiveRef + naiveCount - 1, pcmRef);
     auto const overflowCount = _pcm.limit() - _overflowIndex;
     _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
-    _pcm.setLimit(_minBLEPs.pcmCountWithOverflow());
+    _pcm.setLimit(_paster.pcmCountWithOverflow());
     _pcm.fill(overflowCount, _pcm.limit(), _dc);
     for (sizex i = 0; i < naiveCount; ++i) {
         auto const amp = _derivative.at(i);
         if (amp) {
-            _minBLEPs.pastePrepare(naiveRef + i, pcmRef);
-            _minBLEPs.pastePerform(amp, _pcm);
+            _paster.pastePrepare(naiveRef + i, pcmRef);
+            _paster.pastePerform(amp, _pcm);
         }
     }
     _buf.fill(_pcm.begin());
