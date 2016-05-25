@@ -7,20 +7,22 @@ BOOST_AUTO_TEST_SUITE(TestMinBLEPs)
 
 struct F {
 
-    Config _config {6};
+    Config _config;
+
+    int _pcmRate = 6;
 
     F() {
         _config._atomSize = Config::YM2149_ATOM_SIZE;
         _config._nominalClock = 15;
         _config._cutoff = .475;
         _config._transition = .05;
-        BOOST_REQUIRE_EQUAL(_config._minBLEPCount = 5, _config.idealMinBLEPCount());
+        BOOST_REQUIRE_EQUAL(_config._minBLEPCount = 5, _config.idealMinBLEPCount(_pcmRate));
     }
 
 };
 
 BOOST_FIXTURE_TEST_CASE(BLI, F) {
-    MinBLEPs minBLEPs(_config);
+    MinBLEPs minBLEPs(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(401, minBLEPs._BLI.limit());
     for (int i = 0; i < 200; ++i) {
         BOOST_REQUIRE_EQUAL(minBLEPs._BLI.at(i), minBLEPs._BLI.at(400 - i));
@@ -38,11 +40,11 @@ BOOST_FIXTURE_TEST_CASE(BLI, F) {
 
 BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
     BOOST_REQUIRE_EQUAL(1e-50, _config._rcepsAddBeforeLog);
-    MinBLEPs minBLEPs1(_config);
+    MinBLEPs minBLEPs1(_config, _pcmRate);
     _config._rcepsAddBeforeLog = 0;
-    MinBLEPs minBLEPs0(_config);
+    MinBLEPs minBLEPs0(_config, _pcmRate);
     _config._rcepsAddBeforeLog = .5;
-    MinBLEPs minBLEPs2(_config);
+    MinBLEPs minBLEPs2(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(512, minBLEPs0._realCepstrum.limit());
     BOOST_REQUIRE_EQUAL(512, minBLEPs1._realCepstrum.limit());
     BOOST_REQUIRE_EQUAL(512, minBLEPs2._realCepstrum.limit());
@@ -54,7 +56,7 @@ BOOST_FIXTURE_TEST_CASE(realCepstrum, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(minBLEPs, F) {
-    MinBLEPs minBLEPs(_config);
+    MinBLEPs minBLEPs(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
     for (int i = 0; i < 3; ++i) {
         BOOST_CHECK_SMALL(minBLEPs._minBLEPs.at(i), 1e-4f);
@@ -65,23 +67,24 @@ BOOST_FIXTURE_TEST_CASE(minBLEPs, F) {
 }
 
 BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
-    MinBLEPs minBLEPs(_config);
+    MinBLEPs minBLEPs(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
-    minBLEPs._minBLEPIndex = 0;
-    BOOST_REQUIRE_EQUAL(103, minBLEPs.minBLEPSize());
-    minBLEPs._minBLEPIndex = 1;
-    BOOST_REQUIRE_EQUAL(103, minBLEPs.minBLEPSize());
-    minBLEPs._minBLEPIndex = 2;
-    BOOST_REQUIRE_EQUAL(102, minBLEPs.minBLEPSize());
-    minBLEPs._minBLEPIndex = 3;
-    BOOST_REQUIRE_EQUAL(102, minBLEPs.minBLEPSize());
-    minBLEPs._minBLEPIndex = 4;
-    BOOST_REQUIRE_EQUAL(102, minBLEPs.minBLEPSize());
+    MinBLEPs::Paster paster(minBLEPs);
+    paster._minBLEPIndex = 0;
+    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize());
+    paster._minBLEPIndex = 1;
+    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize());
+    paster._minBLEPIndex = 2;
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
+    paster._minBLEPIndex = 3;
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
+    paster._minBLEPIndex = 4;
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
 }
 
 BOOST_FIXTURE_TEST_CASE(pcmXToNaiveX, F) {
-    MinBLEPs minBLEPs(_config);
+    MinBLEPs minBLEPs(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(1, minBLEPs.pcmXToNaiveX(1));
     BOOST_REQUIRE_EQUAL(3, minBLEPs.pcmXToNaiveX(2));
     BOOST_REQUIRE_EQUAL(6, minBLEPs.pcmXToNaiveX(3));

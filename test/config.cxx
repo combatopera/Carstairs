@@ -6,7 +6,7 @@
 BOOST_AUTO_TEST_SUITE(TestConfig)
 
 BOOST_AUTO_TEST_CASE(evenEmpiricalOrder) {
-    Config config(44100);
+    Config config;
     config._transition = .05;
     BOOST_REQUIRE_EQUAL(80, config.evenEmpiricalOrder());
     config._transition = .0505;

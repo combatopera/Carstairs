@@ -41,7 +41,13 @@ public:
 
         sizex const _naiveRate, _pcmRate, _minBLEPCount;
 
-        sizex _pcmRelX, _minBLEPIndex;
+        sizex _pcmRelX;
+
+#ifdef DIZZYM_UNIT_TEST
+    public:
+#endif
+
+        sizex _minBLEPIndex;
 
     public:
 

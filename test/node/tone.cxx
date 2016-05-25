@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(TestTone)
 
 struct F {
 
-    Config _config {44100};
+    Config _config;
 
     F() {
         _config._atomSize = 8;
