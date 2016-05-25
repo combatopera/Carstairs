@@ -24,6 +24,8 @@ class Descriptors {
 
     DSSI_Descriptor _dssiDescriptor;
 
+    Descriptors(Descriptors const&); // Make cppcheck happy.
+
 public:
 
     DSSI_Descriptor const *dssiDescriptor() const;
