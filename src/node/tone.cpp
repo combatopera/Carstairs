@@ -13,12 +13,12 @@ public:
 } SQUARE;
 
 Tone::Tone(Config const& config, State& state)
-        : Node("Tone", state), _config(config), _shape(SQUARE), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
+        : Node("Tone", state), _config(config), _shape(SQUARE), _indexInShape(), _progress(), _stepSize() {
 }
 
 void Tone::startImpl() {
-    _indexInShape = INITIAL_INDEX_IN_SHAPE;
-    _progress = INITIAL_PROGRESS;
+    _indexInShape = 0;
+    _progress = 0;
 }
 
 void Tone::renderImpl() {
