@@ -37,7 +37,6 @@ void Tone::renderImpl() {
         _buf.fill(i, endOfStep, _shape.at(_indexInShape));
         i = endOfStep;
         _indexInShape = (_indexInShape + 1) % _shape.limit();
-        _progress = 0;
         endOfStep += _stepSize;
     }
     _buf.fill(i, n, _shape.at(_indexInShape));
