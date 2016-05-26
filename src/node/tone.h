@@ -9,7 +9,7 @@ class Tone: public Node<int> {
 
     Config const& _config;
 
-    View<int> _shape;
+    View<int> const _shape;
 
     int _indexInShape, _progress, _stepSize;
 
