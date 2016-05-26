@@ -13,7 +13,7 @@ public:
 } SQUARE;
 
 Tone::Tone(Config const& config, State& state)
-        : Node("Tone", state), _config(config), _shape(SQUARE), _indexInShape(), _progress(), _stepSize() {
+        : Node("Tone", state), _atomSize(config._atomSize), _shape(SQUARE), _indexInShape(), _progress(), _stepSize() {
 }
 
 void Tone::startImpl() {
@@ -22,7 +22,7 @@ void Tone::startImpl() {
 }
 
 void Tone::renderImpl() {
-    _stepSize = _config._atomSize * _state.TP();
+    _stepSize = _atomSize * _state.TP();
     if (_progress >= _stepSize) { // Start a new step.
         _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
         _progress = 0;
