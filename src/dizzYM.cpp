@@ -30,13 +30,13 @@ void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
     _portValPtrs.put(index, valPtr);
 }
 
-void dizzYM::reset() {
+void dizzYM::start() {
     _sampleCursor = INITIAL_SAMPLE_CURSOR;
     _state.reset();
-    // TODO: Reliably reset all nodes.
-    _tone.reset();
-    _level.reset();
-    _pcm.reset();
+    // TODO: Reliably start all nodes.
+    _tone.start();
+    _level.start();
+    _pcm.start();
 }
 
 void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cursor eventCount) {

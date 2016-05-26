@@ -17,7 +17,7 @@ class Tone: public Node<int> {
 
     int _indexInShape, _progress, _stepSize;
 
-    void resetImpl();
+    void startImpl();
 
     void renderImpl();
 

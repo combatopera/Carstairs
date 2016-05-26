@@ -16,7 +16,7 @@ Tone::Tone(Config const& config, State& state)
         : Node("Tone", state), _config(config), _shape(SQUARE), _indexInShape(INITIAL_INDEX_IN_SHAPE), _progress(INITIAL_PROGRESS), _stepSize(0) {
 }
 
-void Tone::resetImpl() {
+void Tone::startImpl() {
     _indexInShape = INITIAL_INDEX_IN_SHAPE;
     _progress = INITIAL_PROGRESS;
 }

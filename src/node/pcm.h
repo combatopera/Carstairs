@@ -24,7 +24,7 @@ class PCM: public Node<LADSPA_Data> {
 
     sizex _overflowIndex;
 
-    void resetImpl();
+    void startImpl();
 
     void renderImpl();
 

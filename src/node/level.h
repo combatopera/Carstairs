@@ -11,7 +11,7 @@ class Level: public Node<float> {
 
     Tone& _tone;
 
-    void resetImpl();
+    void startImpl();
 
     void renderImpl();
 

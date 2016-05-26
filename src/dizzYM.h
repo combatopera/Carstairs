@@ -50,7 +50,7 @@ public:
 
     dizzYM(Config const&, PortInfoEnum const&, int pcmRate);
 
-    void reset();
+    void start();
 
     void setPortValPtr(int, LADSPA_Data *);
 

@@ -19,7 +19,7 @@ static LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::curs
 
 static void activate(LADSPA_Handle Instance) {
     debug("LADSPA: activate");
-    static_cast<dizzYM *>(Instance)->reset();
+    static_cast<dizzYM *>(Instance)->start();
 }
 
 static void deactivate(LADSPA_Handle Instance) {

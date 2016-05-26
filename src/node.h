@@ -16,9 +16,9 @@ public:
 
     virtual ~Node();
 
-    void reset() {
+    void start() {
         _cursor = INITIAL_CURSOR;
-        resetImpl();
+        startImpl();
     }
 
     View<T> render(DSSI::cursor newCursor);
@@ -33,7 +33,7 @@ protected:
 
     State& _state;
 
-    virtual void resetImpl() = 0;
+    virtual void startImpl() = 0;
 
     virtual void renderImpl() = 0;
 

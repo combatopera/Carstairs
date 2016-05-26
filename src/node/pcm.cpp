@@ -5,7 +5,7 @@ PCM::PCM(Config const& config, State& state, Node<float>& naive, int pcmRate)
     // Nothing else.
 }
 
-void PCM::resetImpl() {
+void PCM::startImpl() {
     _dc = INITIAL_DC;
     _overflowIndex = 0;
     _pcm.setLimit(0); // Clear any overflow.

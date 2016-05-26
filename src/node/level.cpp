@@ -4,7 +4,7 @@
 
 #include "../util/buf.h"
 
-void Level::resetImpl() {
+void Level::startImpl() {
 }
 
 void Level::renderImpl() {
