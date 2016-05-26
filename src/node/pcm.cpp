@@ -24,13 +24,7 @@ void PCM::renderImpl() {
     _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
     _pcm.setLimit(_paster.pcmCountWithOverflow());
     _pcm.fill(overflowCount, _pcm.limit(), _dc);
-    for (sizex i = 0; i < naiveCount; ++i) {
-        auto const amp = _derivative.at(i);
-        if (amp) {
-            _paster.pastePrepare(naiveRef + i, pcmRef);
-            _paster.pastePerform(amp, _pcm);
-        }
-    }
+    _paster.pasteMulti(_derivative, naiveRef, pcmRef, _pcm);
     _buf.fill(_pcm.begin());
     _overflowIndex = pcmCount;
     if (naiveCount) { // Otherwise _dc doesn't change.

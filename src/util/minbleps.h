@@ -95,6 +95,17 @@ public:
             }
         }
 
+        void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcm) {
+            auto const naiveCount = derivative.limit();
+            for (sizex i = 0; i < naiveCount; ++i) {
+                auto const amp = derivative.at(i);
+                if (amp) {
+                    pastePrepare(naiveRef + i, pcmRef);
+                    pastePerform(amp, pcm);
+                }
+            }
+        }
+
     };
 
 };
