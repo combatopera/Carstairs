@@ -23,7 +23,7 @@ dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcm
         _program(_state), //
         _tone(config, _state), //
         _level(config, _state, _tone), //
-        _chip(config, _state, _level, pcmRate) {
+        _pcm(config, _state, _level, pcmRate) {
 }
 
 void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
@@ -36,7 +36,7 @@ void dizzYM::reset() {
     // TODO: Reliably reset all nodes.
     _tone.reset();
     _level.reset();
-    _chip.reset();
+    _pcm.reset();
 }
 
 void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cursor eventCount) {
@@ -61,7 +61,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
         _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
+        _pcm.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;

@@ -44,7 +44,7 @@ class dizzYM {
 
     Level _level;
 
-    PCM _chip;
+    PCM _pcm;
 
 public:
 
