@@ -18,7 +18,7 @@ class PortInfoEnum {
 
 public:
 
-    PortInfo_t const _output, _alpha, _beta;
+    PortInfo_t const _pcm, _alpha, _beta;
 
     Values<PortInfo_t const> const _values;
 

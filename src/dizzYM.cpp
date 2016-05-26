@@ -6,13 +6,13 @@
 #include "util/util.h"
 
 PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
-        : _output {ord++, true, true, "Output", 0, //
+        : _pcm {ord++, true, true, "PCM", 0, //
                 0, 0, DSSI_NONE}, //
         _alpha {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
                 -1, 1, DSSI_CC(config._alphaCC)}, //
         _beta {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
                 -1, 1, DSSI_CC(config._betaCC)}, //
-        _values {&_output, ord} {
+        _values {&_pcm, ord} {
     debug("Constructed the PortInfoEnum.");
 }
 
@@ -61,7 +61,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
         _program.fire(_sampleCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._output._ordinal) + indexInBlock);
+        _chip.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
     _sampleCursor += blockSize;
