@@ -27,22 +27,19 @@ void Tone::renderImpl() {
         _indexInShape = (_indexInShape + 1) % _shape.limit();
         _progress = 0;
     }
-    sizex endOfStep = _stepSize - _progress;
+    sizex endOfStep = _stepSize - _progress, i = 0;
     auto const n = _buf.limit();
-    for (sizex i = 0; i < n;) {
-        auto value = _shape.at(_indexInShape);
+    while (true) {
         // Could allow next block to extend step by using >= here:
         if (endOfStep > n) {
-            _buf.fill(i, n, value);
-            i = n;
-            _progress = _stepSize - (endOfStep - n);
+            break;
         }
-        else {
-            _buf.fill(i, endOfStep, value);
-            i = endOfStep;
-            _indexInShape = (_indexInShape + 1) % _shape.limit();
-            _progress = 0;
-            endOfStep += _stepSize;
-        }
+        _buf.fill(i, endOfStep, _shape.at(_indexInShape));
+        i = endOfStep;
+        _indexInShape = (_indexInShape + 1) % _shape.limit();
+        _progress = 0;
+        endOfStep += _stepSize;
     }
+    _buf.fill(i, n, _shape.at(_indexInShape));
+    _progress = _stepSize - (endOfStep - n);
 }
