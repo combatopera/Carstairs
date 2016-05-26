@@ -25,7 +25,7 @@ public:
 
     int const _semitones = 12;
 
-    int final _nominalClock = 2000000; // TODO LATER: Support non-integer clock.
+    float final _nominalClock = 2000000;
 
     double final _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
 
@@ -37,9 +37,8 @@ public:
 
     int const _alphaCC = 80, _betaCC = 81;
 
-    int naiveRate() const {
-        assert(!((_nominalClock * _atomSize) % YM2149_ATOM_SIZE));
-        return _nominalClock * _atomSize / YM2149_ATOM_SIZE;
+    float naiveRate() const {
+        return _nominalClock * float(_atomSize) / YM2149_ATOM_SIZE;
     }
 
     int evenEmpiricalOrder() const {
@@ -48,8 +47,9 @@ public:
     }
 
     int idealMinBLEPCount(int const pcmRate) const {
-        int const naiveRate = this->naiveRate();
-        return naiveRate / boost::math::gcd(naiveRate, pcmRate);
+        float const naiveRate = this->naiveRate();
+        assert(roundf(naiveRate) == naiveRate);
+        return int(naiveRate) / boost::math::gcd(int(naiveRate), pcmRate);
     }
 
 };

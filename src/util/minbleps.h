@@ -10,7 +10,9 @@
 
 class MinBLEPs {
 
-    int const _pcmRate, _naiveRate;
+    int const _pcmRate;
+
+    float const _naiveRate;
 
 #ifdef DIZZYM_UNIT_TEST
 
@@ -39,7 +41,9 @@ public:
 
         View<float> const _minBLEPs;
 
-        sizex const _naiveRate, _pcmRate, _minBLEPCount;
+        float const _naiveRate;
+
+        sizex const _pcmRate, _minBLEPCount;
 
         sizex _pcmRelX;
 
