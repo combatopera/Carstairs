@@ -24,7 +24,7 @@ void Tone::startImpl() {
 void Tone::renderImpl() {
     _stepSize = _atomSize * _state.TP();
     if (_progress >= _stepSize) { // Start a new step.
-        _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
+        _indexInShape = (_indexInShape + 1) % _shape.limit();
         _progress = 0;
     }
     sizex endOfStep = _stepSize - _progress;
@@ -35,12 +35,12 @@ void Tone::renderImpl() {
         if (endOfStep > n) {
             _buf.fill(i, n, value);
             i = n;
-            _progress = int(_stepSize - (endOfStep - n));
+            _progress = _stepSize - (endOfStep - n);
         }
         else {
             _buf.fill(i, endOfStep, value);
             i = endOfStep;
-            _indexInShape = (_indexInShape + 1) % (int) _shape.limit();
+            _indexInShape = (_indexInShape + 1) % _shape.limit();
             _progress = 0;
             endOfStep += _stepSize;
         }
