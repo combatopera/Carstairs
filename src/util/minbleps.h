@@ -87,6 +87,7 @@ public:
             auto const ampPtr = derivative.begin();
             auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
             auto const srcPtr = _minBLEPs.begin();
+            auto const end = pcmBuf.end();
             for (sizex i = 0; i < ampCount; ++i) {
                 auto const amp = ampPtr[i];
                 if (amp) {
@@ -97,7 +98,7 @@ public:
                     for (auto k = _minBLEPIndex; k < lim; k += step) {
                         *targetPtr++ += amp * srcPtr[k];
                     }
-                    for (auto const end = pcmBuf.end(); targetPtr != end;) {
+                    while (targetPtr != end) {
                         *targetPtr++ += amp;
                     }
                 }
