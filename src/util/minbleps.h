@@ -85,6 +85,8 @@ public:
         void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf) {
             auto const ampCount = derivative.limit();
             auto const ampPtr = derivative.begin();
+            auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
+            auto const srcPtr = _minBLEPs.begin();
             for (sizex i = 0; i < ampCount; ++i) {
                 auto const amp = ampPtr[i];
                 if (amp) {
@@ -92,8 +94,6 @@ public:
                     auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
                     pcmBuf.begin(_pcmRelX + minBLEPSize()); // Bounds check.
                             // The target must be big enough for a minBLEP at maximum pcmX:
-                    auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
-                    auto const srcPtr = _minBLEPs.begin();
                     for (auto k = _minBLEPIndex; k < lim; k += step) {
                         *targetPtr++ += amp * srcPtr[k];
                     }
