@@ -87,19 +87,20 @@ public:
             auto const ampPtr = derivative.begin();
             auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
             auto const srcPtr = _minBLEPs.begin();
-            auto const end = pcmBuf.end();
+            auto const pcmEnd = pcmBuf.end();
+            auto const pcmBegin = const_cast<float *>(pcmBuf.begin());
             for (sizex i = 0; i < ampCount; ++i) {
                 auto const amp = ampPtr[i];
                 if (amp) {
                     pastePrepare(naiveRef + i, pcmRef);
-                    auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
-                    pcmBuf.begin(_pcmRelX + minBLEPSize()); // Bounds check.
-                            // The target must be big enough for a minBLEP at maximum pcmX:
+                    auto pcmPtr = pcmBegin + _pcmRelX;
+                    assert(pcmPtr + minBLEPSize() <= pcmEnd); // Bounds check.
+                    // The target must be big enough for a minBLEP at maximum pcmX:
                     for (auto k = _minBLEPIndex; k < lim; k += step) {
-                        *targetPtr++ += amp * srcPtr[k];
+                        *pcmPtr++ += amp * srcPtr[k];
                     }
-                    while (targetPtr != end) {
-                        *targetPtr++ += amp;
+                    while (pcmPtr != pcmEnd) {
+                        *pcmPtr++ += amp;
                     }
                 }
             }
