@@ -83,9 +83,10 @@ public:
         }
 
         void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf) {
-            auto const naiveCount = derivative.limit();
-            for (sizex i = 0; i < naiveCount; ++i) {
-                auto const amp = derivative.at(i);
+            auto const ampCount = derivative.limit();
+            auto const ampPtr = derivative.begin();
+            for (sizex i = 0; i < ampCount; ++i) {
+                auto const amp = ampPtr[i];
                 if (amp) {
                     pastePrepare(naiveRef + i, pcmRef);
                     auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
