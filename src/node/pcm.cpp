@@ -19,10 +19,9 @@ void PCM::renderImpl() {
     auto const naiveCount = naive.limit();
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
-    _paster.pastePrepare(naiveRef + naiveCount - 1, pcmRef);
     auto const overflowCount = _pcm.limit() - _overflowIndex;
     _pcm.fill(0, overflowCount, _pcm.begin(_overflowIndex));
-    _pcm.setLimit(_paster.pcmCountWithOverflow());
+    _pcm.setLimit(_paster.pcmCountWithOverflow(naiveRef + naiveCount - 1, pcmRef));
     _pcm.fill(overflowCount, _pcm.limit(), _dc);
     _paster.pasteMulti(_derivative, naiveRef, pcmRef, _pcm);
     _buf.fill(_pcm.begin());

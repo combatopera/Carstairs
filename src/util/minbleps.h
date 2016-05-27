@@ -77,31 +77,28 @@ public:
             return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
         }
 
-        sizex pcmCountWithOverflow() const {
+        sizex pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
+            pastePrepare(naiveX, pcmRef);
             return _pcmRelX + minBLEPSize();
         }
 
-        void pastePerform(float amp, View<float> pcmBuf) const {
-            auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
-            pcmBuf.begin(pcmCountWithOverflow()); // Bounds check.
-            // The target must be big enough for a minBLEP at maximum pcmX:
-            auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
-            auto const srcPtr = _minBLEPs.begin();
-            for (auto k = _minBLEPIndex; k < lim; k += step) {
-                *targetPtr++ += amp * srcPtr[k];
-            }
-            for (auto const end = pcmBuf.end(); targetPtr != end;) {
-                *targetPtr++ += amp;
-            }
-        }
-
-        void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcm) {
+        void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf) {
             auto const naiveCount = derivative.limit();
             for (sizex i = 0; i < naiveCount; ++i) {
                 auto const amp = derivative.at(i);
                 if (amp) {
                     pastePrepare(naiveRef + i, pcmRef);
-                    pastePerform(amp, pcm);
+                    auto targetPtr = const_cast<float *>(pcmBuf.begin(_pcmRelX));
+                    pcmBuf.begin(_pcmRelX + minBLEPSize()); // Bounds check.
+                            // The target must be big enough for a minBLEP at maximum pcmX:
+                    auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
+                    auto const srcPtr = _minBLEPs.begin();
+                    for (auto k = _minBLEPIndex; k < lim; k += step) {
+                        *targetPtr++ += amp * srcPtr[k];
+                    }
+                    for (auto const end = pcmBuf.end(); targetPtr != end;) {
+                        *targetPtr++ += amp;
+                    }
                 }
             }
         }
