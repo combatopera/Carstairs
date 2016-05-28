@@ -39,11 +39,13 @@ public:
 
     class Paster {
 
-        View<float> const _minBLEPs;
-
         float const _naiveRate;
 
-        sizex const _pcmRate, _minBLEPCount;
+        int const _pcmRate;
+
+        View<float> const _minBLEPs;
+
+        sizex const _minBLEPCount;
 
         sizex _pcmRelX;
 
@@ -53,12 +55,17 @@ public:
 
         sizex _minBLEPIndex;
 
+        Paster(float naiveRate, int pcmRate, View<float> const minBLEPs, sizex minBLEPCount)
+                : _naiveRate(naiveRate), _pcmRate(pcmRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount), //
+                _pcmRelX(), _minBLEPIndex() {
+        }
+
     public:
 
         Paster(MinBLEPs const& minBLEPs)
-                : _minBLEPs(minBLEPs._minBLEPs), //
-                _naiveRate(minBLEPs._naiveRate), //
+                : _naiveRate(minBLEPs._naiveRate), //
                 _pcmRate(minBLEPs._pcmRate), //
+                _minBLEPs(minBLEPs._minBLEPs), //
                 _minBLEPCount(minBLEPs._minBLEPCount), //
                 _pcmRelX(), _minBLEPIndex() {
         }

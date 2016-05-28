@@ -126,6 +126,12 @@ template<> void View<int>::range() {
     }
 }
 
+template<> void View<float>::range() {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
+        _data[i] = float(i);
+    }
+}
+
 template<> void View<double>::range() {
     for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
         _data[i] = double(i);
