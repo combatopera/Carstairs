@@ -25,7 +25,7 @@ dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcm
         _pcm(config, _state, _level, pcmRate) {
 }
 
-void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
+void dizzYM::setPortValPtr(sizex index, LADSPA_Data *valPtr) {
     _portValPtrs.put(index, valPtr);
 }
 
