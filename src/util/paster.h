@@ -50,13 +50,14 @@ public:
     }
 
     void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf, sizex dcCursor, float dc) {
-        pcmBuf.fill(dcCursor, pcmBuf.limit(), dc);
+        pcmBuf.zero(dcCursor, pcmBuf.limit());
         auto const ampCount = derivative.limit();
         auto ampPtr = derivative.begin();
         auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
         auto const srcPtr = _minBLEPs.begin();
         auto const pcmEnd = pcmBuf.end();
         auto const pcmBegin = const_cast<float *>(pcmBuf.begin());
+        auto dcPtr = pcmBegin + dcCursor;
         for (sizex i = 0; i < ampCount; ++i) {
             auto const amp = *ampPtr++;
             if (amp) {
@@ -68,10 +69,14 @@ public:
                 for (auto k = minBLEPIndex; k < lim; k += step) {
                     *pcmPtr++ += amp * srcPtr[k];
                 }
-                while (pcmPtr != pcmEnd) {
-                    *pcmPtr++ += amp;
+                while (dcPtr < pcmPtr) {
+                    *dcPtr++ += dc;
                 }
+                dc += amp;
             }
+        }
+        while (dcPtr < pcmEnd) {
+            *dcPtr++ += dc;
         }
     }
 

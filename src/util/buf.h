@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stddef.h>
 #include <cassert>
 #include <complex>
 #include <cstring>
@@ -71,6 +70,10 @@ public:
 
     void zero() {
         memset(_data, 0, _limit * sizeof(T)); // Not portable in float case.
+    }
+
+    void zero(sizex i, sizex j) {
+        memset(_data + i, 0, (j - i) * sizeof(T)); // Not portable in float case.
     }
 
     T const *begin(sizex off = 0) const {
