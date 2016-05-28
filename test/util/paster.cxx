@@ -90,4 +90,24 @@ BOOST_FIXTURE_TEST_CASE(pasteMulti3, F) {
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(twice, F) {
+    _derivative.zero();
+    _derivative.put(1, 3);
+    _derivative.put(11, 2);
+    _pcm.fill(2); // Context DC.
+    _paster.pasteMulti(_derivative, 0, 0, _pcm);
+    std::array<float, 10> expected {2, 14, 29, 44, 5, 13, 23, 33, 7, 7};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), _pcm.begin(), _pcm.end());
+}
+
+BOOST_FIXTURE_TEST_CASE(overlap, F) {
+    _derivative.zero();
+    _derivative.put(1, 3);
+    _derivative.put(6, 2);
+    _pcm.fill(2); // Context DC.
+    _paster.pasteMulti(_derivative, 0, 0, _pcm);
+    std::array<float, 10> expected {2, 14, 29, 52, 23, 33, 7, 7, 7, 7};
+    BOOST_REQUIRE_EQUAL_COLLECTIONS(expected.begin(), expected.end(), _pcm.begin(), _pcm.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
