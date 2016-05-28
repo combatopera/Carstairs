@@ -31,7 +31,7 @@ public:
 
     double final _rcepsAddBeforeLog = 1e-50;
 
-    sizex final _minBLEPCount = 1000;
+    sizex final _minBLEPCount = 1000; // Empirically enough to make artifacts invisible.
 
     float const _maxAmp = .5;
 
