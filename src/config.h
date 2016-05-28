@@ -17,7 +17,7 @@ public:
 
 public:
 
-    int final _atomSize = YM2149_ATOM_SIZE;
+    int final _atomSize = 1;
 
     int const _refMidiNote = 69;
 
