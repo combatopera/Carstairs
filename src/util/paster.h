@@ -9,9 +9,7 @@
 
 class Paster {
 
-    float const _naiveRate;
-
-    int const _pcmRate;
+    double const _ratio;
 
     View<float> const _minBLEPs;
 
@@ -26,22 +24,18 @@ public:
     sizex _minBLEPIndex;
 
     Paster(float naiveRate, int pcmRate, View<float> const minBLEPs, sizex minBLEPCount)
-            : _naiveRate(naiveRate), _pcmRate(pcmRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount), //
+            : _ratio(double(pcmRate) / naiveRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount), //
             _pcmRelX(), _minBLEPIndex() {
     }
 
 public:
 
     Paster(MinBLEPs const& minBLEPs)
-            : _naiveRate(minBLEPs._naiveRate), //
-            _pcmRate(minBLEPs._pcmRate), //
-            _minBLEPs(minBLEPs._minBLEPs), //
-            _minBLEPCount(minBLEPs._minBLEPCount), //
-            _pcmRelX(), _minBLEPIndex() {
+            : Paster(minBLEPs._naiveRate, minBLEPs._pcmRate, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
     }
 
     void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
-        auto const pcmMark = double(naiveX) / _naiveRate * _pcmRate;
+        auto const pcmMark = double(naiveX) * _ratio;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto const pcmX = DSSI::cursor(ceil(pcmMark));
         assert(pcmRef <= pcmX);
