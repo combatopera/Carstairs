@@ -15,17 +15,12 @@ class Paster {
 
     sizex const _minBLEPCount;
 
-    sizex _pcmRelX;
-
 #ifdef DIZZYM_UNIT_TEST
 public:
 #endif
 
-    sizex _minBLEPIndex;
-
     Paster(float naiveRate, int pcmRate, View<float> const minBLEPs, sizex minBLEPCount)
-            : _ratio(double(pcmRate) / naiveRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount), //
-            _pcmRelX(), _minBLEPIndex() {
+            : _ratio(double(pcmRate) / naiveRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
     }
 
 public:
@@ -34,23 +29,24 @@ public:
             : Paster(minBLEPs._naiveRate, minBLEPs._pcmRate, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
     }
 
-    void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
+    void pastePrepare(DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) const {
         auto const pcmMark = double(naiveX) * _ratio;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto const pcmX = DSSI::cursor(ceil(pcmMark));
         assert(pcmRef <= pcmX);
-        _pcmRelX = sizex(pcmX - pcmRef);
+        pcmRelX = sizex(pcmX - pcmRef);
         auto const distance = double(pcmX) - pcmMark;
-        _minBLEPIndex = sizex(round(distance * _minBLEPCount));
+        minBLEPIndex = sizex(round(distance * _minBLEPCount));
     }
 
-    sizex minBLEPSize() const {
-        return (_minBLEPs.limit() - _minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
+    sizex minBLEPSize(sizex minBLEPIndex) const {
+        return (_minBLEPs.limit() - minBLEPIndex + _minBLEPCount - 1) / _minBLEPCount;
     }
 
-    sizex pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) {
-        pastePrepare(naiveX, pcmRef);
-        return _pcmRelX + minBLEPSize();
+    sizex pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) const {
+        sizex pcmRelX, minBLEPIndex;
+        pastePrepare(naiveX, pcmRef, pcmRelX, minBLEPIndex);
+        return pcmRelX + minBLEPSize(minBLEPIndex);
     }
 
     void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf) {
@@ -63,11 +59,12 @@ public:
         for (sizex i = 0; i < ampCount; ++i) {
             auto const amp = ampPtr[i];
             if (amp) {
-                pastePrepare(naiveRef + i, pcmRef);
-                auto pcmPtr = pcmBegin + _pcmRelX;
-                assert(pcmPtr + minBLEPSize() <= pcmEnd); // Bounds check.
+                sizex pcmRelX, minBLEPIndex;
+                pastePrepare(naiveRef + i, pcmRef, pcmRelX, minBLEPIndex);
+                auto pcmPtr = pcmBegin + pcmRelX;
+                assert(pcmPtr + minBLEPSize(minBLEPIndex) <= pcmEnd); // Bounds check.
                 // The target must be big enough for a minBLEP at maximum pcmX:
-                for (auto k = _minBLEPIndex; k < lim; k += step) {
+                for (auto k = minBLEPIndex; k < lim; k += step) {
                     *pcmPtr++ += amp * srcPtr[k];
                 }
                 while (pcmPtr != pcmEnd) {

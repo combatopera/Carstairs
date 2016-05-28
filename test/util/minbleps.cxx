@@ -73,16 +73,11 @@ BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
     Paster paster(minBLEPs);
-    paster._minBLEPIndex = 0;
-    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize());
-    paster._minBLEPIndex = 1;
-    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize());
-    paster._minBLEPIndex = 2;
-    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
-    paster._minBLEPIndex = 3;
-    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
-    paster._minBLEPIndex = 4;
-    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize());
+    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize(0));
+    BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize(1));
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize(2));
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize(3));
+    BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize(4));
 }
 
 BOOST_FIXTURE_TEST_CASE(pcmXToNaiveX, F) {
