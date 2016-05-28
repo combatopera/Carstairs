@@ -32,8 +32,6 @@ class dizzYM {
 
     Buffer<LADSPA_Data *> _portValPtrs;
 
-    DSSI::cursor _masterCursor;
-
     State _state;
 
     Program _program;
@@ -52,6 +50,6 @@ public:
 
     void setPortValPtr(int, LADSPA_Data *);
 
-    void runSynth(DSSI::cursor, snd_seq_event_t *, DSSI::cursor);
+    void runSynth(DSSI::cursor, snd_seq_event_t const *, DSSI::cursor);
 
 };
