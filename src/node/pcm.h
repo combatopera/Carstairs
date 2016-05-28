@@ -7,12 +7,13 @@
 #include "../state.h"
 #include "../util/buf.h"
 #include "../util/minbleps.h"
+#include "../util/paster.h"
 
 class PCM: public Node<LADSPA_Data> {
 
     MinBLEPs const _minBLEPs;
 
-    MinBLEPs::Paster _paster;
+    Paster _paster;
 
     Node<float>& _naive;
 

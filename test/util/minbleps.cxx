@@ -3,6 +3,8 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 
+#include "../../src/util/paster.h"
+
 BOOST_AUTO_TEST_SUITE(TestMinBLEPs)
 
 struct F {
@@ -70,7 +72,7 @@ BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
     BOOST_REQUIRE_EQUAL(5, minBLEPs._minBLEPCount);
     BOOST_REQUIRE_EQUAL(512, minBLEPs._minBLEPs.limit());
-    MinBLEPs::Paster paster(minBLEPs);
+    Paster paster(minBLEPs);
     paster._minBLEPIndex = 0;
     BOOST_REQUIRE_EQUAL(103, paster.minBLEPSize());
     paster._minBLEPIndex = 1;

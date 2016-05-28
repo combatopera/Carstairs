@@ -1,9 +1,8 @@
+#include "../../src/util/paster.h"
+
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <array>
-
-#include "../../src/util/buf.h"
-#include "../../src/util/minbleps.h"
 
 BOOST_AUTO_TEST_SUITE(TestPaster)
 
@@ -17,7 +16,7 @@ struct F {
         }
     } _minBLEPs;
 
-    MinBLEPs::Paster _paster {15, 6, _minBLEPs, 5};
+    Paster _paster {15, 6, _minBLEPs, 5};
 
     Buffer<float> _derivative {"_derivative", 15};
 
