@@ -42,6 +42,10 @@ class dizzYM {
 
     PCM _pcm;
 
+    int const _pcmRate;
+
+    DSSI::cursor getProgramEventX(DSSI::cursor voidX) const;
+
 public:
 
     dizzYM(Config const&, PortInfoEnum const&, int pcmRate);

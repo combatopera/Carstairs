@@ -22,6 +22,8 @@ public:
 
 public:
 
+    int _programEventIndex; // Only valid when onOrMax() isn't MAX.
+
     State(Config const&);
 
     void reset();

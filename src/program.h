@@ -1,6 +1,5 @@
 #pragma once
 
-#include "dssi/plugin.h"
 #include "state.h"
 
 class Program {
@@ -15,10 +14,10 @@ public:
             : _rate(rate), _state(state) {
     }
 
-    float rate() {
+    float rate() const {
         return _rate;
     }
 
-    void fire(DSSI::cursor cursor);
+    void fire(int, int) const;
 
 };
