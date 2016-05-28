@@ -20,8 +20,7 @@ void PCM::renderImpl() {
     _derivative.snapshot(naive);
     _derivative.differentiate(_dc);
     _pcm.setLimit(pcmLimit);
-    _pcm.fill(_overflowCount, pcmLimit, _dc);
-    _paster.pasteMulti(_derivative, naiveRef, pcmRef, _pcm);
+    _paster.pasteMulti(_derivative, naiveRef, pcmRef, _pcm, _overflowCount, _dc);
     _buf.fill(_pcm.begin());
     _pcm.fill(0, _overflowCount = pcmLimit - pcmCount, _pcm.begin(pcmCount));
     if (naiveCount) { // Otherwise _dc doesn't change.

@@ -49,7 +49,8 @@ public:
         return pcmRelX + minBLEPSize(minBLEPIndex);
     }
 
-    void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf) {
+    void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf, sizex dcCursor, float dc) {
+        pcmBuf.fill(dcCursor, pcmBuf.limit(), dc);
         auto const ampCount = derivative.limit();
         auto const ampPtr = derivative.begin();
         auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
