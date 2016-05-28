@@ -44,15 +44,20 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
     }
     for (DSSI::cursor indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
-        for (; eventIndex < eventCount && refCursor + events[eventIndex].time.tick <= _pcm.cursor(); ++eventIndex) {
-            switch (events[eventIndex].type) {
+        for (; eventIndex < eventCount; ++eventIndex) {
+            auto const& event = events[eventIndex];
+            auto const eventX = refCursor + event.time.tick;
+            if (eventX > _pcm.cursor()) {
+                break;
+            }
+            switch (event.type) {
                 case SND_SEQ_EVENT_NOTEON: {
-                    auto const& n = events[eventIndex].data.note;
-                    _state.noteOn(refCursor + events[eventIndex].time.tick, n.note, n.velocity);
+                    auto const& n = event.data.note;
+                    _state.noteOn(eventX, n.note, n.velocity);
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _state.noteOff(refCursor + events[eventIndex].time.tick, events[eventIndex].data.note.note);
+                    _state.noteOff(eventX, event.data.note.note);
                     break;
                 }
             }
