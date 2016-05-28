@@ -16,8 +16,9 @@ struct F {
     F() {
         _config._atomSize = Config::YM2149_ATOM_SIZE;
         _config._nominalClock = 15;
-        _config._cutoff = .475;
         _config._transition = .05;
+        _config._void = 0;
+        BOOST_REQUIRE_EQUAL(.475, _config.cutoff());
         BOOST_REQUIRE_EQUAL(_config._minBLEPCount = 5, _config.idealMinBLEPCount(_pcmRate));
     }
 

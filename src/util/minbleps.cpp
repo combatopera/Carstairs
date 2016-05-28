@@ -1,5 +1,7 @@
 #include "minbleps.h"
 
+#include <cassert>
+
 #include "util.h"
 
 static sizex getEvenFftSize(sizex const minSize) {
@@ -14,6 +16,7 @@ MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
         : _pcmRate(pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
     debug("Creating %u minBLEPs.", _minBLEPCount);
     auto const evenOrder = config.evenEmpiricalOrder();
+    debug("For transition %.3f/%d using filter order: %d", config._transition, pcmRate, evenOrder);
     auto const oddKernelSize = evenOrder * _minBLEPCount + 1;
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     auto const evenFftSize = getEvenFftSize(oddKernelSize);
@@ -25,14 +28,14 @@ MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
         Buffer<double> sinc("sinc", oddKernelSize);
         auto const uniqueLimit = (oddKernelSize + 1) / 2;
         for (auto i = uniqueLimit - 1; SIZEX_NEG != i; --i) {
-            sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config._cutoff);
+            sinc.put(i, (double(i) / (oddKernelSize - 1) * 2 - 1) * evenOrder * config.cutoff());
         }
         assert(!sinc.at(uniqueLimit - 1));
         sinc.mirror(); // Logically values should be negated, but doesn't matter because sinc symmetric.
         sinc.sinc();
         accumulator.mul(sinc.begin());
     }
-    accumulator.mul(1. / _minBLEPCount * config._cutoff * 2); // It's now a band-limited impulse (BLI).
+    accumulator.mul(1. / _minBLEPCount * config.cutoff() * 2); // It's now a band-limited impulse (BLI).
 #ifdef DIZZYM_UNIT_TEST
     _BLI.snapshot(accumulator);
 #endif

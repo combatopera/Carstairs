@@ -27,7 +27,7 @@ public:
 
     float final _nominalClock = 2000000;
 
-    double final _cutoff = .45, _transition = .1; // Both normalised to rate so in [0, .5].
+    double final _transition = .1, _void = 0; // Both normalised to rate so in [0, .5].
 
     double final _rcepsAddBeforeLog = 1e-50;
 
@@ -44,6 +44,10 @@ public:
     int evenEmpiricalOrder() const {
         double const empirical = 4 / _transition; // According to Steven W. Smith.
         return int(round(empirical / 2)) * 2; // Closest even int to empirical.
+    }
+
+    double cutoff() const {
+        return .5 - _void - _transition / 2;
     }
 
     int idealMinBLEPCount(int const pcmRate) const {
