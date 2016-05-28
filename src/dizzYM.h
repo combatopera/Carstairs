@@ -28,13 +28,11 @@ public:
 
 class dizzYM {
 
-    static DSSI::cursor const INITIAL_SAMPLE_CURSOR = 0;
-
     PortInfoEnum const& _PortInfo;
 
     Buffer<LADSPA_Data *> _portValPtrs;
 
-    DSSI::cursor _sampleCursor;
+    DSSI::cursor _masterCursor;
 
     State _state;
 

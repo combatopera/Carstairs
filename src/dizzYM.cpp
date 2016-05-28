@@ -18,7 +18,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
 
 dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
-        _sampleCursor(INITIAL_SAMPLE_CURSOR), //
+        _masterCursor(), //
         _state(config), //
         _program(_state), //
         _tone(config, _state), //
@@ -31,7 +31,7 @@ void dizzYM::setPortValPtr(int index, LADSPA_Data *valPtr) {
 }
 
 void dizzYM::start() {
-    _sampleCursor = INITIAL_SAMPLE_CURSOR;
+    _masterCursor = 0;
     _state.reset();
     // TODO: Reliably start all nodes.
     _tone.start();
@@ -40,8 +40,8 @@ void dizzYM::start() {
 }
 
 void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cursor eventCount) {
-    if (0 == _sampleCursor || eventCount) {
-        debug("%d -> %d", _sampleCursor, _sampleCursor + blockSize);
+    if (0 == _masterCursor || eventCount) {
+        debug("%d -> %d", _masterCursor, _masterCursor + blockSize);
     }
     for (DSSI::cursor indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
@@ -49,20 +49,20 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t *events, DSSI::cur
             switch (events[eventIndex].type) {
                 case SND_SEQ_EVENT_NOTEON: {
                     auto n = &events[eventIndex].data.note;
-                    _state.noteOn(_sampleCursor + events[eventIndex].time.tick, n->note, n->velocity);
+                    _state.noteOn(_masterCursor + events[eventIndex].time.tick, n->note, n->velocity);
                     break;
                 }
                 case SND_SEQ_EVENT_NOTEOFF: {
-                    _state.noteOff(_sampleCursor + events[eventIndex].time.tick, events[eventIndex].data.note.note);
+                    _state.noteOff(_masterCursor + events[eventIndex].time.tick, events[eventIndex].data.note.note);
                     break;
                 }
             }
         }
-        _program.fire(_sampleCursor + indexInBlock);
+        _program.fire(_masterCursor + indexInBlock);
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
         auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _pcm.render(_sampleCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
+        _pcm.render(_masterCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
         indexInBlock = limitInBlock;
     }
-    _sampleCursor += blockSize;
+    _masterCursor += blockSize;
 }
