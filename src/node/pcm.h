@@ -19,9 +19,9 @@ class PCM: public Node<LADSPA_Data> {
 
     Buffer<float> _derivative {"_derivative"}, _pcm {"_pcm"};
 
-    float _dc;
+    sizex _overflowCount;
 
-    sizex _overflowIndex;
+    float _dc;
 
     void startImpl();
 
