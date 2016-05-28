@@ -27,7 +27,7 @@ public:
 
     float final _nominalClock = 2000000;
 
-    double final _cutoff = .475, _transition = .05; // Both normalised to rate so in [0, .5].
+    double final _cutoff = .45, _transition = .1; // Both normalised to rate so in [0, .5].
 
     double final _rcepsAddBeforeLog = 1e-50;
 
