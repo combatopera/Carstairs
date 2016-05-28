@@ -5,12 +5,18 @@
 
 class Program {
 
+    float const _rate;
+
     State& _state;
 
 public:
 
-    Program(State& state)
-            : _state(state) {
+    Program(float rate, State& state)
+            : _rate(rate), _state(state) {
+    }
+
+    float rate() {
+        return _rate;
     }
 
     void fire(DSSI::cursor cursor);
