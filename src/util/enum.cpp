@@ -3,7 +3,7 @@
 #include "../dssi/port.h"
 
 template<typename T> Values<T>::Values(T *first, sizex ordCursor)
-        : _first(first), _n(ordCursor - _first->_ordinal) {
+        : _first(first), _n(ordCursor - _first->ordinal()) {
 }
 
 template<typename T> T *Values<T>::at(sizex i) const {

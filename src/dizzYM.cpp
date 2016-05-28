@@ -42,6 +42,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
     if (0 == refCursor || eventCount) {
         debug("%u -> %u", refCursor, refCursor + blockSize);
     }
+    auto destPtr = _portValPtrs.at(_PortInfo._pcm.ordinal());
     for (DSSI::cursor indexInBlock = 0, eventIndex = 0; indexInBlock < blockSize;) {
         // Consume all events effective at indexInBlock:
         for (; eventIndex < eventCount; ++eventIndex) {
@@ -64,8 +65,10 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
         }
         _program.fire(_pcm.cursor());
         // Set limit to sample index of next event, or blockSize if there isn't one in this block:
-        auto limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
-        _pcm.render(refCursor + limitInBlock).copyTo(_portValPtrs.at(_PortInfo._pcm._ordinal) + indexInBlock);
+        auto const limitInBlock = eventIndex < eventCount && events[eventIndex].time.tick < blockSize ? events[eventIndex].time.tick : blockSize;
+        auto const block = _pcm.render(refCursor + limitInBlock);
+        block.copyTo(destPtr);
+        destPtr += block.limit();
         indexInBlock = limitInBlock;
     }
 }
