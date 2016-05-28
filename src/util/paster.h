@@ -52,13 +52,13 @@ public:
     void pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cursor pcmRef, View<float> pcmBuf, sizex dcCursor, float dc) {
         pcmBuf.fill(dcCursor, pcmBuf.limit(), dc);
         auto const ampCount = derivative.limit();
-        auto const ampPtr = derivative.begin();
+        auto ampPtr = derivative.begin();
         auto const lim = _minBLEPs.limit(), step = _minBLEPCount;
         auto const srcPtr = _minBLEPs.begin();
         auto const pcmEnd = pcmBuf.end();
         auto const pcmBegin = const_cast<float *>(pcmBuf.begin());
         for (sizex i = 0; i < ampCount; ++i) {
-            auto const amp = ampPtr[i];
+            auto const amp = *ampPtr++;
             if (amp) {
                 sizex pcmRelX, minBLEPIndex;
                 pastePrepare(naiveRef + i, pcmRef, pcmRelX, minBLEPIndex);
