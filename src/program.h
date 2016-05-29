@@ -2,22 +2,20 @@
 
 #include "state.h"
 
-class Program {
+class Program: public Fire {
 
     float const _rate;
 
-    State& _state;
-
 public:
 
-    Program(float rate, State& state)
-            : _rate(rate), _state(state) {
+    Program(float rate)
+            : _rate(rate) {
     }
 
     float rate() const {
         return _rate;
     }
 
-    void fire(int, int) const;
+    void fire(int, int, State&) const;
 
 };

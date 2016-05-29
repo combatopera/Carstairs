@@ -7,7 +7,8 @@ Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
 
 State::State(Config const& config)
-        : _config(config), _onOrMax(DSSI::CURSOR_MAX), _offOrMax(DSSI::CURSOR_MAX), _programEventIndex() {
+        : _config(config), _onOrMax(DSSI::CURSOR_MAX), _offOrMax(DSSI::CURSOR_MAX), //
+        _programEventIndex(), _offEventIndex() {
 }
 
 void State::reset() {
@@ -30,5 +31,6 @@ void State::noteOff(DSSI::cursor cursor, int midiNote) {
     if (DSSI::CURSOR_MAX != _onOrMax && _midiNote == midiNote) {
         debug("OFF %d %d", cursor, midiNote);
         _offOrMax = cursor;
+        _offEventIndex = _programEventIndex;
     }
 }

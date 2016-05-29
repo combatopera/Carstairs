@@ -21,7 +21,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
 dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _state(config), //
-        _program(50, _state), //
+        _program(50), //
         _tone(config, _state), //
         _level(config, _state, _tone), //
         _pcm(config, _state, _level, pcmRate), //
@@ -44,7 +44,7 @@ DSSI::cursor dizzYM::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
         // If the logical cursor is a fraction, it affects the next physical cursor:
-        return onOrMax + DSSI::cursor(ceil(double(_state._programEventIndex) / _program.rate() * _pcmRate));
+        return onOrMax + DSSI::cursor(ceil(double(_state.programEventIndex()) / _program.rate() * _pcmRate));
     }
     return voidX; // Not in this block.
 }
@@ -68,7 +68,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
                 break; // In particular when targetX is voidX.
             }
             if (hostEventX <= programEventX) { // Prioritise host events if equal.
-                auto const& event = events[eventIndex];
+                auto const& event = events[eventIndex++];
                 switch (event.type) {
                     case SND_SEQ_EVENT_NOTEON: {
                         auto const& n = event.data.note;
@@ -80,13 +80,9 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
                         break;
                     }
                 }
-                ++eventIndex;
             }
             else {
-                auto const offOrMax = _state.offOrMax();
-                auto const offFrameOrNeg = DSSI::CURSOR_MAX != offOrMax ? 0 : -1; // FIXME: Don't always send 0.
-                _program.fire(_state._programEventIndex, offFrameOrNeg);
-                ++_state._programEventIndex;
+                _state.fire(_program);
             }
         }
         // It's possible for both the next host and program events to be beyond the block, so clamp:

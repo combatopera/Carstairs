@@ -1,10 +1,10 @@
 #include "program.h"
 
-void Program::fire(int noteFrame, int offFrameOrNeg) const {
+void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     if (offFrameOrNeg < 0) {
-        _state.setLevel4(0xf);
+        state.setLevel4(0xf);
     }
     else {
-        _state.setLevel4(0);
+        state.setLevel4(0);
     }
 }

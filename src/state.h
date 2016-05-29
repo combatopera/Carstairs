@@ -4,6 +4,16 @@
 #include "dssi/plugin.h"
 #include "util/util.h"
 
+class State;
+
+class Fire {
+
+public:
+
+    void fire(int noteFrame, int offFrameOrNeg, State&) const;
+
+};
+
 class State {
 
     static Bounds<int> const TP_BOUNDS, LEVEL4_BOUNDS;
@@ -14,6 +24,10 @@ class State {
 
     int _midiNote = 0, _velocity = 0;
 
+    int _programEventIndex; // Only valid when onOrMax() isn't MAX.
+
+    int _offEventIndex; // Only valid when offOrMax() isn't MAX.
+
 #ifdef DIZZYM_UNIT_TEST
 public:
 #endif
@@ -21,8 +35,6 @@ public:
     int _TP = TP_BOUNDS._min, _level4 = LEVEL4_BOUNDS._min;
 
 public:
-
-    int _programEventIndex; // Only valid when onOrMax() isn't MAX.
 
     State(Config const&);
 
@@ -42,6 +54,15 @@ public:
 
     DSSI::cursor offOrMax() const {
         return _offOrMax;
+    }
+
+    int programEventIndex() const {
+        return _programEventIndex;
+    }
+
+    void fire(Fire const& program) {
+        program.fire(_programEventIndex, DSSI::CURSOR_MAX != _offOrMax ? _programEventIndex - _offEventIndex : -1, *this);
+        ++_programEventIndex;
     }
 
     void setLevel4(int level4) {
