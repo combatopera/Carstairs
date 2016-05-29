@@ -5,54 +5,8 @@
 
 #include "config.h"
 #include "state.h"
+#include "util/py.h"
 #include "util/util.h"
-
-class PyRef {
-
-    PyObject * _ptr;
-
-    void xdecref() const {
-        debug("XDECREF: %p", _ptr);
-        Py_XDECREF(_ptr);
-    }
-
-public:
-
-    PyRef(PyObject *ptr = 0)
-            : _ptr(ptr) {
-    }
-
-    PyRef& operator=(PyObject *ptr) {
-        xdecref();
-        _ptr = ptr;
-        return *this;
-    }
-
-    ~PyRef() {
-        xdecref();
-    }
-
-    explicit operator bool() const {
-        return _ptr;
-    }
-
-    PyRef getAttr(char const *name) const {
-        return PyObject_GetAttrString(_ptr, name);
-    }
-
-    float toFloatOr(float value) const {
-        return _ptr ? float(PyFloat_AsDouble(_ptr)) : value;
-    }
-
-    PyRef toPathBytes() const {
-        return PyUnicode_EncodeFSDefault(_ptr);
-    }
-
-    char const *unwrapBytes() const {
-        return PyBytes_AsString(_ptr);
-    }
-
-};
 
 class Program: public Fire {
 
