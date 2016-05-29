@@ -7,13 +7,52 @@
 #include "state.h"
 #include "util/util.h"
 
+class PyRef {
+
+    PyObject * _ptr;
+
+    void xdecref() const {
+        debug("XDECREF: %p", _ptr);
+        Py_XDECREF(_ptr);
+    }
+
+public:
+
+    PyRef(PyObject *ptr)
+            : _ptr(ptr) {
+    }
+
+    PyRef& operator=(PyObject *ptr) {
+        xdecref();
+        _ptr = ptr;
+        return *this;
+    }
+
+    ~PyRef() {
+        xdecref();
+    }
+
+    explicit operator bool() const {
+        return _ptr;
+    }
+
+    PyRef getAttr(char const *name) {
+        return PyObject_GetAttrString(_ptr, "rate");
+    }
+
+    float toFloat() const {
+        return float(PyFloat_AsDouble(_ptr));
+    }
+
+};
+
 class Program: public Fire {
 
     char const * const _moduleName;
 
     PyThreadState *_parent, *_interpreter;
 
-    PyObject *_module;
+    PyRef _module {0};
 
     float _rate;
 
@@ -27,11 +66,10 @@ class Program: public Fire {
         debug("Loading module: %s", _moduleName);
         _module = PyImport_ImportModule(_moduleName);
         if (_module) {
-            auto const ratePtr = PyObject_GetAttrString(_module, "rate");
-            if (ratePtr) {
-                _rate = float(PyFloat_AsDouble(ratePtr));
+            auto const rate = _module.getAttr("rate");
+            if (rate) {
+                _rate = rate.toFloat();
                 debug("Program rate: %.3f", _rate);
-                Py_DECREF(ratePtr);
             }
         }
         else {
@@ -41,10 +79,7 @@ class Program: public Fire {
 
     void unload() {
         debug("Ending sub-interpreter.");
-        if (_module) {
-            Py_DECREF(_module);
-            _module = 0;
-        }
+        _module = 0;
         Py_EndInterpreter(_interpreter);
     }
 
