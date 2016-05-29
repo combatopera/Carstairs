@@ -54,6 +54,7 @@
 								<option id="gnu.cpp.link.option.libs.1817615304" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
 									<listOptionValue builtIn="false" value="python3.4"/>
+									<listOptionValue builtIn="false" value="boost_filesystem"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.129821252" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu"/>
@@ -129,7 +130,7 @@
 									<listOptionValue builtIn="false" value="python3.4"/>
 									<listOptionValue builtIn="false" value="boost_unit_test_framework"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.663173432" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+								<option id="gnu.cpp.link.option.paths.663173432" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1436053662" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">

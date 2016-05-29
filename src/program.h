@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/filesystem/path.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
 
@@ -16,7 +17,9 @@ class Program: public Fire {
 
     PyThreadState *_parent, *_interpreter;
 
-    PyRef _module, _path;
+    PyRef _module;
+
+    boost::filesystem::path _path;
 
     float _rate = DEFAULT_RATE;
 
@@ -36,8 +39,12 @@ public:
         debug("Loading module: %s", _moduleName);
         _module = PyImport_ImportModule(_moduleName);
         if (_module) {
-            _path = _module.getAttr("__file__").toPathBytes();
-            debug("Module path: %s", _path.unwrapBytes());
+            {
+                auto const bytes = _module.getAttr("__file__").toPathBytes();
+                auto const str = bytes.unwrapBytes();
+                debug("Module path: %s", str);
+                _path = str;
+            }
             _rate = _module.getAttr("rate").toFloatOr(DEFAULT_RATE);
             debug("Program rate: %.3f", _rate);
         }
@@ -54,7 +61,7 @@ public:
 
     ~Program() {
         debug("Ending sub-interpreter.");
-        _module = _path = 0;
+        _module = 0; // Probably wise to destroy before its owner interpreter.
         Py_EndInterpreter(_interpreter);
         PyThreadState_Swap(_parent); // Otherwise Py_Finalize crashes.
         debug("Closing Python.");
