@@ -19,7 +19,7 @@ public:
 };
 
 #ifdef DIZZYM_UNIT_TEST
-#define final
+#define FINAL
 #else
-#define final const
+#define FINAL const
 #endif

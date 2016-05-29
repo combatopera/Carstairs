@@ -17,7 +17,7 @@ public:
 
 public:
 
-    int final _atomSize = 1;
+    int FINAL _atomSize = 1;
 
     int const _refMidiNote = 69;
 
@@ -25,13 +25,13 @@ public:
 
     int const _semitones = 12;
 
-    float final _nominalClock = 2000000;
+    float FINAL _nominalClock = 2000000;
 
-    double final _transition = .1, _stopband = 0; // Both normalised to rate so in [0, .5].
+    double FINAL _transition = .1, _stopband = 0; // Both normalised to rate so in [0, .5].
 
-    double final _rcepsAddBeforeLog = 1e-50;
+    double FINAL _rcepsAddBeforeLog = 1e-50;
 
-    sizex final _minBLEPCount = 1000; // Empirically enough to make artifacts invisible.
+    sizex FINAL _minBLEPCount = 1000; // Empirically enough to make artifacts invisible.
 
     float const _maxAmp = .5;
 
