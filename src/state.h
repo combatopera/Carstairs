@@ -10,7 +10,10 @@ class Fire {
 
 public:
 
-    void fire(int noteFrame, int offFrameOrNeg, State&) const;
+    virtual ~Fire() {
+    }
+
+    virtual void fire(int noteFrame, int offFrameOrNeg, State&) const = 0;
 
 };
 
