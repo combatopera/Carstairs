@@ -18,7 +18,7 @@ class PyRef {
 
 public:
 
-    PyRef(PyObject *ptr)
+    PyRef(PyObject *ptr = 0)
             : _ptr(ptr) {
     }
 
@@ -36,25 +36,35 @@ public:
         return _ptr;
     }
 
-    PyRef getAttr(char const *name) {
-        return PyObject_GetAttrString(_ptr, "rate");
+    PyRef getAttr(char const *name) const {
+        return PyObject_GetAttrString(_ptr, name);
     }
 
-    float toFloat() const {
-        return float(PyFloat_AsDouble(_ptr));
+    float toFloatOr(float value) const {
+        return _ptr ? float(PyFloat_AsDouble(_ptr)) : value;
+    }
+
+    PyRef toPathBytes() const {
+        return PyUnicode_EncodeFSDefault(_ptr);
+    }
+
+    char const *unwrapBytes() const {
+        return PyBytes_AsString(_ptr);
     }
 
 };
 
 class Program: public Fire {
 
+    static float constexpr DEFAULT_RATE = 50;
+
     char const * const _moduleName;
 
     PyThreadState *_parent, *_interpreter;
 
-    PyRef _module {0};
+    PyRef _module, _path;
 
-    float _rate;
+    float _rate = DEFAULT_RATE;
 
     void load() {
         debug("Creating new sub-interpreter.");
@@ -62,15 +72,13 @@ class Program: public Fire {
         assert(_interpreter);
         assert(_parent != _interpreter);
         assert(PyThreadState_Get() == _interpreter);
-        _rate = 50; // Default.
         debug("Loading module: %s", _moduleName);
         _module = PyImport_ImportModule(_moduleName);
         if (_module) {
-            auto const rate = _module.getAttr("rate");
-            if (rate) {
-                _rate = rate.toFloat();
-                debug("Program rate: %.3f", _rate);
-            }
+            _path = _module.getAttr("__file__").toPathBytes();
+            debug("Module path: %s", _path.unwrapBytes());
+            _rate = _module.getAttr("rate").toFloatOr(DEFAULT_RATE);
+            debug("Program rate: %.3f", _rate);
         }
         else {
             debug("Failed to load: %s", _moduleName);
@@ -79,7 +87,7 @@ class Program: public Fire {
 
     void unload() {
         debug("Ending sub-interpreter.");
-        _module = 0;
+        _module = _path = 0;
         Py_EndInterpreter(_interpreter);
     }
 
