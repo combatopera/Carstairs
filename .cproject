@@ -128,6 +128,8 @@
 								<option id="gnu.cpp.link.option.libs.416195289" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
 									<listOptionValue builtIn="false" value="python3.4"/>
+									<listOptionValue builtIn="false" value="boost_filesystem"/>
+									<listOptionValue builtIn="false" value="boost_system"/>
 									<listOptionValue builtIn="false" value="boost_unit_test_framework"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.663173432" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
