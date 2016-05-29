@@ -2,7 +2,6 @@
 
 #include <python3.4m/Python.h>
 #include <cassert>
-#include <cstdio>
 
 #include "config.h"
 #include "state.h"
@@ -10,40 +9,36 @@
 
 class Interpreter {
 
-    char const * const _programPath;
+    char const * const _moduleName;
 
     PyThreadState *_main, *_current;
 
-    void newInterpreter() {
+    PyObject *_module;
+
+    void load() {
         debug("Creating new sub-interpreter.");
         _current = Py_NewInterpreter();
         assert(_current);
         assert(_main != _current);
         assert(PyThreadState_Get() == _current);
+        debug("Loading module: %s", _moduleName);
+        _module = PyImport_ImportModule(_moduleName);
+        if (!_module) {
+            debug("Failed to load: %s", _moduleName);
+        }
     }
 
-    void endInterpreter() {
+    void unload() {
         debug("Ending sub-interpreter.");
+        Py_XDECREF(_module);
+        _module = 0;
         Py_EndInterpreter(_current);
-    }
-
-    void load() {
-        newInterpreter();
-        debug("Loading: %s", _programPath);
-        auto const f = fopen(_programPath, "r");
-        if (f) {
-            PyRun_SimpleFile(f, _programPath);
-            fclose(f);
-        }
-        else {
-            debug("Failed to open: %s", _programPath);
-        }
     }
 
 public:
 
     Interpreter(Config const& config)
-            : _programPath(config._programPath) {
+            : _moduleName(config._programModule) {
         debug("Initing Python.");
         Py_InitializeEx(0);
         _main = PyThreadState_Get();
@@ -52,12 +47,12 @@ public:
     }
 
     void reload() {
-        endInterpreter();
+        unload();
         load();
     }
 
     ~Interpreter() {
-        endInterpreter();
+        unload();
         PyThreadState_Swap(_main); // Otherwise Py_Finalize crashes.
         debug("Closing Python.");
         Py_Finalize();
