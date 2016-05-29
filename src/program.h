@@ -18,6 +18,7 @@ class Interpreter {
         debug("Creating new sub-interpreter.");
         _current = Py_NewInterpreter();
         assert(_current);
+        assert(_main != _current);
         assert(PyThreadState_Get() == _current);
     }
 
