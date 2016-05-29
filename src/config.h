@@ -37,6 +37,8 @@ public:
 
     int const _alphaCC = 80, _betaCC = 81;
 
+    char const * const _programPath = "/home/acichocki/program.py";
+
     float naiveRate() const {
         return _nominalClock * float(_atomSize) / YM2149_ATOM_SIZE;
     }
