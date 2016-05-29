@@ -27,9 +27,9 @@ class State {
 
     int _midiNote = 0, _velocity = 0;
 
-    int _programEventIndex; // Only valid when onOrMax() isn't MAX.
+    int _programEventIndex; // Only valid when _onOrMax isn't MAX.
 
-    int _offEventIndex; // Only valid when offOrMax() isn't MAX.
+    int _offEventIndex; // Only valid when _offOrMax isn't MAX.
 
 #ifdef DIZZYM_UNIT_TEST
 public:
@@ -53,10 +53,6 @@ public:
 
     DSSI::cursor onOrMax() const {
         return _onOrMax;
-    }
-
-    DSSI::cursor offOrMax() const {
-        return _offOrMax;
     }
 
     int programEventIndex() const {
