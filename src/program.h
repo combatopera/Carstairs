@@ -45,7 +45,6 @@ public:
             : _programPath(config._programPath) {
         debug("Initing Python.");
         Py_InitializeEx(0);
-        PyEval_InitThreads();
         _main = PyThreadState_Get();
         assert(_main);
         load();
