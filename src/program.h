@@ -12,7 +12,7 @@ class Interpreter {
 public:
 
     Interpreter(Config const& config) {
-        Py_Initialize();
+        Py_InitializeEx(0);
         debug("Loading: %s", config._programPath);
         auto const f = fopen(config._programPath, "r");
         if (f) {
