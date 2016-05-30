@@ -17,5 +17,12 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             PyRef args = Py_BuildValue("ii", noteFrame, offFrameOrNeg);
             Py_XDECREF(PyEval_CallObject(off, args));
         }
+        auto const chan = _module.getAttr("chan");
+        if (chan) {
+            auto const level = chan.getAttr("level");
+            if (level) {
+                state.setLevel4(level.numberRoundToInt());
+            }
+        }
     }
 }
