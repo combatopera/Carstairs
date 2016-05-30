@@ -71,6 +71,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
                 auto const& event = events[eventIndex++];
                 switch (event.type) {
                     case SND_SEQ_EVENT_NOTEON: {
+                        _program.refresh();
                         auto const& n = event.data.note;
                         _state.noteOn(hostEventX, n.note, n.velocity);
                         break;
