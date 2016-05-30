@@ -54,7 +54,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
     auto const refCursor = _pcm.cursor();
     auto const voidX = refCursor + blockSize;
     if (0 == refCursor || eventCount) {
-        debug("%u -> %u", refCursor, voidX);
+        debug("%lu -> %lu", refCursor, voidX);
     }
     auto destPtr = _portValPtrs.at(_PortInfo._pcm.ordinal());
     auto const destEnd = destPtr + blockSize;

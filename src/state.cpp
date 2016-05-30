@@ -17,7 +17,7 @@ void State::reset() {
 }
 
 void State::noteOn(DSSI::cursor cursor, int midiNote, int velocity) {
-    debug("ON %d %d %d", cursor, midiNote, velocity);
+    debug("ON %lu %d %d", cursor, midiNote, velocity);
     _midiNote = midiNote;
     _onOrMax = cursor;
     _offOrMax = DSSI::CURSOR_MAX;
@@ -29,7 +29,7 @@ void State::noteOn(DSSI::cursor cursor, int midiNote, int velocity) {
 
 void State::noteOff(DSSI::cursor cursor, int midiNote) {
     if (DSSI::CURSOR_MAX != _onOrMax && _midiNote == midiNote) {
-        debug("OFF %d %d", cursor, midiNote);
+        debug("OFF %lu %d", cursor, midiNote);
         _offOrMax = cursor;
         _offEventIndex = _programEventIndex;
     }

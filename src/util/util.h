@@ -1,6 +1,8 @@
 #pragma once
 
-void debug(char const *format, ...);
+#define debug(...) fprintf(stderr, "[dizzYM] "); \
+    fprintf(stderr, __VA_ARGS__); \
+    fprintf(stderr, "\n")
 
 template<typename T> class Bounds {
 
