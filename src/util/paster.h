@@ -12,6 +12,8 @@ class Paster {
 
     sizex const _minBLEPCount;
 
+    friend inline void pastePrepare(Paster const&, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex);
+
 #ifdef DIZZYM_UNIT_TEST
 public:
 #endif

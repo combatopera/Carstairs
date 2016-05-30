@@ -6,15 +6,15 @@
 #include "util.h"
 
 namespace {
-
 Log const LOG(__FILE__);
+}
 
-inline void pastePrepare(double ratio, sizex minBLEPCount, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) {
-    auto const pcmMark = double(naiveX) * ratio;
+inline void pastePrepare(Paster const& paster, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) {
+    auto const pcmMark = double(naiveX) * paster._ratio;
     // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
     auto const pcmX = DSSI::cursor(ceil(pcmMark));
     if (pcmX < pcmRef) {
-        info("ratio = %.20f", ratio);
+        info("ratio = %.20f", paster._ratio);
         info("naiveX = %lu", naiveX);
         info("pcmRef = %lu", pcmRef);
         info("pcmX = %lu", pcmX);
@@ -23,14 +23,12 @@ inline void pastePrepare(double ratio, sizex minBLEPCount, DSSI::cursor naiveX, 
     }
     pcmRelX = sizex(pcmX - pcmRef);
     auto const distance = double(pcmX) - pcmMark;
-    minBLEPIndex = sizex(round(distance * minBLEPCount));
-}
-
+    minBLEPIndex = sizex(round(distance * paster._minBLEPCount));
 }
 
 sizex Paster::pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) const {
     sizex pcmRelX, minBLEPIndex;
-    pastePrepare(_ratio, _minBLEPCount, naiveX, pcmRef, pcmRelX, minBLEPIndex);
+    pastePrepare(*this, naiveX, pcmRef, pcmRelX, minBLEPIndex);
     return pcmRelX + minBLEPSize(minBLEPIndex);
 }
 
@@ -47,7 +45,7 @@ void Paster::pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cur
         auto const amp = *ampPtr++;
         if (amp) {
             sizex pcmRelX, minBLEPIndex;
-            pastePrepare(_ratio, _minBLEPCount, naiveRef + i, pcmRef, pcmRelX, minBLEPIndex);
+            pastePrepare(*this, naiveRef + i, pcmRef, pcmRelX, minBLEPIndex);
             auto pcmPtr = pcmBegin + pcmRelX;
             assert(pcmPtr + minBLEPSize(minBLEPIndex) <= pcmEnd); // Bounds check.
             // The target must be big enough for a minBLEP at maximum pcmX:
