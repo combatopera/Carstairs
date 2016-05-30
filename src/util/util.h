@@ -38,18 +38,18 @@ public:
 
 };
 
-#define error(...) fprintf(stderr, "ERROR %s ", LOG.name()); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
-#define warn(...) fprintf(stderr, "WARN %s ", LOG.name()); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
-#define info(...) fprintf(stderr, "INFO %s ", LOG.name()); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
+#define error(format, ...) fprintf(stderr, "ERROR %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define warn(format, ...) fprintf(stderr, "WARN %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define info(format, ...) fprintf(stderr, "INFO %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #ifndef INFO
-#define debug(...) fprintf(stderr, "DEBUG %s ", LOG.name()); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
+#define debug(format, ...) fprintf(stderr, "DEBUG %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
-#define debug(...)
+#define debug(format, ...)
 #endif
 #ifdef TRACE
-#define trace(...) fprintf(stderr, "TRACE %s ", LOG.name()); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
+#define trace(format, ...) fprintf(stderr, "TRACE %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
-#define trace(...)
+#define trace(format, ...)
 #endif
 
 template<typename T> class Bounds {
