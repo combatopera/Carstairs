@@ -8,11 +8,13 @@
 
 static Log const LOG(__FILE__);
 
+static Python const PYTHON;
+
 void Program::newInterpreter() {
     debug("Creating new sub-interpreter.");
     _interpreter = Py_NewInterpreter();
     assert(_interpreter);
-    assert(_parent != _interpreter);
+    assert(PYTHON._parent != _interpreter);
     assert(PyThreadState_Get() == _interpreter);
 }
 
@@ -30,8 +32,12 @@ static PyThreadState *initPython() {
     return parent;
 }
 
+Python::Python()
+        : _parent(initPython()) {
+}
+
 Program::Program(Config const& config)
-        : _moduleName(config._programModule), _parent(initPython()), _mark(-1) {
+        : _moduleName(config._programModule), _mark(-1) {
     newInterpreter();
     debug("Loading module: %s", _moduleName);
     PyRef module(PyImport_ImportModule(_moduleName));
@@ -68,6 +74,9 @@ void Program::refresh() {
 
 Program::~Program() {
     endInterpreter();
+}
+
+Python::~Python() {
     PyThreadState_Swap(_parent); // Otherwise Py_Finalize crashes.
     debug("Closing Python.");
     Py_Finalize();

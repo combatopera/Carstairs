@@ -8,13 +8,23 @@
 #include "state.h"
 #include "util/py.h"
 
+class Python {
+
+public:
+
+    PyThreadState * const _parent;
+
+    Python();
+
+    ~Python();
+
+};
+
 class Program: public Fire {
 
     static float constexpr DEFAULT_RATE = 50;
 
     char const * const _moduleName;
-
-    PyThreadState * const _parent;
 
     PyThreadState *_interpreter;
 
