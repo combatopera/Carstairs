@@ -4,6 +4,8 @@
 
 #include "util.h"
 
+static Log const LOG(__FILE__);
+
 static sizex getEvenFftSize(sizex const minSize) {
     auto evenFftSize = sizex(2); // Smallest even power of 2.
     while (evenFftSize < minSize) {

@@ -7,6 +7,8 @@
 
 #include "util.h"
 
+static Log const LOG(__FILE__);
+
 template<typename T> View<T>::View(char const *label, sizex limit)
         : _limit(limit) {
     debug("Creating Buffer: %s", label);

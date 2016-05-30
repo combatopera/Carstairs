@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+static Log const LOG(__FILE__);
+
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);

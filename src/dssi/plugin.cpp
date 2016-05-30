@@ -8,6 +8,8 @@
 #include "../util/util.h"
 #include "port.h"
 
+static Log const LOG(__FILE__);
+
 static Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 static PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.

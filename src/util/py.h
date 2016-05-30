@@ -4,16 +4,11 @@
 #include <cmath>
 #include <cstdarg>
 
-#include "util.h"
-
 class PyRef {
 
     PyObject *_ptr;
 
-    void xdecref() const {
-        debug("XDECREF: %p", _ptr);
-        Py_XDECREF(_ptr);
-    }
+    void xdecref() const;
 
 public:
 
