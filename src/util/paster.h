@@ -6,6 +6,7 @@
 #include "../dssi/plugin.h"
 #include "buf.h"
 #include "minbleps.h"
+#include "util.h"
 
 class Paster {
 
@@ -19,7 +20,14 @@ class Paster {
         auto const pcmMark = double(naiveX) * _ratio;
         // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
         auto const pcmX = DSSI::cursor(ceil(pcmMark));
-        assert(pcmRef <= pcmX);
+        if (pcmX < pcmRef) {
+            info("ratio = %.20f", _ratio);
+            info("naiveX = %lu", naiveX);
+            info("pcmRef = %lu", pcmRef);
+            info("pcmX = %lu", pcmX);
+            error("MinBLEP should have started in previous block!");
+            assert(false);
+        }
         pcmRelX = sizex(pcmX - pcmRef);
         auto const distance = double(pcmX) - pcmMark;
         minBLEPIndex = sizex(round(distance * _minBLEPCount));
