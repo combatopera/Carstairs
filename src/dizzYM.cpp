@@ -40,6 +40,7 @@ void dizzYM::start() {
     _pcm.start();
 }
 
+// FIXME LATER: This mechanism should not be affected by the PCM rate.
 DSSI::cursor dizzYM::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
