@@ -1,15 +1,21 @@
 #include "program.h"
 
-#include <algorithm>
-#include <array>
-
-static std::array<int, 10> ENVELOPE {13, 14, 15, 14, 13, 12, 11, 10, 9, 8};
+#include <python3.4m/Python.h>
 
 void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
-    if (offFrameOrNeg < 0) {
-        state.setLevel4(ENVELOPE[std::min(noteFrame, int(ENVELOPE.size() - 1))]);
+    if (!noteFrame) {
+        state.setLevel4(13); // Use half the available amp.
     }
-    else {
-        state.setLevel4(0);
+    if (_module) {
+        if (offFrameOrNeg < 0) {
+            PyRef on = _module.getAttr("on");
+            PyRef args = Py_BuildValue("(i)", noteFrame);
+            Py_XDECREF(PyEval_CallObject(on, args));
+        }
+        else {
+            PyRef off = _module.getAttr("off");
+            PyRef args = Py_BuildValue("ii", noteFrame, offFrameOrNeg);
+            Py_XDECREF(PyEval_CallObject(off, args));
+        }
     }
 }
