@@ -49,4 +49,8 @@ public:
         return PyBytes_AsString(_ptr);
     }
 
+    operator PyObject *() const {
+        return _ptr;
+    }
+
 };
