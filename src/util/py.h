@@ -37,8 +37,12 @@ public:
         return PyObject_GetAttrString(_ptr, name);
     }
 
-    float toFloatOr(float const value) const {
+    float numberToFloatOr(float const value) const {
         return _ptr ? float(PyFloat_AsDouble(_ptr)) : value;
+    }
+
+    int numberRoundToInt() const {
+        return int(round(PyFloat_AsDouble(_ptr)));
     }
 
     PyRef toPathBytes() const {

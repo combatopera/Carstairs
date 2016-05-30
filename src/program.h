@@ -73,7 +73,7 @@ public:
                 debug("Reloading module: %s", _moduleName);
                 _module = PyImport_ImportModule(_moduleName);
                 if (_module) {
-                    _rate = _module.getAttr("rate").toFloatOr(DEFAULT_RATE);
+                    _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
                     debug("Program rate: %.3f", _rate);
                 }
                 else {
