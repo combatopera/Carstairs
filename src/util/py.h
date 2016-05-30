@@ -1,6 +1,8 @@
 #pragma once
 
 #include <python3.4m/Python.h>
+#include <cmath>
+#include <cstdarg>
 
 #include "util.h"
 
@@ -43,6 +45,14 @@ public:
 
     int numberRoundToInt() const {
         return int(round(PyFloat_AsDouble(_ptr)));
+    }
+
+    void callVoid(char const *format, ...) const {
+        va_list ap;
+        va_start(ap, format);
+        PyRef args = Py_VaBuildValue(format, ap);
+        va_end(ap);
+        Py_XDECREF(PyEval_CallObject(_ptr, args));
     }
 
     PyRef toPathBytes() const {
