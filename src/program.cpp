@@ -22,12 +22,16 @@ void Program::endInterpreter() {
     Py_EndInterpreter(_interpreter);
 }
 
-Program::Program(Config const& config)
-        : _moduleName(config._programModule), _mark(-1) {
+static PyThreadState *initPython() {
     debug("Initing Python.");
     Py_InitializeEx(0);
-    _parent = PyThreadState_Get();
-    assert(_parent);
+    auto const parent = PyThreadState_Get();
+    assert(parent);
+    return parent;
+}
+
+Program::Program(Config const& config)
+        : _moduleName(config._programModule), _parent(initPython()), _mark(-1) {
     newInterpreter();
     debug("Loading module: %s", _moduleName);
     PyRef module(PyImport_ImportModule(_moduleName));

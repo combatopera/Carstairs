@@ -14,7 +14,9 @@ class Program: public Fire {
 
     char const * const _moduleName;
 
-    PyThreadState *_parent, *_interpreter;
+    PyThreadState * const _parent;
+
+    PyThreadState *_interpreter;
 
     boost::filesystem::path _path;
 
