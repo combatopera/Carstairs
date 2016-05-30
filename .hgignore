@@ -1,3 +1,4 @@
 #gclean
 ^Debug/
 ^Test/
+^test_Backups/
