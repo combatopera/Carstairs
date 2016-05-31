@@ -3,6 +3,7 @@
 #include <boost/filesystem/path.hpp>
 #include <ctime>
 #include <memory>
+#include <thread>
 
 #include "config.h"
 #include "py/interpreter.h"
@@ -50,7 +51,7 @@ public:
 
 class Loader {
 
-    std::shared_ptr<Program> _programHolder {new DefaultProgram};
+    std::shared_ptr<Program> _nextProgram {new DefaultProgram}, _currentProgram;
 
     char const * const _moduleName;
 
@@ -58,14 +59,22 @@ class Loader {
 
     boost::filesystem::path _path;
 
+    std::thread _thread;
+
+    void poll();
+
 public:
 
     Loader(Config const&);
 
-    void refresh();
+    ~Loader();
+
+    void refresh() {
+        _currentProgram = _nextProgram;
+    }
 
     Program& currentProgram() const {
-        return *_programHolder.get();
+        return *_currentProgram.get();
     }
 
 };

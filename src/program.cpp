@@ -1,6 +1,7 @@
 #include "program.h"
 
 #include <boost/filesystem/operations.hpp>
+#include <unistd.h>
 #include <cassert>
 
 #include "py/main.h"
@@ -39,6 +40,9 @@ Loader::Loader(Config const& config)
             auto const str = bytes.unwrapBytes();
             info("Module path: %s", str);
             _path = str;
+            _thread = std::thread([&] {
+                        poll();
+                    });
         }
         else {
             error("Failed to load module, refresh disabled.");
@@ -46,17 +50,29 @@ Loader::Loader(Config const& config)
     });
 }
 
-void Loader::refresh() {
-    if (!_path.empty()) {
+Loader::~Loader() {
+    if (_thread.joinable()) {
+        debug("Notifying loader thread.");
+        _path.clear();
+        _thread.join();
+        debug("Loader thread has terminated.");
+    }
+}
+
+void Loader::poll() {
+    debug("Loader thread running.");
+    while (!_path.empty()) {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
             std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(_moduleName));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
-                _programHolder = programHolder;
+                _nextProgram = programHolder;
+                debug("New program ready.");
             }
         }
+        sleep(1);
     }
 }
 
