@@ -3,6 +3,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
+#include <functional>
 
 #include "util/util.h"
 
@@ -24,44 +25,26 @@ PyThreadState *initPython() {
 
 }
 
-void Program::newInterpreter() {
-    debug("Creating new sub-interpreter.");
-    PyEval_AcquireThread(PYTHON._parent);
-    _interpreter = Py_NewInterpreter();
-    assert(_interpreter);
-    assert(PYTHON._parent != _interpreter);
-    assert(PyThreadState_Get() == _interpreter);
-    PyEval_ReleaseThread(_interpreter);
-}
-
-void Program::endInterpreter() {
-    debug("Ending sub-interpreter.");
-    PyEval_AcquireThread(_interpreter);
-    _module = 0; // Probably wise to destroy before its owner interpreter.
-    Py_EndInterpreter(_interpreter);
-    PyEval_ReleaseLock();
-}
-
 Python::Python()
         : _parent(initPython()) {
 }
 
 Program::Program(Config const& config)
-        : _moduleName(config._programModule), _mark(-1) {
-    newInterpreter();
+        : _moduleName(config._programModule), _interpreter(PYTHON._parent), _mark(-1) {
     debug("Loading module: %s", _moduleName);
-    PyEval_AcquireThread(_interpreter);
-    PyRef module(PyImport_ImportModule(_moduleName));
-    if (module) {
-        auto const bytes = module.getAttr("__file__").toPathBytes();
-        auto const str = bytes.unwrapBytes();
-        debug("Module path: %s", str);
-        _path = str;
-    }
-    else {
-        debug("Failed to load module, refresh disabled.");
-    }
-    PyEval_ReleaseThread(_interpreter);
+    std::function<void()> const task = [&] {
+        PyRef module(PyImport_ImportModule(_moduleName));
+        if (module) {
+            auto const bytes = module.getAttr("__file__").toPathBytes();
+            auto const str = bytes.unwrapBytes();
+            debug("Module path: %s", str);
+            _path = str;
+        }
+        else {
+            debug("Failed to load module, refresh disabled.");
+        }
+    };
+    _interpreter.runTask(task);
 }
 
 void Program::refresh() {
@@ -69,25 +52,24 @@ void Program::refresh() {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
-            endInterpreter();
-            newInterpreter();
+            _interpreter = PYTHON._parent;
             debug("Reloading module: %s", _moduleName);
-            PyEval_AcquireThread(_interpreter);
-            _module = PyImport_ImportModule(_moduleName);
-            if (_module) {
-                _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
-                debug("Program rate: %.3f", _rate);
-            }
-            else {
-                debug("Failed to reload module.");
-            }
-            PyEval_ReleaseThread(_interpreter);
+            std::function<void()> const task = [&] {
+                _module = PyImport_ImportModule(_moduleName);
+                if (_module) {
+                    _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
+                    debug("Program rate: %.3f", _rate);
+                }
+                else {
+                    debug("Failed to reload module.");
+                }
+            };
+            _interpreter.runTask(task);
         }
     }
 }
 
 Program::~Program() {
-    endInterpreter();
 }
 
 Python::~Python() {
@@ -101,20 +83,21 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         state.setLevel4(13); // Use half the available amp.
     }
     if (_module) {
-        PyEval_AcquireThread(_interpreter);
-        if (offFrameOrNeg < 0) {
-            _module.getAttr("on").callVoid("(i)", noteFrame);
-        }
-        else {
-            _module.getAttr("off").callVoid("ii", noteFrame, offFrameOrNeg);
-        }
-        auto const chan = _module.getAttr("chan");
-        if (chan) {
-            auto const level = chan.getAttr("level");
-            if (level) {
-                state.setLevel4(level.numberRoundToInt());
+        std::function<void()> const task = [&] {
+            if (offFrameOrNeg < 0) {
+                _module.getAttr("on").callVoid("(i)", noteFrame);
             }
-        }
-        PyEval_ReleaseThread(_interpreter);
+            else {
+                _module.getAttr("off").callVoid("ii", noteFrame, offFrameOrNeg);
+            }
+            auto const chan = _module.getAttr("chan");
+            if (chan) {
+                auto const level = chan.getAttr("level");
+                if (level) {
+                    state.setLevel4(level.numberRoundToInt());
+                }
+            }
+        };
+        _interpreter.runTask(task);
     }
 }

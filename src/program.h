@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "config.h"
+#include "py/interpreter.h"
 #include "py/py.h"
 #include "state.h"
 
@@ -26,7 +27,7 @@ class Program: public Fire {
 
     char const * const _moduleName;
 
-    PyThreadState *_interpreter;
+    Interpreter _interpreter;
 
     boost::filesystem::path _path;
 
@@ -35,10 +36,6 @@ class Program: public Fire {
     PyRef _module;
 
     float _rate = DEFAULT_RATE; // In case initial load fails.
-
-    void newInterpreter();
-
-    void endInterpreter();
 
 public:
 
