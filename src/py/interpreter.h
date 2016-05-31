@@ -3,6 +3,7 @@
 #include <python3.4m/Python.h>
 #include <functional>
 
+#include "main.h"
 #include "py.h"
 
 class Interpreter {
@@ -15,9 +16,9 @@ public:
         return PyImport_ImportModule(module);
     }
 
-    Interpreter(PyThreadState * const main);
+    Interpreter(Python const&);
 
-    Interpreter& operator=(PyThreadState * const main);
+    Interpreter& operator=(Python const&);
 
     void runTask(std::function<void()> const&) const;
 

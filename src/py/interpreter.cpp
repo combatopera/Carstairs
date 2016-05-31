@@ -9,8 +9,9 @@ namespace {
 Log const LOG(__FILE__);
 }
 
-Interpreter::Interpreter(PyThreadState * const main) {
+Interpreter::Interpreter(Python const& python) {
     debug("Creating new sub-interpreter.");
+    PyThreadState * const main = python;
     PyEval_AcquireThread(main);
     _state = Py_NewInterpreter();
     assert(_state);
@@ -20,8 +21,8 @@ Interpreter::Interpreter(PyThreadState * const main) {
     debug("Created: %p", _state);
 }
 
-Interpreter& Interpreter::operator=(PyThreadState * const main) {
-    REFRESH(Interpreter, main);
+Interpreter& Interpreter::operator=(Python const& python) {
+    REFRESH(Interpreter, python);
 }
 
 void Interpreter::runTask(std::function<void()> const& task) const {
