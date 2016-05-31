@@ -48,7 +48,7 @@ public:
 
 };
 
-class Program {
+class Loader {
 
     std::shared_ptr<Fire> _programHolder {new DefaultProgram};
 
@@ -60,7 +60,7 @@ class Program {
 
 public:
 
-    Program(Config const&);
+    Loader(Config const&);
 
     void refresh();
 

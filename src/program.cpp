@@ -29,7 +29,7 @@ ProgramImpl::ProgramImpl(char const *name)
     });
 }
 
-Program::Program(Config const& config)
+Loader::Loader(Config const& config)
         : _moduleName(config._programModule), _mark(-1) {
     info("Loading module: %s", _moduleName);
     Interpreter(PYTHON).runTask([&] {
@@ -46,7 +46,7 @@ Program::Program(Config const& config)
     });
 }
 
-void Program::refresh() {
+void Loader::refresh() {
     if (!_path.empty()) {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {

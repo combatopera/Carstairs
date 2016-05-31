@@ -34,7 +34,7 @@ class dizzYM {
 
     State _state;
 
-    Program _loader;
+    Loader _loader;
 
     Tone _tone;
 
