@@ -6,11 +6,11 @@
 
 class State;
 
-class Fire {
+class Program {
 
 public:
 
-    virtual ~Fire() {
+    virtual ~Program() {
     }
 
     virtual float rate() const = 0;
@@ -61,7 +61,7 @@ public:
         return _programEventIndex;
     }
 
-    void fire(Fire const& program) {
+    void fire(Program const& program) {
         program.fire(_programEventIndex, DSSI::CURSOR_MAX != _offOrMax ? _programEventIndex - _offEventIndex : -1, *this);
         ++_programEventIndex;
     }

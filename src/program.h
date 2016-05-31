@@ -9,7 +9,7 @@
 #include "py/py.h"
 #include "state.h"
 
-class DefaultProgram: public Fire {
+class DefaultProgram: public Program {
 
     float rate() const {
         return 50;
@@ -26,7 +26,7 @@ class DefaultProgram: public Fire {
 
 };
 
-class ProgramImpl: public Interpreter, public Fire {
+class ProgramImpl: public Interpreter, public Program {
 
     PyRef _module;
 
@@ -50,7 +50,7 @@ public:
 
 class Loader {
 
-    std::shared_ptr<Fire> _programHolder {new DefaultProgram};
+    std::shared_ptr<Program> _programHolder {new DefaultProgram};
 
     char const * const _moduleName;
 
@@ -64,7 +64,7 @@ public:
 
     void refresh();
 
-    Fire& currentProgram() const {
+    Program& currentProgram() const {
         return *_programHolder.get();
     }
 
