@@ -13,6 +13,8 @@ public:
     virtual ~Fire() {
     }
 
+    virtual float rate() const = 0;
+
     virtual void fire(int noteFrame, int offFrameOrNeg, State&) const = 0;
 
 };

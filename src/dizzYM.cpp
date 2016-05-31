@@ -25,7 +25,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
 dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _state(config), //
-        _program(config), //
+        _loader(config), //
         _tone(config, _state), //
         _level(config, _state, _tone), //
         _pcm(config, _state, _level, pcmRate), //
@@ -49,7 +49,7 @@ DSSI::cursor dizzYM::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
         // If the logical cursor is a fraction, it affects the next physical cursor:
-        return onOrMax + DSSI::cursor(ceil(double(_state.programEventIndex()) / _program.rate() * _pcmRate));
+        return onOrMax + DSSI::cursor(ceil(double(_state.programEventIndex()) / _loader.currentProgram().rate() * _pcmRate));
     }
     return voidX; // Not in this block.
 }
@@ -76,7 +76,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
                 auto const& event = events[eventIndex++];
                 switch (event.type) {
                     case SND_SEQ_EVENT_NOTEON: {
-                        _program.refresh();
+                        _loader.refresh();
                         auto const& n = event.data.note;
                         _state.noteOn(hostEventX, n.note, n.velocity);
                         break;
@@ -88,7 +88,7 @@ void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSS
                 }
             }
             else {
-                _state.fire(_program);
+                _state.fire(_loader.currentProgram());
             }
         }
         // It's possible for both the next host and program events to be beyond the block, so clamp:
