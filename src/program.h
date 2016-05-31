@@ -3,45 +3,69 @@
 #include <boost/filesystem/path.hpp>
 #include <ctime>
 #include <memory>
-#include <thread>
 
 #include "config.h"
 #include "py/interpreter.h"
 #include "py/py.h"
 #include "state.h"
 
-class Program: public Fire {
+class DefaultProgram: public Fire {
 
-    static float constexpr DEFAULT_RATE = 50;
+    float rate() const {
+        return 50;
+    }
 
-    char const * const _moduleName;
+    void fire(int noteFrame, int offFrameOrNeg, State& state) const {
+        if (offFrameOrNeg < 0) {
+            state.setLevel4(13);
+        }
+        else {
+            state.setLevel4(0);
+        }
+    }
 
-    std::shared_ptr<Interpreter> _interpreter;
+};
 
-    std::time_t _mark;
-
-    boost::filesystem::path _path;
-
-    std::thread _thread;
-
-    bool _pollEnabled;
+class ProgramImpl: public Interpreter, public Fire {
 
     PyRef _module;
 
-    float _rate = DEFAULT_RATE; // In case initial load fails.
+    float _rate;
 
 public:
 
-    Program(Config const&);
+    ProgramImpl(char const *name);
 
-    ~Program();
-
-    void refresh();
+    operator bool() const {
+        return _module;
+    }
 
     float rate() const {
         return _rate;
     }
 
-    void fire(int, int, State&) const;
+    void fire(int noteFrame, int offFrameOrNeg, State& state) const;
+
+};
+
+class Program {
+
+    std::shared_ptr<Fire> _programHolder {new DefaultProgram};
+
+    char const * const _moduleName;
+
+    std::time_t _mark;
+
+    boost::filesystem::path _path;
+
+public:
+
+    Program(Config const&);
+
+    void refresh();
+
+    Fire& currentProgram() const {
+        return *_programHolder.get();
+    }
 
 };
