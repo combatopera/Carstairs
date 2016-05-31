@@ -1,25 +1,12 @@
 #pragma once
 
 #include <boost/filesystem/path.hpp>
-#include <python3.4m/Python.h>
 #include <ctime>
 
 #include "config.h"
 #include "py/interpreter.h"
 #include "py/py.h"
 #include "state.h"
-
-class Python {
-
-public:
-
-    PyThreadState * const _parent;
-
-    Python();
-
-    ~Python();
-
-};
 
 class Program: public Fire {
 
@@ -48,7 +35,5 @@ public:
     }
 
     void fire(int, int, State&) const;
-
-    ~Program();
 
 };

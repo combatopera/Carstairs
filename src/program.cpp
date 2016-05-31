@@ -2,8 +2,8 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <python3.4m/Python.h>
-#include <cassert>
 
+#include "py/main.h"
 #include "util/util.h"
 
 namespace {
@@ -12,24 +12,10 @@ Log const LOG(__FILE__);
 
 Python const PYTHON;
 
-PyThreadState *initPython() {
-    debug("Initing Python.");
-    Py_InitializeEx(0);
-    auto const parent = PyThreadState_Get();
-    assert(parent);
-    PyEval_InitThreads();
-    PyEval_ReleaseThread(parent);
-    return parent;
-}
-
-}
-
-Python::Python()
-        : _parent(initPython()) {
 }
 
 Program::Program(Config const& config)
-        : _moduleName(config._programModule), _interpreter(PYTHON._parent), _mark(-1) {
+        : _moduleName(config._programModule), _interpreter(PYTHON), _mark(-1) {
     debug("Loading module: %s", _moduleName);
     _interpreter.runTask([&] {
         PyRef module(PyImport_ImportModule(_moduleName));
@@ -50,7 +36,7 @@ void Program::refresh() {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
-            _interpreter = PYTHON._parent;
+            _interpreter = PYTHON;
             debug("Reloading module: %s", _moduleName);
             _interpreter.runTask([&] {
                 _module = PyImport_ImportModule(_moduleName);
@@ -64,15 +50,6 @@ void Program::refresh() {
             });
         }
     }
-}
-
-Program::~Program() {
-}
-
-Python::~Python() {
-    PyEval_AcquireThread(_parent); // Otherwise Py_Finalize crashes.
-    debug("Closing Python.");
-    Py_Finalize();
 }
 
 void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
