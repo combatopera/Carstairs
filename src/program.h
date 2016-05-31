@@ -5,8 +5,8 @@
 #include <ctime>
 
 #include "config.h"
+#include "py/py.h"
 #include "state.h"
-#include "util/py.h"
 
 class Python {
 

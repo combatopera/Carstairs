@@ -2,7 +2,7 @@
 
 #include <python3.4m/Python.h>
 
-#include "util.h"
+#include "../util/util.h"
 
 namespace {
 Log const LOG(__FILE__);
