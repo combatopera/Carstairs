@@ -9,7 +9,7 @@
 
 class Config {
 
-#ifdef DIZZYM_UNIT_TEST
+#ifdef UNIT_TEST
 public:
 #endif
 

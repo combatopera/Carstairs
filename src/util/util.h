@@ -72,7 +72,7 @@ public:
 
 };
 
-#ifdef DIZZYM_UNIT_TEST
+#ifdef UNIT_TEST
 #define FINAL
 #else
 #define FINAL const

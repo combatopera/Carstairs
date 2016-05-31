@@ -17,7 +17,7 @@ class MinBLEPs {
 
     float const _naiveRate;
 
-#ifdef DIZZYM_UNIT_TEST
+#ifdef UNIT_TEST
 
 public:
 
