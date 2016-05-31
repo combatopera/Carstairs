@@ -2,8 +2,8 @@
 
 #include <alsa/seq_event.h>
 
+#include "../carstairs.h"
 #include "../config.h"
-#include "../dizzYM.h"
 #include "../util/buf.h"
 #include "../util/util.h"
 #include "port.h"

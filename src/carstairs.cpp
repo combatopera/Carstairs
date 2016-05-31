@@ -1,9 +1,8 @@
-#include "dizzYM.h"
-
 #include <dssi.h>
 #include <algorithm>
 #include <cmath>
 
+#include "carstairs.h"
 #include "node.h"
 #include "util/util.h"
 
