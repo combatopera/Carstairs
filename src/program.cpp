@@ -1,7 +1,6 @@
 #include "program.h"
 
 #include <boost/filesystem/operations.hpp>
-#include <python3.4m/Python.h>
 
 #include "py/main.h"
 #include "util/util.h"
@@ -18,7 +17,7 @@ Program::Program(Config const& config)
         : _moduleName(config._programModule), _interpreter(PYTHON), _mark(-1) {
     debug("Loading module: %s", _moduleName);
     _interpreter.runTask([&] {
-        PyRef module(PyImport_ImportModule(_moduleName));
+        auto const module = _interpreter.import(_moduleName);
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
             auto const str = bytes.unwrapBytes();
@@ -39,7 +38,7 @@ void Program::refresh() {
             _interpreter = PYTHON;
             debug("Reloading module: %s", _moduleName);
             _interpreter.runTask([&] {
-                _module = PyImport_ImportModule(_moduleName);
+                _module = _interpreter.import(_moduleName);
                 if (_module) {
                     _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
                     debug("Program rate: %.3f", _rate);
