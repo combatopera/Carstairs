@@ -3,7 +3,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
-#include <functional>
 
 #include "util/util.h"
 
@@ -32,7 +31,7 @@ Python::Python()
 Program::Program(Config const& config)
         : _moduleName(config._programModule), _interpreter(PYTHON._parent), _mark(-1) {
     debug("Loading module: %s", _moduleName);
-    std::function<void()> const task = [&] {
+    _interpreter.runTask([&] {
         PyRef module(PyImport_ImportModule(_moduleName));
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
@@ -43,8 +42,7 @@ Program::Program(Config const& config)
         else {
             debug("Failed to load module, refresh disabled.");
         }
-    };
-    _interpreter.runTask(task);
+    });
 }
 
 void Program::refresh() {
@@ -54,7 +52,7 @@ void Program::refresh() {
             _mark = mark;
             _interpreter = PYTHON._parent;
             debug("Reloading module: %s", _moduleName);
-            std::function<void()> const task = [&] {
+            _interpreter.runTask([&] {
                 _module = PyImport_ImportModule(_moduleName);
                 if (_module) {
                     _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
@@ -63,8 +61,7 @@ void Program::refresh() {
                 else {
                     debug("Failed to reload module.");
                 }
-            };
-            _interpreter.runTask(task);
+            });
         }
     }
 }
@@ -83,7 +80,7 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         state.setLevel4(13); // Use half the available amp.
     }
     if (_module) {
-        std::function<void()> const task = [&] {
+        _interpreter.runTask([&] {
             if (offFrameOrNeg < 0) {
                 _module.getAttr("on").callVoid("(i)", noteFrame);
             }
@@ -97,7 +94,6 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
                     state.setLevel4(level.numberRoundToInt());
                 }
             }
-        };
-        _interpreter.runTask(task);
+        });
     }
 }
