@@ -8,7 +8,13 @@ namespace {
 Log const LOG(__FILE__);
 }
 
-void PyRef::xdecref() const {
+PyRef& PyRef::operator=(PyObject * const ptr) {
+    this->~PyRef();
+    new (this) PyRef(ptr);
+    return *this;
+}
+
+PyRef::~PyRef() {
     trace("XDECREF: %p", _ptr);
     Py_XDECREF(_ptr);
 }

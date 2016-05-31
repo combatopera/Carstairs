@@ -8,23 +8,15 @@ class PyRef {
 
     PyObject *_ptr;
 
-    void xdecref() const;
-
 public:
 
-    PyRef(PyObject *ptr = 0)
+    PyRef(PyObject * const ptr = 0)
             : _ptr(ptr) {
     }
 
-    PyRef& operator=(PyObject * const ptr) {
-        xdecref();
-        _ptr = ptr;
-        return *this;
-    }
+    PyRef& operator=(PyObject * const ptr);
 
-    ~PyRef() {
-        xdecref();
-    }
+    ~PyRef();
 
     explicit operator bool() const {
         return _ptr;
