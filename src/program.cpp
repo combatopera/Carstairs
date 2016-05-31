@@ -1,6 +1,7 @@
 #include "program.h"
 
 #include <boost/filesystem/operations.hpp>
+#include <unistd.h>
 
 #include "py/main.h"
 #include "util/util.h"
@@ -23,11 +24,27 @@ Program::Program(Config const& config)
             auto const str = bytes.unwrapBytes();
             debug("Module path: %s", str);
             _path = str;
+            _pollEnabled = true;
+            _thread = std::thread([&] {
+                        debug("Background thread running.");
+                        while (_pollEnabled) {
+                            sleep(1);
+                        }
+                    });
         }
         else {
             debug("Failed to load module, refresh disabled.");
         }
     });
+}
+
+Program::~Program() {
+    if (_thread.joinable()) {
+        debug("Notifying background thread.");
+        _pollEnabled = false;
+        _thread.join();
+        debug("Background thread terminated.");
+    }
 }
 
 void Program::refresh() {

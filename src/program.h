@@ -2,6 +2,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <ctime>
+#include <thread>
 
 #include "config.h"
 #include "py/interpreter.h"
@@ -16,9 +17,13 @@ class Program: public Fire {
 
     Interpreter _interpreter;
 
+    std::time_t _mark;
+
     boost::filesystem::path _path;
 
-    std::time_t _mark;
+    std::thread _thread;
+
+    bool _pollEnabled;
 
     PyRef _module;
 
@@ -27,6 +32,8 @@ class Program: public Fire {
 public:
 
     Program(Config const&);
+
+    ~Program();
 
     void refresh();
 
