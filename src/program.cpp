@@ -12,16 +12,20 @@ static Python const PYTHON;
 
 void Program::newInterpreter() {
     debug("Creating new sub-interpreter.");
+    PyEval_AcquireThread(PYTHON._parent);
     _interpreter = Py_NewInterpreter();
     assert(_interpreter);
     assert(PYTHON._parent != _interpreter);
     assert(PyThreadState_Get() == _interpreter);
+    PyEval_ReleaseThread(_interpreter);
 }
 
 void Program::endInterpreter() {
     debug("Ending sub-interpreter.");
+    PyEval_AcquireThread(_interpreter);
     _module = 0; // Probably wise to destroy before its owner interpreter.
     Py_EndInterpreter(_interpreter);
+    PyEval_ReleaseLock();
 }
 
 static PyThreadState *initPython() {
@@ -29,6 +33,8 @@ static PyThreadState *initPython() {
     Py_InitializeEx(0);
     auto const parent = PyThreadState_Get();
     assert(parent);
+    PyEval_InitThreads();
+    PyEval_ReleaseThread(parent);
     return parent;
 }
 
@@ -40,6 +46,7 @@ Program::Program(Config const& config)
         : _moduleName(config._programModule), _mark(-1) {
     newInterpreter();
     debug("Loading module: %s", _moduleName);
+    PyEval_AcquireThread(_interpreter);
     PyRef module(PyImport_ImportModule(_moduleName));
     if (module) {
         auto const bytes = module.getAttr("__file__").toPathBytes();
@@ -50,6 +57,7 @@ Program::Program(Config const& config)
     else {
         debug("Failed to load module, refresh disabled.");
     }
+    PyEval_ReleaseThread(_interpreter);
 }
 
 void Program::refresh() {
@@ -60,6 +68,7 @@ void Program::refresh() {
             endInterpreter();
             newInterpreter();
             debug("Reloading module: %s", _moduleName);
+            PyEval_AcquireThread(_interpreter);
             _module = PyImport_ImportModule(_moduleName);
             if (_module) {
                 _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
@@ -68,6 +77,7 @@ void Program::refresh() {
             else {
                 debug("Failed to reload module.");
             }
+            PyEval_ReleaseThread(_interpreter);
         }
     }
 }
@@ -77,7 +87,7 @@ Program::~Program() {
 }
 
 Python::~Python() {
-    PyThreadState_Swap(_parent); // Otherwise Py_Finalize crashes.
+    PyEval_AcquireThread(_parent); // Otherwise Py_Finalize crashes.
     debug("Closing Python.");
     Py_Finalize();
 }
@@ -87,6 +97,7 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         state.setLevel4(13); // Use half the available amp.
     }
     if (_module) {
+        PyEval_AcquireThread(_interpreter);
         if (offFrameOrNeg < 0) {
             _module.getAttr("on").callVoid("(i)", noteFrame);
         }
@@ -100,5 +111,6 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
                 state.setLevel4(level.numberRoundToInt());
             }
         }
+        PyEval_ReleaseThread(_interpreter);
     }
 }
