@@ -55,8 +55,9 @@ void Program::refresh() {
             debug("Reloading module: %s", _moduleName);
             std::shared_ptr<Interpreter> interpreter(new Interpreter(PYTHON));
             interpreter.get()->runTask([&] {
-                _module = Interpreter::import(_moduleName);
-                if (_module) {
+                auto const module = Interpreter::import(_moduleName);
+                if (module) {
+                    _module = module;
                     _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
                     debug("Program rate: %.3f", _rate);
                 }
