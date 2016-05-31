@@ -4,6 +4,8 @@
 #include <ladspa.h>
 #include <climits>
 
+#include "../config.h"
+
 namespace DSSI {
 
 typedef unsigned long cursor;
@@ -30,7 +32,7 @@ public:
 
     DSSI_Descriptor const *dssiDescriptor() const;
 
-    Descriptors();
+    Descriptors(Config const&);
 
     ~Descriptors();
 

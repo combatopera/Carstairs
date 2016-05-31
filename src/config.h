@@ -17,6 +17,8 @@ public:
 
 public:
 
+    unsigned long const _UniqueID = 0;
+
     int FINAL _atomSize = 1;
 
     int const _refMidiNote = 69;

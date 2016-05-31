@@ -3,7 +3,6 @@
 #include <alsa/seq_event.h>
 
 #include "../carstairs.h"
-#include "../config.h"
 #include "../util/buf.h"
 #include "../util/util.h"
 #include "port.h"
@@ -16,7 +15,7 @@ Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
-Descriptors const descriptors;
+Descriptors const descriptors {CONFIG};
 
 LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::cursor SampleRate) {
     debug("LADSPA: instantiate(%lu)", SampleRate);
@@ -58,7 +57,7 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-Descriptors::Descriptors() {
+Descriptors::Descriptors(Config const& config) {
     _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._values._n];
     _PortNames = new char const *[PortInfo._values._n];
     _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._values._n];
@@ -68,12 +67,12 @@ Descriptors::Descriptors() {
         _PortRangeHints[i] = PortInfo._values.at(i)->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
-        0,// UniqueID
-        "dizzYM",// Label
+        config._UniqueID,// UniqueID i.e. a globally unique ID for this descriptor.
+        "CARSTAIRS",// Label i.e. a key for this descriptor in the file.
         LADSPA_PROPERTY_HARD_RT_CAPABLE,// Properties
-        "YM2149",// Name
-        "Andrzej Cichocki",// Maker
-        "Andrzej Cichocki",// Copyright
+        "Carstairs",// Name i.e. the friendly name.
+        "Andrzej Roman Cichocki",// Maker
+        "Copyright (C) 2016 Andrzej Roman Cichocki",// Copyright
         PortInfo._values._n,//
         _PortDescriptors,//
         _PortNames,//
