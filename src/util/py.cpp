@@ -4,7 +4,9 @@
 
 #include "util.h"
 
-static Log const LOG(__FILE__);
+namespace {
+Log const LOG(__FILE__);
+}
 
 void PyRef::xdecref() const {
     trace("XDECREF: %p", _ptr);

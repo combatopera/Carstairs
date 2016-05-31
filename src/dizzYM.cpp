@@ -7,7 +7,9 @@
 #include "node.h"
 #include "util/util.h"
 
-static Log const LOG(__FILE__);
+namespace {
+Log const LOG(__FILE__);
+}
 
 PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
         : _pcm {ord++, true, true, "PCM", 0, //
