@@ -18,6 +18,10 @@ public:
 
     Interpreter(Python const&);
 
+    Interpreter()
+            : _state(0) {
+    }
+
     Interpreter& operator=(Python const&);
 
     void runTask(std::function<void()> const&) const;

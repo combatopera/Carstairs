@@ -15,10 +15,10 @@ Python const PYTHON;
 }
 
 Program::Program(Config const& config)
-        : _moduleName(config._programModule), _interpreter(PYTHON), _mark(-1) {
+        : _moduleName(config._programModule), _mark(-1) {
     debug("Loading module: %s", _moduleName);
-    _interpreter.runTask([&] {
-        auto const module = _interpreter.import(_moduleName);
+    Interpreter(PYTHON).runTask([&] {
+        auto const module = Interpreter::import(_moduleName);
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
             auto const str = bytes.unwrapBytes();
