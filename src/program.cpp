@@ -6,9 +6,23 @@
 
 #include "util/util.h"
 
-static Log const LOG(__FILE__);
+namespace {
 
-static Python const PYTHON;
+Log const LOG(__FILE__);
+
+Python const PYTHON;
+
+PyThreadState *initPython() {
+    debug("Initing Python.");
+    Py_InitializeEx(0);
+    auto const parent = PyThreadState_Get();
+    assert(parent);
+    PyEval_InitThreads();
+    PyEval_ReleaseThread(parent);
+    return parent;
+}
+
+}
 
 void Program::newInterpreter() {
     debug("Creating new sub-interpreter.");
@@ -26,16 +40,6 @@ void Program::endInterpreter() {
     _module = 0; // Probably wise to destroy before its owner interpreter.
     Py_EndInterpreter(_interpreter);
     PyEval_ReleaseLock();
-}
-
-static PyThreadState *initPython() {
-    debug("Initing Python.");
-    Py_InitializeEx(0);
-    auto const parent = PyThreadState_Get();
-    assert(parent);
-    PyEval_InitThreads();
-    PyEval_ReleaseThread(parent);
-    return parent;
 }
 
 Python::Python()
