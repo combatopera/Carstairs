@@ -1,6 +1,8 @@
 #include "tone.h"
 
-static class Square: public Buffer<int> {
+namespace {
+
+class Square: public Buffer<int> {
 
 public:
 
@@ -11,6 +13,8 @@ public:
     }
 
 } SQUARE;
+
+}
 
 Tone::Tone(Config const& config, State& state)
         : Node("Tone", state), _atomSize(config._atomSize), _shape(SQUARE), _indexInShape(), _progress(), _stepSize() {
