@@ -26,7 +26,7 @@ public:
 
 };
 
-class dizzYM {
+class Carstairs {
 
     PortInfoEnum const& _PortInfo;
 
@@ -48,7 +48,7 @@ class dizzYM {
 
 public:
 
-    dizzYM(Config const&, PortInfoEnum const&, int pcmRate);
+    Carstairs(Config const&, PortInfoEnum const&, int pcmRate);
 
     void start();
 

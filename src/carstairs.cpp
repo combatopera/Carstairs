@@ -21,7 +21,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
     debug("Constructed the PortInfoEnum.");
 }
 
-dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
+Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
         _state(config), //
         _loader(config), //
@@ -31,11 +31,11 @@ dizzYM::dizzYM(Config const& config, PortInfoEnum const& PortInfo, int const pcm
         _pcmRate(pcmRate) {
 }
 
-void dizzYM::setPortValPtr(sizex index, LADSPA_Data *valPtr) {
+void Carstairs::setPortValPtr(sizex index, LADSPA_Data *valPtr) {
     _portValPtrs.put(index, valPtr);
 }
 
-void dizzYM::start() {
+void Carstairs::start() {
     _state.reset();
     // TODO: Reliably start all nodes.
     _tone.start();
@@ -44,7 +44,7 @@ void dizzYM::start() {
 }
 
 // FIXME LATER: This mechanism should not be affected by the PCM rate.
-DSSI::cursor dizzYM::getProgramEventX(DSSI::cursor voidX) const {
+DSSI::cursor Carstairs::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
         // If the logical cursor is a fraction, it affects the next physical cursor:
@@ -53,7 +53,7 @@ DSSI::cursor dizzYM::getProgramEventX(DSSI::cursor voidX) const {
     return voidX; // Not in this block.
 }
 
-void dizzYM::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSSI::cursor eventCount) {
+void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, DSSI::cursor eventCount) {
     auto const refCursor = _pcm.cursor();
     auto const voidX = refCursor + blockSize;
     if (0 == refCursor || eventCount) {
