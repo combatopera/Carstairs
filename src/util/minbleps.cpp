@@ -4,14 +4,18 @@
 
 #include "util.h"
 
-static Log const LOG(__FILE__);
+namespace {
 
-static sizex getEvenFftSize(sizex const minSize) {
+Log const LOG(__FILE__);
+
+sizex getEvenFftSize(sizex const minSize) {
     auto evenFftSize = sizex(2); // Smallest even power of 2.
     while (evenFftSize < minSize) {
         evenFftSize <<= 1;
     }
     return evenFftSize;
+}
+
 }
 
 MinBLEPs::MinBLEPs(Config const& config, int pcmRate)

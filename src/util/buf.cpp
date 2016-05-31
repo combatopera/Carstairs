@@ -7,7 +7,15 @@
 
 #include "util.h"
 
-static Log const LOG(__FILE__);
+namespace {
+
+Log const LOG(__FILE__);
+
+double abs(std::complex<double> const& c) {
+    return sqrt(c.real() * c.real() + c.imag() * c.imag());
+}
+
+}
 
 template<typename T> View<T>::View(char const *label, sizex limit)
         : _limit(limit) {
@@ -68,10 +76,6 @@ template<> void View<double>::blackman() {
         _data[n] = a0 - a1 * cos(2 * M_PI * double(n) / double(N - 1)) + a2 * cos(4 * M_PI * double(n) / double(N - 1));
     }
     mirror(); // Avoid significant precision artifacts.
-}
-
-static double abs(std::complex<double> const& c) {
-    return sqrt(c.real() * c.real() + c.imag() * c.imag());
 }
 
 template<> void View<double>::fillAbs(std::complex<double> const *values) {
