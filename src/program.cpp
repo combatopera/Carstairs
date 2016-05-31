@@ -52,10 +52,10 @@ void Program::refresh() {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
-            _interpreter = PYTHON;
             debug("Reloading module: %s", _moduleName);
-            _interpreter.runTask([&] {
-                _module = _interpreter.import(_moduleName);
+            std::shared_ptr<Interpreter> interpreter(new Interpreter(PYTHON));
+            interpreter.get()->runTask([&] {
+                _module = Interpreter::import(_moduleName);
                 if (_module) {
                     _rate = _module.getAttr("rate").numberToFloatOr(DEFAULT_RATE);
                     debug("Program rate: %.3f", _rate);
@@ -64,6 +64,9 @@ void Program::refresh() {
                     debug("Failed to reload module.");
                 }
             });
+            if (_module) {
+                _interpreter = interpreter;
+            }
         }
     }
 }
@@ -72,8 +75,8 @@ void Program::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     if (!noteFrame) {
         state.setLevel4(13); // Use half the available amp.
     }
-    if (_module) {
-        _interpreter.runTask([&] {
+    if (_interpreter) {
+        _interpreter.get()->runTask([&] {
             if (offFrameOrNeg < 0) {
                 _module.getAttr("on").callVoid("(i)", noteFrame);
             }

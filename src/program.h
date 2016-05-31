@@ -2,6 +2,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <ctime>
+#include <memory>
 #include <thread>
 
 #include "config.h"
@@ -15,7 +16,7 @@ class Program: public Fire {
 
     char const * const _moduleName;
 
-    Interpreter _interpreter;
+    std::shared_ptr<Interpreter> _interpreter;
 
     std::time_t _mark;
 
