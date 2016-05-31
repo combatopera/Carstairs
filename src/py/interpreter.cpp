@@ -21,9 +21,7 @@ Interpreter::Interpreter(PyThreadState * const main) {
 }
 
 Interpreter& Interpreter::operator=(PyThreadState * const main) {
-    this->~Interpreter();
-    new (this) Interpreter(main);
-    return *this;
+    REFRESH(Interpreter, main);
 }
 
 void Interpreter::runTask(std::function<void()> const& task) const {

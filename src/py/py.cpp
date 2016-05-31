@@ -9,9 +9,7 @@ Log const LOG(__FILE__);
 }
 
 PyRef& PyRef::operator=(PyObject * const ptr) {
-    this->~PyRef();
-    new (this) PyRef(ptr);
-    return *this;
+    REFRESH(PyRef, ptr);
 }
 
 PyRef::~PyRef() {
