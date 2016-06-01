@@ -41,12 +41,12 @@ public:
 #define error(format, ...) fprintf(stderr, "ERROR %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #define warn(format, ...) fprintf(stderr, "WARN %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #define info(format, ...) fprintf(stderr, "INFO %s " format "\n", LOG.name(), ##__VA_ARGS__)
-#ifndef INFO
+#ifndef CARSTAIRS_INFO
 #define debug(format, ...) fprintf(stderr, "DEBUG %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
 #define debug(format, ...)
 #endif
-#ifdef TRACE
+#ifdef CARSTAIRS_TRACE
 #define trace(format, ...) fprintf(stderr, "TRACE %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
 #define trace(format, ...)
