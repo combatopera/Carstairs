@@ -52,7 +52,7 @@ public:
 #define CARSTAIRS_TRACE(format, ...)
 #endif
 
-#define REFRESH(T, ...) this->~T(); \
+#define CARSTAIRS_REFRESH(T, ...) this->~T(); \
 new (this) T(__VA_ARGS__); \
 return *this
 

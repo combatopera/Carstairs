@@ -9,7 +9,7 @@ Log const LOG(__FILE__);
 }
 
 PyRef& PyRef::operator=(PyObject * const ptr) {
-    REFRESH(PyRef, ptr);
+    CARSTAIRS_REFRESH(PyRef, ptr);
 }
 
 PyRef::~PyRef() {

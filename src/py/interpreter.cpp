@@ -22,7 +22,7 @@ Interpreter::Interpreter(Python const& python) {
 }
 
 Interpreter& Interpreter::operator=(Python const& python) {
-    REFRESH(Interpreter, python);
+    CARSTAIRS_REFRESH(Interpreter, python);
 }
 
 void Interpreter::runTask(std::function<void()> const& task) const {
