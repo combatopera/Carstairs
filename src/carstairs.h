@@ -19,11 +19,19 @@ class PortInfoEnum {
 
 public:
 
-    PortInfo_t const _pcm, _alpha, _beta;
+    PortInfo_t const PCM, ALPHA, BETA;
+
+private:
 
     Values<PortInfo_t const> const _values;
 
+public:
+
     PortInfoEnum(Config const&, sizex ord = 0);
+
+    Values<PortInfo_t const> const& values() const {
+        return _values;
+    }
 
 };
 

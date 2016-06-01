@@ -12,18 +12,18 @@ Log const LOG(__FILE__);
 }
 
 PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
-        : _pcm {ord++, true, true, "PCM", 0, //
+        : PCM {ord++, true, true, "PCM", 0, //
                 0, 0, DSSI_NONE}, //
-        _alpha {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+        ALPHA {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
                 -1, 1, DSSI_CC(config._alphaCC)}, //
-        _beta {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+        BETA {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
                 -1, 1, DSSI_CC(config._betaCC)}, //
-        _values {&_pcm, ord} {
+        _values {&PCM, ord} {
     CARSTAIRS_DEBUG("Constructed the PortInfoEnum.");
 }
 
 Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python const& python, int const pcmRate)
-        : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo._values._n), //
+        : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
         _state(config), //
         _loader(config, python), //
         _tone(config, _state), //
@@ -60,7 +60,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
     if (0 == refCursor || eventCount) {
         CARSTAIRS_TRACE("%lu -> %lu", refCursor, voidX);
     }
-    auto destPtr = _portValPtrs.at(_PortInfo._pcm.ordinal());
+    auto destPtr = _portValPtrs.at(_PortInfo.PCM.ordinal());
     auto const destEnd = destPtr + blockSize;
     sizex eventIndex = 0;
     while (destPtr < destEnd) {

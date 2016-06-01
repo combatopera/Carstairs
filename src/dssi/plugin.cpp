@@ -48,7 +48,7 @@ DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor 
 
 int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
     CARSTAIRS_DEBUG("DSSI: get_midi_controller_for_port(%lu)", Port);
-    return PortInfo._values.at(sizex(Port))->_controllers;
+    return PortInfo.values().at(sizex(Port))->_controllers;
 }
 
 void run(LADSPA_Handle Instance, DSSI::cursor SampleCount) {
@@ -68,13 +68,13 @@ void cleanup(LADSPA_Handle Instance) {
 }
 
 Descriptors::Descriptors(Config const& config)
-        : _PortDescriptors(new LADSPA_PortDescriptor[PortInfo._values._n]), //
-        _PortNames(new char const *[PortInfo._values._n]), //
-        _PortRangeHints(new LADSPA_PortRangeHint[PortInfo._values._n]) {
-    for (auto i = PortInfo._values._n - 1; SIZEX_NEG != i; --i) {
-        _PortDescriptors[i] = PortInfo._values.at(i)->_descriptor;
-        _PortNames[i] = PortInfo._values.at(i)->_name;
-        _PortRangeHints[i] = PortInfo._values.at(i)->_rangeHint; // Copy.
+        : _PortDescriptors(new LADSPA_PortDescriptor[PortInfo.values().length]), //
+        _PortNames(new char const *[PortInfo.values().length]), //
+        _PortRangeHints(new LADSPA_PortRangeHint[PortInfo.values().length]) {
+    for (auto i = PortInfo.values().length - 1; SIZEX_NEG != i; --i) {
+        _PortDescriptors[i] = PortInfo.values().at(i)->_descriptor;
+        _PortNames[i] = PortInfo.values().at(i)->_name;
+        _PortRangeHints[i] = PortInfo.values().at(i)->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         config._UniqueID,// UniqueID i.e. a globally unique ID for this descriptor.
@@ -83,7 +83,7 @@ Descriptors::Descriptors(Config const& config)
         "Carstairs",// Name i.e. the friendly name.
         "Andrzej Roman Cichocki",// Maker
         "Copyright (C) 2016 Andrzej Roman Cichocki",// Copyright
-        PortInfo._values._n,//
+        PortInfo.values().length,//
         _PortDescriptors,//
         _PortNames,//
         _PortRangeHints,//

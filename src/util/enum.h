@@ -8,7 +8,7 @@ template<typename T> class Values {
 
 public:
 
-    sizex const _n;
+    sizex const length;
 
     Values(T *first, sizex ordCursor);
 
