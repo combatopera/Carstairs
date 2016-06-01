@@ -21,6 +21,8 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class Programs {
 
+    static DSSI::cursor const BANK = 0;
+
     std::vector<DSSI_Program_Descriptor> _programs;
 
 public:

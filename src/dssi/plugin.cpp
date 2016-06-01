@@ -4,6 +4,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/iterator/iterator_facade.hpp>
+#include <algorithm>
 #include <cstring>
 #include <string>
 
@@ -91,7 +92,7 @@ Programs::Programs(Config const& config, Python const& python) {
                     else {
                         char * const programName = new char[moduleName.length() + 1];
                         strcpy(programName, moduleName.c_str());
-                        _programs.push_back( {0, 0, programName});
+                        _programs.push_back( {BANK, DSSI::cursor(-1), programName});
                     }
                 }
                 else {
@@ -100,6 +101,12 @@ Programs::Programs(Config const& config, Python const& python) {
             }
         }
     });
+    std::sort(_programs.begin(), _programs.end(), [](DSSI_Program_Descriptor const& a, DSSI_Program_Descriptor const& b) {
+        return std::string(a.Name) < b.Name; // Not efficient, never mind.
+        });
+    for (auto i = sizex(_programs.size() - 1); SIZEX_NEG != i; --i) {
+        _programs[i].Program = i;
+    }
 }
 
 Programs::~Programs() {
