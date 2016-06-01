@@ -19,7 +19,7 @@ public:
 
     unsigned long const _UniqueID = 0;
 
-    int FINAL _atomSize = 1;
+    int CARSTAIRS_CONST _atomSize = 1;
 
     int const _refMidiNote = 69;
 
@@ -27,13 +27,13 @@ public:
 
     int const _semitones = 12;
 
-    float FINAL _nominalClock = 2000000;
+    float CARSTAIRS_CONST _nominalClock = 2000000;
 
-    double FINAL _transition = .1, _stopband = 0; // Both normalised to rate so in [0, .5].
+    double CARSTAIRS_CONST _transition = .1, _stopband = 0; // Both normalised to rate so in [0, .5].
 
-    double FINAL _rcepsAddBeforeLog = 1e-50;
+    double CARSTAIRS_CONST _rcepsAddBeforeLog = 1e-50;
 
-    sizex FINAL _minBLEPCount = 1000; // Empirically enough to make artifacts invisible.
+    sizex CARSTAIRS_CONST _minBLEPCount = 1000; // Empirically enough to make artifacts invisible.
 
     float const _maxAmp = .5;
 

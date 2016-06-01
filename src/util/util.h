@@ -73,7 +73,7 @@ public:
 };
 
 #ifdef CARSTAIRS_TEST
-#define FINAL
+#define CARSTAIRS_CONST
 #else
-#define FINAL const
+#define CARSTAIRS_CONST const
 #endif
