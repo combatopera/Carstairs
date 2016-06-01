@@ -34,6 +34,10 @@ public:
         return int(round(PyFloat_AsDouble(_ptr)));
     }
 
+    bool boolValue() const {
+        return PyObject_IsTrue(_ptr);
+    }
+
     void callVoid(char const *format, ...) const {
         va_list ap;
         va_start(ap, format);
