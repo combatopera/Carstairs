@@ -51,6 +51,13 @@ DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor 
     return PROGRAMS.programOrNull(sizex(Index));
 }
 
+void select_program(LADSPA_Handle Instance, DSSI::cursor Bank, DSSI::cursor Program) {
+    CARSTAIRS_DEBUG("DSSI: select_program(%lu, %lu)", Bank, Program);
+    if (Programs::BANK == Bank && Program < PROGRAMS.size()) {
+
+    }
+}
+
 int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
     CARSTAIRS_DEBUG("DSSI: get_midi_controller_for_port(%lu)", Port);
     return PortInfo.values()[sizex(Port)]->_controllers;
@@ -150,7 +157,7 @@ Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& p
         &_ladspaDescriptor,//
         0,// configure()
         get_program,//
-        0,// select_program()
+        select_program,//
         get_midi_controller_for_port,//
         run_synth,//
         0,// run_synth_adding()

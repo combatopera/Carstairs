@@ -21,11 +21,11 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class Programs {
 
-    static DSSI::cursor const BANK = 0;
-
     std::vector<DSSI_Program_Descriptor> _programs;
 
 public:
+
+    static DSSI::cursor const BANK = 0;
 
     Programs(Config const&, Python const&);
 
@@ -33,6 +33,10 @@ public:
 
     DSSI_Program_Descriptor const *programOrNull(sizex index) const {
         return index < _programs.size() ? &_programs[index] : 0;
+    }
+
+    sizex size() const {
+        return sizex(_programs.size());
     }
 
 };
