@@ -7,7 +7,6 @@
 
 #include "config.h"
 #include "py/interpreter.h"
-#include "py/py.h"
 #include "state.h"
 
 class DefaultProgram: public Program {
@@ -29,7 +28,7 @@ class DefaultProgram: public Program {
 
 class ProgramImpl: public Interpreter, public Program {
 
-    PyRef _module;
+    char const * const _name;
 
     float _rate;
 
@@ -37,10 +36,8 @@ public:
 
     ProgramImpl(char const *name);
 
-    ~ProgramImpl();
-
     operator bool() const {
-        return _module;
+        return _rate;
     }
 
     float rate() const {

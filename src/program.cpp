@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "py/main.h"
+#include "py/py.h"
 #include "util/util.h"
 
 namespace {
@@ -16,27 +17,18 @@ Python const PYTHON;
 }
 
 ProgramImpl::ProgramImpl(char const *name)
-        : Interpreter(PYTHON) {
+        : Interpreter(PYTHON), _name(name) {
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
-        _module = import(name);
-        if (_module) {
-            _rate = _module.getAttr("rate").numberToFloatOr(50);
+        auto const module = import(name);
+        if (module) {
+            _rate = module.getAttr("rate").numberToFloatOr(50);
             CARSTAIRS_DEBUG("Program rate: %.3f", _rate);
         }
         else {
             CARSTAIRS_ERROR("Failed to reload module, program will not change.");
         }
     });
-}
-
-ProgramImpl::~ProgramImpl() {
-    if (_module) {
-        CARSTAIRS_DEBUG("Disposing module.");
-        runTask([&] {
-            _module=0;
-        });
-    }
 }
 
 Loader::Loader(Config const& config)
@@ -86,15 +78,16 @@ void Loader::poll() {
 }
 
 void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
-    assert(_module);
+    assert(_rate);
     runTask([&] {
+        auto const module = import(_name);
         if (offFrameOrNeg < 0) {
-            _module.getAttr("on").callVoid("(i)", noteFrame);
+            module.getAttr("on").callVoid("(i)", noteFrame);
         }
         else {
-            _module.getAttr("off").callVoid("ii", noteFrame, offFrameOrNeg);
+            module.getAttr("off").callVoid("ii", noteFrame, offFrameOrNeg);
         }
-        auto const chan = _module.getAttr("chan");
+        auto const chan = module.getAttr("chan");
         if (chan) {
             auto const level = chan.getAttr("level");
             if (level) {
