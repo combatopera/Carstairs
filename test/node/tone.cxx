@@ -15,15 +15,15 @@ struct F {
 
 };
 
-#define BUF(n, value, name) Buffer<int> name("name", n); \
+#define CARSTAIRS_BUF(n, value, name) Buffer<int> name("name", n); \
     name.fill(value);
 
 BOOST_FIXTURE_TEST_CASE(works, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
-    BUF(24, 1, ones)
-    BUF(24, 0, zeros)
+    CARSTAIRS_BUF(24, 1, ones)
+    CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(96);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin(24));
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.end(), v.begin(24), v.begin(48));
@@ -38,8 +38,8 @@ BOOST_FIXTURE_TEST_CASE(resume, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
-    BUF(24, 1, ones)
-    BUF(24, 0, zeros)
+    CARSTAIRS_BUF(24, 1, ones)
+    CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(25);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.begin(24));
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(1), v.begin(24), v.end());
@@ -67,8 +67,8 @@ BOOST_FIXTURE_TEST_CASE(endExistingStepAtEndOfBlock, F) {
     State state(_config);
     state._TP = 1;
     Tone o(_config, state);
-    BUF(4, 1, ones)
-    BUF(4, 0, zeros)
+    CARSTAIRS_BUF(4, 1, ones)
+    CARSTAIRS_BUF(4, 0, zeros)
     View<int> v = o.render(4);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.end(), v.begin(), v.end());
     v = o.render(8);
@@ -81,8 +81,8 @@ BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
     State state(_config);
     state._TP = 1;
     Tone o(_config, state);
-    BUF(24, 1, ones)
-    BUF(24, 0, zeros)
+    CARSTAIRS_BUF(24, 1, ones)
+    CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(16);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin(8), v.begin(), v.begin(8));
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(8), v.begin(8), v.end());
@@ -101,8 +101,8 @@ BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
-    BUF(24, 1, ones)
-    BUF(24, 0, zeros)
+    CARSTAIRS_BUF(24, 1, ones)
+    CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(48);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin(24), v.begin(), v.begin(24));
     BOOST_REQUIRE_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(24), v.begin(24), v.end());
@@ -124,8 +124,8 @@ BOOST_FIXTURE_TEST_CASE(smallerBlocksThanPeriod, F) {
     State state(_config);
     state._TP = 5;
     Tone o(_config, state);
-    BUF(24, 1, ones)
-    BUF(24, 0, zeros)
+    CARSTAIRS_BUF(24, 1, ones)
+    CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(4);
     BOOST_REQUIRE_EQUAL_COLLECTIONS(ones.begin(), ones.begin(4), v.begin(), v.end());
     v = o.render(o.cursor() + 4);
