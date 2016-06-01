@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bits/shared_ptr_base.h>
 #include <boost/filesystem/path.hpp>
 #include <ctime>
 #include <memory>
@@ -36,6 +37,8 @@ class ProgramImpl: public Interpreter, public Program {
 public:
 
     ProgramImpl(char const *name);
+
+    ~ProgramImpl();
 
     operator bool() const {
         return _module;

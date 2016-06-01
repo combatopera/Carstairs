@@ -22,6 +22,6 @@ public:
 
     void runTask(std::function<void()> const&) const;
 
-    ~Interpreter();
+    virtual ~Interpreter();
 
 };

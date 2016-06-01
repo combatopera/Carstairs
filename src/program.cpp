@@ -30,6 +30,15 @@ ProgramImpl::ProgramImpl(char const *name)
     });
 }
 
+ProgramImpl::~ProgramImpl() {
+    if (_module) {
+        debug("Disposing module.");
+        runTask([&] {
+            _module=0;
+        });
+    }
+}
+
 Loader::Loader(Config const& config)
         : _moduleName(config._programModule), _mark(-1) {
     info("Loading module: %s", _moduleName);
