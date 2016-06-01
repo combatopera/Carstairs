@@ -11,8 +11,8 @@ namespace {
 Log const LOG(__FILE__);
 }
 
-ProgramImpl::ProgramImpl(Python const& python, char const *name)
-        : Interpreter(python), _name(name) {
+ProgramImpl::ProgramImpl(Config const& config, Python const& python, char const *name)
+        : Interpreter(config, python), _name(name) {
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
         auto const module = import(name);
@@ -29,7 +29,7 @@ ProgramImpl::ProgramImpl(Python const& python, char const *name)
 Loader::Loader(Config const& config, Python const& python)
         : _python(python), _moduleName(config._programModule), _mark(-1) {
     CARSTAIRS_INFO("Loading module: %s", _moduleName);
-    Interpreter(python).runTask([&] {
+    Interpreter(config, python).runTask([&] {
         auto const module = Interpreter::import(_moduleName);
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
@@ -37,7 +37,7 @@ Loader::Loader(Config const& config, Python const& python)
             CARSTAIRS_INFO("Module path: %s", str);
             _path = str;
             _thread = std::thread([&] {
-                        poll();
+                        poll(config);
                     });
         }
         else {
@@ -55,13 +55,13 @@ Loader::~Loader() {
     }
 }
 
-void Loader::poll() {
+void Loader::poll(Config const& config) {
     CARSTAIRS_DEBUG("Loader thread running.");
     while (!_path.empty()) {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
-            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(_python, _moduleName));
+            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _moduleName));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
                 _nextProgram = programHolder;

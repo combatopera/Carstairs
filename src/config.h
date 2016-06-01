@@ -39,6 +39,8 @@ public:
 
     int const _alphaCC = 80, _betaCC = 81;
 
+    char const * const _modulesDir = "/home/arc/projects/sounds/carstairs";
+
     char const * const _programModule = "program";
 
     float naiveRate() const {

@@ -35,7 +35,7 @@ class ProgramImpl: public Interpreter, public Program {
 
 public:
 
-    ProgramImpl(Python const&, char const *name);
+    ProgramImpl(Config const&, Python const&, char const *name);
 
     operator bool() const {
         return _rate;
@@ -63,7 +63,7 @@ class Loader {
 
     std::thread _thread;
 
-    void poll();
+    void poll(Config const&);
 
 public:
 
