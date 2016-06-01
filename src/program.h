@@ -1,6 +1,5 @@
 #pragma once
 
-#include <bits/shared_ptr_base.h>
 #include <boost/filesystem/path.hpp>
 #include <ctime>
 #include <memory>
