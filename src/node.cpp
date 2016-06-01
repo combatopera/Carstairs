@@ -20,5 +20,5 @@ template<typename T> View<T> Node<T>::render(DSSI::cursor newCursor) {
     return _buf;
 }
 
-NODE_INSTANTIATE(int)
-NODE_INSTANTIATE(LADSPA_Data)
+CARSTAIRS_NODE_INSTANTIATE(int)
+CARSTAIRS_NODE_INSTANTIATE(LADSPA_Data)

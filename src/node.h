@@ -39,7 +39,7 @@ protected:
 
 };
 
-#define NODE_INSTANTIATE(T) \
+#define CARSTAIRS_NODE_INSTANTIATE(T) \
     template Node<T>::Node(char const *, State&); \
     template Node<T>::~Node(); \
     template View<T> Node<T>::render(DSSI::cursor);
