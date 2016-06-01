@@ -34,6 +34,9 @@ void Interpreter::runTask(std::function<void()> const& task) const {
 Interpreter::~Interpreter() {
     debug("Ending sub-interpreter: %p", _state);
     PyEval_AcquireThread(_state);
+    debug("Calling: Py_EndInterpreter(%p)", _state);
     Py_EndInterpreter(_state);
+    debug("Calling: PyEval_ReleaseLock");
     PyEval_ReleaseLock();
+    debug("Sub-interpreter ended.");
 }
