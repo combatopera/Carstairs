@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/filesystem/path.hpp>
 #include <boost/math/common_factor_rt.hpp>
 #include <cassert>
 #include <cmath>
@@ -39,7 +40,7 @@ public:
 
     int const _alphaCC = 80, _betaCC = 81;
 
-    char const * const _modulesDir = "/home/arc/projects/sounds/carstairs";
+    boost::filesystem::path const _modulesDir = "/home/arc/projects/sounds/carstairs";
 
     char const * const _programModule = "program";
 

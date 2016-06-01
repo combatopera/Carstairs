@@ -3,8 +3,10 @@
 #include <dssi.h>
 #include <ladspa.h>
 #include <climits>
+#include <vector>
 
 #include "../config.h"
+#include "../util/buf.h"
 #include "../util/enum.h"
 #include "port.h"
 
@@ -15,6 +17,22 @@ typedef unsigned long cursor;
 cursor const CURSOR_MAX = ULONG_MAX;
 
 }
+
+class Programs {
+
+    std::vector<DSSI_Program_Descriptor> _programs;
+
+public:
+
+    Programs(Config const&);
+
+    ~Programs();
+
+    DSSI_Program_Descriptor const *programOrNull(sizex index) const {
+        return index < _programs.size() ? &_programs[index] : 0;
+    }
+
+};
 
 class Descriptors {
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/filesystem/path.hpp>
 #include <python3.4m/Python.h>
 #include <functional>
 
@@ -9,11 +10,11 @@
 
 class Interpreter {
 
-    char const * const _modulesDir;
+    boost::filesystem::path const& _modulesDir;
 
     PyThreadState *_state;
 
-    Interpreter(char const *, Python const&);
+    Interpreter(boost::filesystem::path const&, Python const&);
 
 public:
 

@@ -14,7 +14,7 @@ Interpreter::Interpreter(Config const& config, Python const& python)
         : Interpreter(config._modulesDir, python) {
 }
 
-Interpreter::Interpreter(char const *modulesDir, Python const& python)
+Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Python const& python)
         : _modulesDir(modulesDir) {
     CARSTAIRS_DEBUG("Creating new sub-interpreter.");
     PyThreadState * const main = python;
@@ -27,7 +27,7 @@ Interpreter::Interpreter(char const *modulesDir, Python const& python)
         std::string script;
         script += "import sys\n";
         script += "sys.path.append('";
-        script += modulesDir; // TODO LATER: Escape single quotes.
+        script += modulesDir.string(); // TODO LATER: Escape single quotes.
         script += "')\n";
         PyRun_SimpleString(script.c_str());
     }

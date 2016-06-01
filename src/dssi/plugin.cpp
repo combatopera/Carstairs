@@ -1,10 +1,14 @@
 #include "plugin.h"
 
 #include <alsa/seq_event.h>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/iterator/iterator_facade.hpp>
+#include <cstring>
+#include <string>
 
 #include "../carstairs.h"
 #include "../py/main.h"
-#include "../util/buf.h"
 #include "../util/util.h"
 
 namespace {
@@ -16,6 +20,8 @@ Config const CONFIG; // Must be in same file as PortInfo for static init order.
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
 Python const PYTHON;
+
+Programs const PROGRAMS(CONFIG);
 
 Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
@@ -38,11 +44,9 @@ void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLo
     static_cast<Carstairs *>(Instance)->setPortValPtr((int) Port, DataLocation);
 }
 
-DSSI_Program_Descriptor const PROGRAM {10, 20, "hello"};
-
 DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor Index) {
     CARSTAIRS_DEBUG("DSSI: get_program(%lu)", Index);
-    return Index ? 0 : &PROGRAM;
+    return PROGRAMS.programOrNull(sizex(Index));
 }
 
 int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
@@ -64,6 +68,26 @@ void cleanup(LADSPA_Handle Instance) {
     CARSTAIRS_DEBUG("Cleaned up.");
 }
 
+}
+
+Programs::Programs(Config const& config) {
+    using namespace boost::filesystem;
+    auto const suffix = ".py";
+    auto const suffixLen = strlen(suffix);
+    for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
+        auto const name = i->path().filename().string();
+        if (name.find(suffix) == name.length() - suffixLen) {
+            char * const Name = new char[name.length() + 1];
+            strcpy(Name, name.c_str());
+            _programs.push_back( {0, 0, Name});
+        }
+    }
+}
+
+Programs::~Programs() {
+    for (auto const program : _programs) {
+        delete[] program.Name;
+    }
 }
 
 Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& ports)
