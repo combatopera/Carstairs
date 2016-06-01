@@ -12,10 +12,12 @@ public:
 
     Values(T *first, sizex ordCursor);
 
-    T *at(sizex i) const;
+    T *operator[](sizex i) const {
+        return _first + i; // Assume the objects are right next to each other.
+    }
 
 };
 
 #define CARSTAIRS_ENUM_INSTANTIATE(T) \
-    template T *Values<T>::at(sizex) const; \
+    template T *Values<T>::operator[](sizex) const; \
     template Values<T>::Values(T *, sizex);

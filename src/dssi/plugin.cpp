@@ -53,7 +53,7 @@ DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor 
 
 int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
     CARSTAIRS_DEBUG("DSSI: get_midi_controller_for_port(%lu)", Port);
-    return PortInfo.values().at(sizex(Port))->_controllers;
+    return PortInfo.values()[sizex(Port)]->_controllers;
 }
 
 void run(LADSPA_Handle Instance, DSSI::cursor SampleCount) {
@@ -120,9 +120,9 @@ Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& p
         _PortNames(new char const *[ports.length]), //
         _PortRangeHints(new LADSPA_PortRangeHint[ports.length]) {
     for (auto i = ports.length - 1; SIZEX_NEG != i; --i) {
-        _PortDescriptors[i] = ports.at(i)->_descriptor;
-        _PortNames[i] = ports.at(i)->_name;
-        _PortRangeHints[i] = ports.at(i)->_rangeHint; // Copy.
+        _PortDescriptors[i] = ports[i]->_descriptor;
+        _PortNames[i] = ports[i]->_name;
+        _PortRangeHints[i] = ports[i]->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         config._UniqueID,// UniqueID i.e. a globally unique ID for this descriptor.
