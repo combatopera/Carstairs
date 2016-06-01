@@ -16,11 +16,11 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class Descriptors {
 
-    LADSPA_PortDescriptor *_PortDescriptors;
+    LADSPA_PortDescriptor * const _PortDescriptors;
 
-    char const **_PortNames;
+    char const ** const _PortNames;
 
-    LADSPA_PortRangeHint *_PortRangeHints;
+    LADSPA_PortRangeHint * const _PortRangeHints;
 
     LADSPA_Descriptor _ladspaDescriptor;
 

@@ -67,10 +67,10 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-Descriptors::Descriptors(Config const& config) {
-    _PortDescriptors = new LADSPA_PortDescriptor[PortInfo._values._n];
-    _PortNames = new char const *[PortInfo._values._n];
-    _PortRangeHints = new LADSPA_PortRangeHint[PortInfo._values._n];
+Descriptors::Descriptors(Config const& config)
+        : _PortDescriptors(new LADSPA_PortDescriptor[PortInfo._values._n]), //
+        _PortNames(new char const *[PortInfo._values._n]), //
+        _PortRangeHints(new LADSPA_PortRangeHint[PortInfo._values._n]) {
     for (auto i = PortInfo._values._n - 1; SIZEX_NEG != i; --i) {
         _PortDescriptors[i] = PortInfo._values.at(i)->_descriptor;
         _PortNames[i] = PortInfo._values.at(i)->_name;
