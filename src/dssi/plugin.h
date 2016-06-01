@@ -5,6 +5,8 @@
 #include <climits>
 
 #include "../config.h"
+#include "../util/enum.h"
+#include "port.h"
 
 namespace DSSI {
 
@@ -32,7 +34,7 @@ public:
 
     DSSI_Descriptor const *dssiDescriptor() const;
 
-    Descriptors(Config const&);
+    Descriptors(Config const&, Values<PortInfo_t const> const&);
 
     ~Descriptors();
 

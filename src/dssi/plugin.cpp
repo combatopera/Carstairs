@@ -6,7 +6,6 @@
 #include "../py/main.h"
 #include "../util/buf.h"
 #include "../util/util.h"
-#include "port.h"
 
 namespace {
 
@@ -18,7 +17,7 @@ PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for 
 
 Python const PYTHON;
 
-Descriptors const DESCRIPTORS {CONFIG};
+Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
 LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
@@ -67,14 +66,14 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-Descriptors::Descriptors(Config const& config)
-        : _PortDescriptors(new LADSPA_PortDescriptor[PortInfo.values().length]), //
-        _PortNames(new char const *[PortInfo.values().length]), //
-        _PortRangeHints(new LADSPA_PortRangeHint[PortInfo.values().length]) {
-    for (auto i = PortInfo.values().length - 1; SIZEX_NEG != i; --i) {
-        _PortDescriptors[i] = PortInfo.values().at(i)->_descriptor;
-        _PortNames[i] = PortInfo.values().at(i)->_name;
-        _PortRangeHints[i] = PortInfo.values().at(i)->_rangeHint; // Copy.
+Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& ports)
+        : _PortDescriptors(new LADSPA_PortDescriptor[ports.length]), //
+        _PortNames(new char const *[ports.length]), //
+        _PortRangeHints(new LADSPA_PortRangeHint[ports.length]) {
+    for (auto i = ports.length - 1; SIZEX_NEG != i; --i) {
+        _PortDescriptors[i] = ports.at(i)->_descriptor;
+        _PortNames[i] = ports.at(i)->_name;
+        _PortRangeHints[i] = ports.at(i)->_rangeHint; // Copy.
     }
     _ladspaDescriptor = { //
         config._UniqueID,// UniqueID i.e. a globally unique ID for this descriptor.
@@ -83,7 +82,7 @@ Descriptors::Descriptors(Config const& config)
         "Carstairs",// Name i.e. the friendly name.
         "Andrzej Roman Cichocki",// Maker
         "Copyright (C) 2016 Andrzej Roman Cichocki",// Copyright
-        PortInfo.values().length,//
+        ports.length,//
         _PortDescriptors,//
         _PortNames,//
         _PortRangeHints,//
