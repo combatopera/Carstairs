@@ -18,7 +18,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
         _beta {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
                 -1, 1, DSSI_CC(config._betaCC)}, //
         _values {&_pcm, ord} {
-    debug("Constructed the PortInfoEnum.");
+    CARSTAIRS_DEBUG("Constructed the PortInfoEnum.");
 }
 
 Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, int const pcmRate)
@@ -57,7 +57,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
     auto const refCursor = _pcm.cursor();
     auto const voidX = refCursor + blockSize;
     if (0 == refCursor || eventCount) {
-        trace("%lu -> %lu", refCursor, voidX);
+        CARSTAIRS_TRACE("%lu -> %lu", refCursor, voidX);
     }
     auto destPtr = _portValPtrs.at(_PortInfo._pcm.ordinal());
     auto const destEnd = destPtr + blockSize;

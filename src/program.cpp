@@ -17,22 +17,22 @@ Python const PYTHON;
 
 ProgramImpl::ProgramImpl(char const *name)
         : Interpreter(PYTHON) {
-    info("Reloading module: %s", name);
+    CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
         _module = import(name);
         if (_module) {
             _rate = _module.getAttr("rate").numberToFloatOr(50);
-            debug("Program rate: %.3f", _rate);
+            CARSTAIRS_DEBUG("Program rate: %.3f", _rate);
         }
         else {
-            error("Failed to reload module, program will not change.");
+            CARSTAIRS_ERROR("Failed to reload module, program will not change.");
         }
     });
 }
 
 ProgramImpl::~ProgramImpl() {
     if (_module) {
-        debug("Disposing module.");
+        CARSTAIRS_DEBUG("Disposing module.");
         runTask([&] {
             _module=0;
         });
@@ -41,35 +41,35 @@ ProgramImpl::~ProgramImpl() {
 
 Loader::Loader(Config const& config)
         : _moduleName(config._programModule), _mark(-1) {
-    info("Loading module: %s", _moduleName);
+    CARSTAIRS_INFO("Loading module: %s", _moduleName);
     Interpreter(PYTHON).runTask([&] {
         auto const module = Interpreter::import(_moduleName);
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
             auto const str = bytes.unwrapBytes();
-            info("Module path: %s", str);
+            CARSTAIRS_INFO("Module path: %s", str);
             _path = str;
             _thread = std::thread([&] {
                         poll();
                     });
         }
         else {
-            error("Failed to load module, refresh disabled.");
+            CARSTAIRS_ERROR("Failed to load module, refresh disabled.");
         }
     });
 }
 
 Loader::~Loader() {
     if (_thread.joinable()) {
-        debug("Notifying loader thread.");
+        CARSTAIRS_DEBUG("Notifying loader thread.");
         _path.clear();
         _thread.join();
-        debug("Loader thread has terminated.");
+        CARSTAIRS_DEBUG("Loader thread has terminated.");
     }
 }
 
 void Loader::poll() {
-    debug("Loader thread running.");
+    CARSTAIRS_DEBUG("Loader thread running.");
     while (!_path.empty()) {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
@@ -78,7 +78,7 @@ void Loader::poll() {
             ProgramImpl const& program = *programHolder.get();
             if (program) {
                 _nextProgram = programHolder;
-                debug("New program ready.");
+                CARSTAIRS_DEBUG("New program ready.");
             }
         }
         sleep(1);
