@@ -27,7 +27,7 @@ Interpreter::Interpreter(char const *modulesDir, Python const& python)
         std::string script;
         script += "import sys\n";
         script += "sys.path.append('";
-        script += modulesDir;
+        script += modulesDir; // TODO LATER: Escape single quotes.
         script += "')\n";
         PyRun_SimpleString(script.c_str());
     }
