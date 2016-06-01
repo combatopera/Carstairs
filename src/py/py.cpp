@@ -13,6 +13,6 @@ PyRef& PyRef::operator=(PyObject * const ptr) {
 }
 
 PyRef::~PyRef() {
-    trace("XDECREF: %p", _ptr);
+    CARSTAIRS_TRACE("XDECREF: %p", _ptr);
     Py_XDECREF(_ptr);
 }

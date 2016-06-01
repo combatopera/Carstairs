@@ -10,7 +10,7 @@ namespace {
 Log const LOG(__FILE__);
 
 PyThreadState *initPython() {
-    debug("Initing Python.");
+    CARSTAIRS_DEBUG("Initing Python.");
     Py_InitializeEx(0);
     auto const main = PyThreadState_Get();
     assert(main);
@@ -27,6 +27,6 @@ Python::Python()
 
 Python::~Python() {
     PyEval_AcquireThread(_main); // Otherwise Py_Finalize crashes.
-    debug("Closing Python.");
+    CARSTAIRS_DEBUG("Closing Python.");
     Py_Finalize();
 }

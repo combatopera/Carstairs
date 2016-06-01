@@ -14,11 +14,11 @@ inline void pastePrepare(Paster const& paster, DSSI::cursor naiveX, DSSI::cursor
     // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
     auto const pcmX = DSSI::cursor(ceil(pcmMark));
     if (pcmX < pcmRef) {
-        info("ratio = %.20f", paster._ratio);
-        info("naiveX = %lu", naiveX);
-        info("pcmRef = %lu", pcmRef);
-        info("pcmX = %lu", pcmX);
-        error("MinBLEP should have started in previous block!");
+        CARSTAIRS_INFO("ratio = %.20f", paster._ratio);
+        CARSTAIRS_INFO("naiveX = %lu", naiveX);
+        CARSTAIRS_INFO("pcmRef = %lu", pcmRef);
+        CARSTAIRS_INFO("pcmX = %lu", pcmX);
+        CARSTAIRS_ERROR("MinBLEP should have started in previous block!");
         assert(false);
     }
     pcmRelX = sizex(pcmX - pcmRef);

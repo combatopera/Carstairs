@@ -10,7 +10,7 @@ Log const LOG(__FILE__);
 }
 
 Interpreter::Interpreter(Python const& python) {
-    debug("Creating new sub-interpreter.");
+    CARSTAIRS_DEBUG("Creating new sub-interpreter.");
     PyThreadState * const main = python;
     PyEval_AcquireThread(main);
     _state = Py_NewInterpreter();
@@ -18,7 +18,7 @@ Interpreter::Interpreter(Python const& python) {
     assert(main != _state);
     assert(PyThreadState_Get() == _state);
     PyEval_ReleaseThread(_state);
-    debug("Created: %p", _state);
+    CARSTAIRS_DEBUG("Created: %p", _state);
 }
 
 Interpreter& Interpreter::operator=(Python const& python) {
@@ -32,11 +32,11 @@ void Interpreter::runTask(std::function<void()> const& task) const {
 }
 
 Interpreter::~Interpreter() {
-    debug("Ending sub-interpreter: %p", _state);
+    CARSTAIRS_DEBUG("Ending sub-interpreter: %p", _state);
     PyEval_AcquireThread(_state);
-    debug("Calling: Py_EndInterpreter(%p)", _state);
+    CARSTAIRS_DEBUG("Calling: Py_EndInterpreter(%p)", _state);
     Py_EndInterpreter(_state);
-    debug("Calling: PyEval_ReleaseLock");
+    CARSTAIRS_DEBUG("Calling: PyEval_ReleaseLock");
     PyEval_ReleaseLock();
-    debug("Sub-interpreter ended.");
+    CARSTAIRS_DEBUG("Sub-interpreter ended.");
 }

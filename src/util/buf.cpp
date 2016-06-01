@@ -19,7 +19,7 @@ double abs(std::complex<double> const& c) {
 
 template<typename T> View<T>::View(char const *label, sizex limit)
         : _limit(limit) {
-    debug("Creating Buffer: %s", label);
+    CARSTAIRS_DEBUG("Creating Buffer: %s", label);
     _data = (T *) malloc(limit * sizeof(T));
 }
 
@@ -35,13 +35,13 @@ template<typename T> View<T>::View(View<T> const& master)
 }
 
 template<typename T> Buffer<T>::~Buffer() {
-    debug("Destroying Buffer: %s", _label);
+    CARSTAIRS_DEBUG("Destroying Buffer: %s", _label);
     free(this->_data);
 }
 
 template<typename T> void Buffer<T>::setLimit(sizex limit) {
     if (limit > this->_capacity) {
-        debug("Resizing %s to: %d", _label, limit);
+        CARSTAIRS_DEBUG("Resizing %s to: %d", _label, limit);
         this->_data = (T *) realloc(this->_data, limit * sizeof(T));
         this->_capacity = limit;
     }

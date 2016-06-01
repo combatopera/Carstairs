@@ -20,9 +20,9 @@ sizex getEvenFftSize(sizex const minSize) {
 
 MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
         : _pcmRate(pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
-    debug("Creating %u minBLEPs.", _minBLEPCount);
+    CARSTAIRS_DEBUG("Creating %u minBLEPs.", _minBLEPCount);
     auto const evenOrder = config.evenEmpiricalOrder();
-    debug("For transition %.3f/%d using filter order: %d", config._transition, pcmRate, evenOrder);
+    CARSTAIRS_DEBUG("For transition %.3f/%d using filter order: %d", config._transition, pcmRate, evenOrder);
     auto const oddKernelSize = evenOrder * _minBLEPCount + 1;
     // Use a power of 2 for fastest fft/ifft, and can't be trivial power as we need a midpoint:
     auto const evenFftSize = getEvenFftSize(oddKernelSize);
@@ -58,5 +58,5 @@ MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
     accumulator.integrate(); // It's now _minBLEPCount interleaved minBLEPs!
     _minBLEPs.setLimit(accumulator.limit());
     _minBLEPs.fillNarrowing(accumulator.begin());
-    debug("Finished creating minBLEPs.");
+    CARSTAIRS_DEBUG("Finished creating minBLEPs.");
 }

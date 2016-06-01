@@ -38,18 +38,18 @@ public:
 
 };
 
-#define error(format, ...) fprintf(stderr, "ERROR %s " format "\n", LOG.name(), ##__VA_ARGS__)
-#define warn(format, ...) fprintf(stderr, "WARN %s " format "\n", LOG.name(), ##__VA_ARGS__)
-#define info(format, ...) fprintf(stderr, "INFO %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define CARSTAIRS_ERROR(format, ...) fprintf(stderr, "ERROR %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define CARSTAIRS_WARN(format, ...) fprintf(stderr, "WARN %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define CARSTAIRS_INFO(format, ...) fprintf(stderr, "INFO %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #ifndef CARSTAIRS_LEVEL_INFO
-#define debug(format, ...) fprintf(stderr, "DEBUG %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define CARSTAIRS_DEBUG(format, ...) fprintf(stderr, "DEBUG %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
-#define debug(format, ...)
+#define CARSTAIRS_DEBUG(format, ...)
 #endif
 #ifdef CARSTAIRS_LEVEL_TRACE
-#define trace(format, ...) fprintf(stderr, "TRACE %s " format "\n", LOG.name(), ##__VA_ARGS__)
+#define CARSTAIRS_TRACE(format, ...) fprintf(stderr, "TRACE %s " format "\n", LOG.name(), ##__VA_ARGS__)
 #else
-#define trace(format, ...)
+#define CARSTAIRS_TRACE(format, ...)
 #endif
 
 #define REFRESH(T, ...) this->~T(); \
