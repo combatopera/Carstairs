@@ -155,6 +155,6 @@ public:
 
 };
 
-#define BUF_INSTANTIATE(T) \
+#define CARSTAIRS_BUF_INSTANTIATE(T) \
     template class View<T>; \
     template class Buffer<T>;

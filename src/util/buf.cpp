@@ -96,7 +96,7 @@ template<> void View<double>::fillReal(std::complex<double> const *values) {
     }
 }
 
-#define NUMERICS(T) template<> void View<T>::integrate() { \
+#define CARSTAIRS_NUMERICS(T) template<> void View<T>::integrate() { \
     T sum = 0; \
     auto const n = _limit; \
     for (sizex i = 0; i < n; ++i) { \
@@ -121,10 +121,10 @@ template<> void View<T>::mul(T value) { \
     } \
 }
 
-NUMERICS(float)
-NUMERICS(double)
-NUMERICS(int)
-NUMERICS(std::complex<double>)
+CARSTAIRS_NUMERICS(float)
+CARSTAIRS_NUMERICS(double)
+CARSTAIRS_NUMERICS(int)
+CARSTAIRS_NUMERICS(std::complex<double>)
 
 template<> void View<int>::range() {
     for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
@@ -217,8 +217,8 @@ template<> void View<double>::minPhaseFromRceps(Buffer<std::complex<double>>& ff
     fillReal(fftAppliance.begin());
 }
 
-BUF_INSTANTIATE(int)
-BUF_INSTANTIATE(LADSPA_Data)
-BUF_INSTANTIATE(LADSPA_Data *)
-BUF_INSTANTIATE(double)
-BUF_INSTANTIATE(std::complex<double>)
+CARSTAIRS_BUF_INSTANTIATE(int)
+CARSTAIRS_BUF_INSTANTIATE(LADSPA_Data)
+CARSTAIRS_BUF_INSTANTIATE(LADSPA_Data *)
+CARSTAIRS_BUF_INSTANTIATE(double)
+CARSTAIRS_BUF_INSTANTIATE(std::complex<double>)

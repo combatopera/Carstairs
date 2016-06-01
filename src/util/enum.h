@@ -16,6 +16,6 @@ public:
 
 };
 
-#define ENUM_INSTANTIATE(T) \
+#define CARSTAIRS_ENUM_INSTANTIATE(T) \
     template T *Values<T>::at(sizex) const; \
     template Values<T>::Values(T *, sizex);

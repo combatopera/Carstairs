@@ -10,4 +10,4 @@ template<typename T> T *Values<T>::at(sizex i) const {
     return _first + i; // Assume the objects are right next to each other.
 }
 
-ENUM_INSTANTIATE(PortInfo_t const)
+CARSTAIRS_ENUM_INSTANTIATE(PortInfo_t const)
