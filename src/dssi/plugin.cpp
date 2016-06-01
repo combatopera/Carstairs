@@ -9,7 +9,6 @@
 
 #include "../carstairs.h"
 #include "../py/interpreter.h"
-#include "../py/main.h"
 #include "../py/py.h"
 #include "../util/util.h"
 
@@ -76,13 +75,13 @@ Programs::Programs(Config const& config, Python const& python) {
     using namespace boost::filesystem;
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
-    for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
-        auto const filename = i->path().filename().string();
-        auto const suffixIndex = filename.find(suffix);
-        if (filename.length() - suffixLen == suffixIndex) {
-            std::string moduleName(filename);
-            moduleName.erase(suffixIndex);
-            Interpreter(config, python).runTask([&] {
+    Interpreter(config, python).runTask([&] {
+        for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
+            auto const filename = i->path().filename().string();
+            auto const suffixIndex = filename.find(suffix);
+            if (filename.length() - suffixLen == suffixIndex) {
+                std::string moduleName(filename);
+                moduleName.erase(suffixIndex);
                 auto const module = Interpreter::import(moduleName.c_str());
                 if (module) {
                     auto const abstract = module.getAttr("_abstract");
@@ -98,9 +97,9 @@ Programs::Programs(Config const& config, Python const& python) {
                 else {
                     CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
                 }
-            });
+            }
         }
-    }
+    });
 }
 
 Programs::~Programs() {
