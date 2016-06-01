@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../config.h"
+#include "../py/main.h"
 #include "../util/buf.h"
 #include "../util/enum.h"
 #include "port.h"
@@ -24,7 +25,7 @@ class Programs {
 
 public:
 
-    Programs(Config const&);
+    Programs(Config const&, Python const&);
 
     ~Programs();
 

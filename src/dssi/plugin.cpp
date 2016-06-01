@@ -8,7 +8,9 @@
 #include <string>
 
 #include "../carstairs.h"
+#include "../py/interpreter.h"
 #include "../py/main.h"
+#include "../py/py.h"
 #include "../util/util.h"
 
 namespace {
@@ -21,7 +23,7 @@ PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for 
 
 Python const PYTHON;
 
-Programs const PROGRAMS(CONFIG);
+Programs const PROGRAMS(CONFIG, PYTHON);
 
 Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
@@ -45,7 +47,7 @@ void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLo
 }
 
 DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor Index) {
-    CARSTAIRS_DEBUG("DSSI: get_program(%lu)", Index);
+    CARSTAIRS_TRACE("DSSI: get_program(%lu)", Index);
     return PROGRAMS.programOrNull(sizex(Index));
 }
 
@@ -70,16 +72,33 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-Programs::Programs(Config const& config) {
+Programs::Programs(Config const& config, Python const& python) {
     using namespace boost::filesystem;
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
     for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
-        auto const name = i->path().filename().string();
-        if (name.find(suffix) == name.length() - suffixLen) {
-            char * const Name = new char[name.length() + 1];
-            strcpy(Name, name.c_str());
-            _programs.push_back( {0, 0, Name});
+        auto const filename = i->path().filename().string();
+        auto const suffixIndex = filename.find(suffix);
+        if (filename.length() - suffixLen == suffixIndex) {
+            std::string moduleName(filename);
+            moduleName.erase(suffixIndex);
+            Interpreter(config, python).runTask([&] {
+                auto const module = Interpreter::import(moduleName.c_str());
+                if (module) {
+                    auto const abstract = module.getAttr("_abstract");
+                    if (abstract && abstract.boolValue()) {
+                        CARSTAIRS_INFO("Ignoring abstract module: %s", moduleName.c_str());
+                    }
+                    else {
+                        char * const programName = new char[moduleName.length() + 1];
+                        strcpy(programName, moduleName.c_str());
+                        _programs.push_back( {0, 0, programName});
+                    }
+                }
+                else {
+                    CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
+                }
+            });
         }
     }
 }
