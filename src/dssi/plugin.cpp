@@ -3,6 +3,7 @@
 #include <alsa/seq_event.h>
 
 #include "../carstairs.h"
+#include "../py/main.h"
 #include "../util/buf.h"
 #include "../util/util.h"
 #include "port.h"
@@ -15,11 +16,13 @@ Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
-Descriptors const descriptors {CONFIG};
+Python const PYTHON;
 
-LADSPA_Handle instantiate(const LADSPA_Descriptor *Descriptor, DSSI::cursor SampleRate) {
+Descriptors const DESCRIPTORS {CONFIG};
+
+LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
-    return new Carstairs(CONFIG, PortInfo, int(SampleRate));
+    return new Carstairs(CONFIG, PortInfo, PYTHON, int(SampleRate));
 }
 
 void activate(LADSPA_Handle Instance) {
@@ -34,6 +37,13 @@ void deactivate(LADSPA_Handle Instance) {
 void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLocation) {
     CARSTAIRS_DEBUG("LADSPA: connect_port(%lu)", Port);
     static_cast<Carstairs *>(Instance)->setPortValPtr((int) Port, DataLocation);
+}
+
+DSSI_Program_Descriptor const PROGRAM {10, 20, "hello"};
+
+DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor Index) {
+    CARSTAIRS_DEBUG("DSSI: get_program(%lu)", Index);
+    return Index ? 0 : &PROGRAM;
 }
 
 int get_midi_controller_for_port(LADSPA_Handle, DSSI::cursor Port) {
@@ -91,7 +101,7 @@ Descriptors::Descriptors(Config const& config) {
         1,// API version, must be 1.
         &_ladspaDescriptor,//
         0,// configure()
-        0,// get_program()
+        get_program,//
         0,// select_program()
         get_midi_controller_for_port,//
         run_synth,//
@@ -116,12 +126,7 @@ Descriptors::~Descriptors() {
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
-    if (Index == 0) {
-        return descriptors.dssiDescriptor();
-    }
-    else {
-        return 0;
-    }
+    return Index ? 0 : DESCRIPTORS.dssiDescriptor();
 }
 
 }

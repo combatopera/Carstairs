@@ -10,6 +10,7 @@
 #include "node/pcm.h"
 #include "node/tone.h"
 #include "program.h"
+#include "py/main.h"
 #include "state.h"
 #include "util/buf.h"
 #include "util/enum.h"
@@ -48,7 +49,7 @@ class Carstairs {
 
 public:
 
-    Carstairs(Config const&, PortInfoEnum const&, int pcmRate);
+    Carstairs(Config const&, PortInfoEnum const&, Python const&, int pcmRate);
 
     void start();
 

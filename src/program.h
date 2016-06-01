@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "py/interpreter.h"
+#include "py/main.h"
 #include "state.h"
 
 class DefaultProgram: public Program {
@@ -34,7 +35,7 @@ class ProgramImpl: public Interpreter, public Program {
 
 public:
 
-    ProgramImpl(char const *name);
+    ProgramImpl(Python const&, char const *name);
 
     operator bool() const {
         return _rate;
@@ -50,6 +51,8 @@ public:
 
 class Loader {
 
+    Python const& _python;
+
     std::shared_ptr<Program> _nextProgram {new DefaultProgram}, _currentProgram;
 
     char const * const _moduleName;
@@ -64,7 +67,7 @@ class Loader {
 
 public:
 
-    Loader(Config const&);
+    Loader(Config const&, Python const&);
 
     ~Loader();
 

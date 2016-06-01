@@ -4,20 +4,15 @@
 #include <unistd.h>
 #include <cassert>
 
-#include "py/main.h"
 #include "py/py.h"
 #include "util/util.h"
 
 namespace {
-
 Log const LOG(__FILE__);
-
-Python const PYTHON;
-
 }
 
-ProgramImpl::ProgramImpl(char const *name)
-        : Interpreter(PYTHON), _name(name) {
+ProgramImpl::ProgramImpl(Python const& python, char const *name)
+        : Interpreter(python), _name(name) {
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
         auto const module = import(name);
@@ -31,10 +26,10 @@ ProgramImpl::ProgramImpl(char const *name)
     });
 }
 
-Loader::Loader(Config const& config)
-        : _moduleName(config._programModule), _mark(-1) {
+Loader::Loader(Config const& config, Python const& python)
+        : _python(python), _moduleName(config._programModule), _mark(-1) {
     CARSTAIRS_INFO("Loading module: %s", _moduleName);
-    Interpreter(PYTHON).runTask([&] {
+    Interpreter(python).runTask([&] {
         auto const module = Interpreter::import(_moduleName);
         if (module) {
             auto const bytes = module.getAttr("__file__").toPathBytes();
@@ -66,7 +61,7 @@ void Loader::poll() {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;
-            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(_moduleName));
+            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(_python, _moduleName));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
                 _nextProgram = programHolder;
