@@ -36,6 +36,7 @@ Loader::Loader(Config const& config, Python const& python)
             auto const str = bytes.unwrapBytes();
             CARSTAIRS_INFO("Module path: %s", str);
             _path = str;
+            _flag = true;
             _thread = std::thread([&] {
                         poll(config);
                     });
@@ -49,7 +50,7 @@ Loader::Loader(Config const& config, Python const& python)
 Loader::~Loader() {
     if (_thread.joinable()) {
         CARSTAIRS_DEBUG("Notifying loader thread.");
-        _path.clear();
+        _flag = false;
         _thread.join();
         CARSTAIRS_DEBUG("Loader thread has terminated.");
     }
@@ -57,7 +58,7 @@ Loader::~Loader() {
 
 void Loader::poll(Config const& config) {
     CARSTAIRS_DEBUG("Loader thread running.");
-    while (!_path.empty()) {
+    while (_flag) {
         auto const mark = boost::filesystem::last_write_time(_path);
         if (mark != _mark) {
             _mark = mark;

@@ -61,6 +61,8 @@ class Loader {
 
     boost::filesystem::path _path;
 
+    bool _flag;
+
     std::thread _thread;
 
     void poll(Config const&);
