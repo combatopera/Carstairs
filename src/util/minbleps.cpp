@@ -42,7 +42,7 @@ MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
         accumulator.mul(sinc.begin());
     }
     accumulator.mul(1. / _minBLEPCount * config.cutoff() * 2); // It's now a band-limited impulse (BLI).
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
     _BLI.snapshot(accumulator);
 #endif
     accumulator.pad((evenFftSize - oddKernelSize + 1) / 2, (evenFftSize - oddKernelSize - 1) / 2, 0);
@@ -50,7 +50,7 @@ MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
     {
         Buffer<std::complex<double>> fftAppliance("fftAppliance");
         accumulator.rceps(fftAppliance, config._rcepsAddBeforeLog);
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
         _realCepstrum.snapshot(fftAppliance);
 #endif
         accumulator.minPhaseFromRceps(fftAppliance); // It's now a min-phase BLI.

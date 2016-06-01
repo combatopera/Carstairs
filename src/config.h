@@ -9,7 +9,7 @@
 
 class Config {
 
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
 public:
 #endif
 

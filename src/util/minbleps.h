@@ -17,7 +17,7 @@ class MinBLEPs {
 
     float const _naiveRate;
 
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
 
 public:
 

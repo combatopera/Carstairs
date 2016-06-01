@@ -33,7 +33,7 @@ class State {
 
     int _offEventIndex; // Only valid when _offOrMax isn't MAX.
 
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
 public:
 #endif
 

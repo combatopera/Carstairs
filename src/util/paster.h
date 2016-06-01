@@ -14,7 +14,7 @@ class Paster {
 
     friend inline void pastePrepare(Paster const&, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex);
 
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
 public:
 #endif
 

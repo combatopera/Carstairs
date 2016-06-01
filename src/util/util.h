@@ -72,7 +72,7 @@ public:
 
 };
 
-#ifdef UNIT_TEST
+#ifdef CARSTAIRS_TEST
 #define FINAL
 #else
 #define FINAL const
