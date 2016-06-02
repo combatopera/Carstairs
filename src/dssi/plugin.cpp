@@ -81,11 +81,12 @@ Programs::Programs(Config const& config, Python const& python) {
     auto const suffixLen = strlen(suffix);
     Interpreter(config, python).runTask([&] {
         using namespace boost::filesystem;
+        CARSTAIRS_INFO("Scanning: %s", config._modulesDir.c_str());
         for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
             auto const& path = i->path();
-            auto const& filename = path.filename().string(); // No copy in POSIX case.
+            auto const filename = path.filename().string(); // XXX: Why doesn't a reference work here?
             auto const suffixIndex = filename.find(suffix);
-            if (filename.length() - suffixLen == suffixIndex) {
+            if (filename.size() - suffixLen == suffixIndex) {
                 std::string moduleName(filename);
                 moduleName.erase(suffixIndex);
                 auto const module = Interpreter::import(moduleName.c_str());
