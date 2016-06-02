@@ -57,7 +57,7 @@ class Carstairs {
 
 public:
 
-    Carstairs(Config const&, PortInfoEnum const&, Python const&, int pcmRate);
+    Carstairs(Config const&, PortInfoEnum const&, Python const&, Programs const&, int pcmRate);
 
     void start();
 

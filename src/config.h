@@ -42,8 +42,6 @@ public:
 
     boost::filesystem::path const _modulesDir = "/home/arc/projects/sounds/carstairs";
 
-    char const * const _programModule = "program";
-
     float naiveRate() const {
         return _nominalClock * float(_atomSize) / YM2149_ATOM_SIZE;
     }

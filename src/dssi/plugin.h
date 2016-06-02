@@ -1,9 +1,11 @@
 #pragma once
 
+#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <dssi.h>
 #include <ladspa.h>
 #include <climits>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <vector>
@@ -32,7 +34,7 @@ class ProgramInfo {
 
 public:
 
-    ProgramInfo(boost::filesystem::path& path, std::string const& name)
+    ProgramInfo(boost::filesystem::path const& path, std::string const& name)
             : _name(name), _path(path) { // Copies.
         _descriptor.Name = _name.c_str();
     }
@@ -47,6 +49,10 @@ public:
 
     DSSI_Program_Descriptor const& descriptor() const {
         return _descriptor;
+    }
+
+    std::time_t lastWriteTime() const {
+        return boost::filesystem::last_write_time(_path);
     }
 
 };
@@ -67,6 +73,10 @@ public:
 
     sizex size() const {
         return sizex(_programs.size());
+    }
+
+    ProgramInfo const& operator[](sizex i) const {
+        return *_programs[i].get();
     }
 
 };

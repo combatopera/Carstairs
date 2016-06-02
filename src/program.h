@@ -1,11 +1,11 @@
 #pragma once
 
-#include <boost/filesystem/path.hpp>
 #include <ctime>
 #include <memory>
 #include <thread>
 
 #include "config.h"
+#include "dssi/plugin.h"
 #include "py/interpreter.h"
 #include "py/main.h"
 #include "state.h"
@@ -29,13 +29,13 @@ class DefaultProgram: public Program {
 
 class ProgramImpl: public Interpreter, public Program {
 
-    char const * const _name;
+    ProgramInfo const& _info;
 
     float _rate;
 
 public:
 
-    ProgramImpl(Config const&, Python const&, char const *name);
+    ProgramImpl(Config const&, Python const&, ProgramInfo const&);
 
     operator bool() const {
         return _rate;
@@ -55,11 +55,9 @@ class Loader {
 
     std::shared_ptr<Program> _nextProgram {new DefaultProgram}, _currentProgram;
 
-    char const * const _moduleName;
+    ProgramInfo const& _programInfo;
 
     std::time_t _mark;
-
-    boost::filesystem::path _path;
 
     bool _flag;
 
@@ -69,7 +67,7 @@ class Loader {
 
 public:
 
-    Loader(Config const&, Python const&);
+    Loader(Config const&, Python const&, ProgramInfo const&);
 
     ~Loader();
 

@@ -1,6 +1,5 @@
 #include "program.h"
 
-#include <boost/filesystem/operations.hpp>
 #include <unistd.h>
 #include <cassert>
 
@@ -11,8 +10,9 @@ namespace {
 Log const LOG(__FILE__);
 }
 
-ProgramImpl::ProgramImpl(Config const& config, Python const& python, char const *name)
-        : Interpreter(config, python), _name(name) {
+ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo const& info)
+        : Interpreter(config, python), _info(info) {
+    auto const name = info.descriptor().Name;
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
         auto const module = import(name);
@@ -26,24 +26,11 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, char const 
     });
 }
 
-Loader::Loader(Config const& config, Python const& python)
-        : _python(python), _moduleName(config._programModule), _mark(-1) {
-    CARSTAIRS_INFO("Loading module: %s", _moduleName);
-    Interpreter(config, python).runTask([&] {
-        auto const module = Interpreter::import(_moduleName);
-        if (module) {
-            auto const bytes = module.getAttr("__file__").toPathBytes();
-            auto const str = bytes.unwrapBytes();
-            CARSTAIRS_INFO("Module path: %s", str);
-            _path = str;
-            _flag = true;
-            _thread = std::thread([&] {
-                        poll(config);
-                    });
-        }
-        else {
-            CARSTAIRS_ERROR("Failed to load module, refresh disabled.");
-        }
+Loader::Loader(Config const& config, Python const& python, ProgramInfo const& programInfo)
+        : _python(python), _programInfo(programInfo), _mark(-1) {
+    _flag = true;
+    _thread = std::thread([&] {
+        poll(config);
     });
 }
 
@@ -59,10 +46,10 @@ Loader::~Loader() {
 void Loader::poll(Config const& config) {
     CARSTAIRS_DEBUG("Loader thread running.");
     while (_flag) {
-        auto const mark = boost::filesystem::last_write_time(_path);
+        auto const mark = _programInfo.lastWriteTime();
         if (mark != _mark) {
             _mark = mark;
-            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _moduleName));
+            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _programInfo));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
                 _nextProgram = programHolder;
@@ -76,7 +63,7 @@ void Loader::poll(Config const& config) {
 void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     assert(_rate);
     runTask([&] {
-        auto const module = import(_name);
+        auto const module = import(_info.descriptor().Name);
         if (offFrameOrNeg < 0) {
             module.getAttr("on").callVoid("(i)", noteFrame);
         }

@@ -1,7 +1,6 @@
 #include "plugin.h"
 
 #include <alsa/seq_event.h>
-#include <boost/filesystem/operations.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <algorithm>
 #include <cstring>
@@ -27,7 +26,7 @@ Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
 LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
-    return new Carstairs(CONFIG, PortInfo, PYTHON, int(SampleRate));
+    return new Carstairs(CONFIG, PortInfo, PYTHON, PROGRAMS, int(SampleRate));
 }
 
 void activate(LADSPA_Handle Instance) {

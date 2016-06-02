@@ -22,10 +22,10 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
     CARSTAIRS_DEBUG("Constructed the PortInfoEnum.");
 }
 
-Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python const& python, int const pcmRate)
+Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python const& python, Programs const& programs, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
         _state(config), //
-        _loader(config, python), //
+        _loader(config, python, programs[0]), //
         _tone(config, _state), //
         _level(config, _state, _tone), //
         _pcm(config, _state, _level, pcmRate), //
