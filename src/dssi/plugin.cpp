@@ -99,7 +99,7 @@ Programs::Programs(Config const& config, Python const& python) {
                     else {
                         char * const programName = new char[moduleName.length() + 1];
                         strcpy(programName, moduleName.c_str());
-                        _programs.push_back( {BANK, DSSI::cursor(-1), programName});
+                        _programs.push_back(std::unique_ptr<DSSI_Program_Descriptor>(new DSSI_Program_Descriptor {BANK, DSSI::cursor(-1), programName}));
                     }
                 }
                 else {
@@ -112,13 +112,13 @@ Programs::Programs(Config const& config, Python const& python) {
         return std::string(a.Name) < b.Name; // Not efficient, never mind.
         });
     for (auto i = sizex(_programs.size() - 1); SIZEX_NEG != i; --i) {
-        _programs[i].Program = i;
+        _programs[i].get()->Program = i;
     }
 }
 
 Programs::~Programs() {
-    for (auto const program : _programs) {
-        delete[] program.Name;
+    for (auto const& program : _programs) {
+        delete[] program.get()->Name;
     }
 }
 

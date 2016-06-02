@@ -3,6 +3,7 @@
 #include <dssi.h>
 #include <ladspa.h>
 #include <climits>
+#include <memory>
 #include <vector>
 
 #include "../config.h"
@@ -21,7 +22,7 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class Programs {
 
-    std::vector<DSSI_Program_Descriptor> _programs;
+    std::vector<std::unique_ptr<DSSI_Program_Descriptor>> _programs;
 
 public:
 
@@ -32,7 +33,7 @@ public:
     ~Programs();
 
     DSSI_Program_Descriptor const *programOrNull(sizex index) const {
-        return index < _programs.size() ? &_programs[index] : 0;
+        return index < _programs.size() ? _programs[index].get() : 0;
     }
 
     sizex size() const {
