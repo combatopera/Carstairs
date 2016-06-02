@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/filesystem/path.hpp>
 #include <dssi.h>
 #include <ladspa.h>
 #include <climits>
@@ -27,10 +28,12 @@ class ProgramInfo {
 
     DSSI_Program_Descriptor _descriptor;
 
+    boost::filesystem::path _path;
+
 public:
 
-    ProgramInfo(std::string const& name)
-            : _name(name) { // Copy.
+    ProgramInfo(boost::filesystem::path& path, std::string const& name)
+            : _name(name), _path(path) { // Copies.
         _descriptor.Name = _name.c_str();
     }
 

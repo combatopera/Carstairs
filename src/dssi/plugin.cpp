@@ -2,7 +2,6 @@
 
 #include <alsa/seq_event.h>
 #include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <algorithm>
 #include <cstring>
@@ -79,12 +78,13 @@ void cleanup(LADSPA_Handle Instance) {
 }
 
 Programs::Programs(Config const& config, Python const& python) {
-    using namespace boost::filesystem;
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
     Interpreter(config, python).runTask([&] {
+        using namespace boost::filesystem;
         for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
-            auto const filename = i->path().filename().string();
+            auto const& path = i->path();
+            auto const& filename = path.filename().string(); // No copy in POSIX case.
             auto const suffixIndex = filename.find(suffix);
             if (filename.length() - suffixLen == suffixIndex) {
                 std::string moduleName(filename);
@@ -96,7 +96,7 @@ Programs::Programs(Config const& config, Python const& python) {
                         CARSTAIRS_INFO("Ignoring abstract module: %s", moduleName.c_str());
                     }
                     else {
-                        _programs.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(moduleName)));
+                        _programs.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName)));
                     }
                 }
                 else {
