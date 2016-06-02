@@ -6,7 +6,6 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <algorithm>
 #include <cstring>
-#include <string>
 
 #include "../carstairs.h"
 #include "../py/interpreter.h"
@@ -97,9 +96,7 @@ Programs::Programs(Config const& config, Python const& python) {
                         CARSTAIRS_INFO("Ignoring abstract module: %s", moduleName.c_str());
                     }
                     else {
-                        char * const programName = new char[moduleName.length() + 1];
-                        strcpy(programName, moduleName.c_str());
-                        _programs.push_back(std::unique_ptr<DSSI_Program_Descriptor>(new DSSI_Program_Descriptor {BANK, DSSI::cursor(-1), programName}));
+                        _programs.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(moduleName)));
                     }
                 }
                 else {
@@ -108,17 +105,11 @@ Programs::Programs(Config const& config, Python const& python) {
             }
         }
     });
-    std::sort(_programs.begin(), _programs.end(), [](DSSI_Program_Descriptor const& a, DSSI_Program_Descriptor const& b) {
-        return std::string(a.Name) < b.Name; // Not efficient, never mind.
-        });
+    std::sort(_programs.begin(), _programs.end(), [](std::unique_ptr<ProgramInfo> const& a, std::unique_ptr<ProgramInfo> const& b) {
+        return *a.get() < *b.get();
+    });
     for (auto i = sizex(_programs.size() - 1); SIZEX_NEG != i; --i) {
-        _programs[i].get()->Program = i;
-    }
-}
-
-Programs::~Programs() {
-    for (auto const& program : _programs) {
-        delete[] program.get()->Name;
+        _programs[i].get()->setProgram(i);
     }
 }
 
