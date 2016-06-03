@@ -158,10 +158,6 @@ Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& p
     CARSTAIRS_DEBUG("Constructed the Descriptors.");
 }
 
-DSSI_Descriptor const *Descriptors::dssiDescriptor() const {
-    return &_dssiDescriptor;
-}
-
 Descriptors::~Descriptors() {
     CARSTAIRS_DEBUG("Destroying the Descriptors.");
     delete[] _PortDescriptors;
@@ -172,7 +168,7 @@ Descriptors::~Descriptors() {
 extern "C" {
 
 const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
-    return Index ? 0 : DESCRIPTORS.dssiDescriptor();
+    return Index ? 0 : &DESCRIPTORS.dssiDescriptor();
 }
 
 }

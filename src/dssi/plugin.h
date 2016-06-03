@@ -98,7 +98,9 @@ class Descriptors {
 
 public:
 
-    DSSI_Descriptor const *dssiDescriptor() const;
+    DSSI_Descriptor const& dssiDescriptor() const {
+        return _dssiDescriptor;
+    }
 
     Descriptors(Config const&, Values<PortInfo_t const> const&);
 
