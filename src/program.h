@@ -8,6 +8,7 @@
 #include "py/interpreter.h"
 #include "py/main.h"
 #include "state.h"
+#include "util/buf.h"
 
 class DefaultProgram: public Program {
 
@@ -56,7 +57,7 @@ class Loader {
 
     std::shared_ptr<Program> _currentProgram;
 
-    ProgramInfo& _programInfo;
+    Programs const& _programInfos;
 
     bool _flag;
 
@@ -66,12 +67,12 @@ class Loader {
 
 public:
 
-    Loader(Config const&, Python const&, ProgramInfo&);
+    Loader(Config const&, Python const&, Programs const&);
 
     ~Loader();
 
-    void refresh() {
-        _currentProgram = _programs[_programInfo.index()];
+    void refresh(sizex index) {
+        _currentProgram = _programs[index];
     }
 
     Program& currentProgram() const {

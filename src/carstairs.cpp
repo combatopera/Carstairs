@@ -25,7 +25,7 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
 Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python const& python, Programs const& programs, int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
         _state(config), //
-        _loader(config, python, programs[0]), //
+        _loader(config, python, programs), //
         _tone(config, _state), //
         _level(config, _state, _tone), //
         _pcm(config, _state, _level, pcmRate), //
@@ -76,7 +76,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
                 auto const& event = events[eventIndex++];
                 switch (event.type) {
                     case SND_SEQ_EVENT_NOTEON: {
-                        _loader.refresh();
+                        _loader.refresh(0);
                         auto const& n = event.data.note;
                         _state.noteOn(hostEventX, n.note, n.velocity);
                         break;

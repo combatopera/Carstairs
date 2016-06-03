@@ -26,8 +26,8 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
     });
 }
 
-Loader::Loader(Config const& config, Python const& python, ProgramInfo& programInfo)
-        : _python(python), _programs(new std::shared_ptr<Program>[programInfo.index() + 1]), _programInfo(programInfo) {
+Loader::Loader(Config const& config, Python const& python, Programs const& programs)
+        : _python(python), _programs(new std::shared_ptr<Program>[programs.size()]), _programInfos(programs) {
     _flag = true;
     _thread = std::thread([&] {
         poll(config);
@@ -47,12 +47,15 @@ Loader::~Loader() {
 void Loader::poll(Config const& config) {
     CARSTAIRS_DEBUG("Loader thread running.");
     while (_flag) {
-        if (_programInfo.reload()) {
-            std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _programInfo));
-            ProgramImpl const& program = *programHolder.get();
-            if (program) {
-                _programs[_programInfo.index()] = programHolder;
-                CARSTAIRS_DEBUG("New program ready.");
+        for (auto i = _programInfos.size() - 1; SIZEX_NEG != i; --i) {
+            auto& info = _programInfos[i];
+            if (info.reload()) {
+                std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, info));
+                ProgramImpl const& program = *programHolder.get();
+                if (program) {
+                    _programs[i] = programHolder;
+                    CARSTAIRS_DEBUG("New program ready.");
+                }
             }
         }
         sleep(1);
