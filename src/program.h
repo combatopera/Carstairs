@@ -57,7 +57,7 @@ class Loader {
 
     std::shared_ptr<Program> _currentProgram;
 
-    Programs const& _programInfos;
+    ProgramInfos const& _programInfos;
 
     bool _flag;
 
@@ -67,7 +67,7 @@ class Loader {
 
 public:
 
-    Loader(Config const&, Python const&, Programs const&);
+    Loader(Config const&, Python const&, ProgramInfos const&);
 
     ~Loader();
 

@@ -71,24 +71,24 @@ public:
 
 };
 
-class Programs {
+class ProgramInfos {
 
-    std::vector<std::unique_ptr<ProgramInfo>> _programs;
+    std::vector<std::unique_ptr<ProgramInfo>> _infos;
 
 public:
 
-    Programs(Config const&, Python const&);
+    ProgramInfos(Config const&, Python const&);
 
-    DSSI_Program_Descriptor const *programOrNull(sizex index) const {
-        return index < _programs.size() ? &_programs[index].get()->descriptor() : 0;
+    DSSI_Program_Descriptor const *descriptorOrNull(sizex index) const {
+        return index < _infos.size() ? &_infos[index].get()->descriptor() : 0;
     }
 
     sizex size() const {
-        return sizex(_programs.size());
+        return sizex(_infos.size());
     }
 
     ProgramInfo& operator[](sizex i) const {
-        return *_programs[i].get();
+        return *_infos[i].get();
     }
 
 };

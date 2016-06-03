@@ -20,13 +20,13 @@ PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for 
 
 Python const PYTHON;
 
-Programs const PROGRAMS(CONFIG, PYTHON);
+ProgramInfos const PROGRAM_INFOS(CONFIG, PYTHON);
 
 Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
 LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
-    return new Carstairs(CONFIG, PortInfo, PYTHON, PROGRAMS, int(SampleRate));
+    return new Carstairs(CONFIG, PortInfo, PYTHON, PROGRAM_INFOS, int(SampleRate));
 }
 
 void activate(LADSPA_Handle Instance) {
@@ -45,12 +45,12 @@ void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLo
 
 DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor Index) {
     CARSTAIRS_TRACE("DSSI: get_program(%lu)", Index);
-    return PROGRAMS.programOrNull(sizex(Index));
+    return PROGRAM_INFOS.descriptorOrNull(sizex(Index));
 }
 
 void select_program(LADSPA_Handle Instance, DSSI::cursor Bank, DSSI::cursor Program) {
     CARSTAIRS_DEBUG("DSSI: select_program(%lu, %lu)", Bank, Program);
-    if (ProgramInfo::BANK == Bank && Program < PROGRAMS.size()) {
+    if (ProgramInfo::BANK == Bank && Program < PROGRAM_INFOS.size()) {
 
     }
 }
@@ -76,7 +76,7 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-Programs::Programs(Config const& config, Python const& python) {
+ProgramInfos::ProgramInfos(Config const& config, Python const& python) {
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
     Interpreter(config, python).runTask([&] {
@@ -96,7 +96,7 @@ Programs::Programs(Config const& config, Python const& python) {
                         CARSTAIRS_INFO("Ignoring abstract module: %s", moduleName.c_str());
                     }
                     else {
-                        _programs.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName)));
+                        _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName)));
                     }
                 }
                 else {
@@ -105,11 +105,11 @@ Programs::Programs(Config const& config, Python const& python) {
             }
         }
     });
-    std::sort(_programs.begin(), _programs.end(), [](std::unique_ptr<ProgramInfo> const& a, std::unique_ptr<ProgramInfo> const& b) {
+    std::sort(_infos.begin(), _infos.end(), [](std::unique_ptr<ProgramInfo> const& a, std::unique_ptr<ProgramInfo> const& b) {
         return *a.get() < *b.get();
     });
-    for (auto i = sizex(_programs.size() - 1); SIZEX_NEG != i; --i) {
-        _programs[i].get()->setIndex(i);
+    for (auto i = sizex(_infos.size() - 1); SIZEX_NEG != i; --i) {
+        _infos[i].get()->setIndex(i);
     }
 }
 
