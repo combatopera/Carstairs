@@ -34,8 +34,11 @@ class ProgramInfo {
 
 public:
 
+    static DSSI::cursor const BANK = 0;
+
     ProgramInfo(boost::filesystem::path const& path, std::string const& name)
             : _name(name), _path(path) { // Copies.
+        _descriptor.Bank = BANK;
         _descriptor.Name = _name.c_str();
     }
 
@@ -62,8 +65,6 @@ class Programs {
     std::vector<std::unique_ptr<ProgramInfo>> _programs;
 
 public:
-
-    static DSSI::cursor const BANK = 0;
 
     Programs(Config const&, Python const&);
 
