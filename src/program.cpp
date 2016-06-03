@@ -27,7 +27,7 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
 }
 
 Loader::Loader(Config const& config, Python const& python, ProgramInfo& programInfo)
-        : _python(python), _programInfo(programInfo) {
+        : _python(python), _programs(new std::shared_ptr<Program>[programInfo.index() + 1]), _programInfo(programInfo) {
     _flag = true;
     _thread = std::thread([&] {
         poll(config);
@@ -41,6 +41,7 @@ Loader::~Loader() {
         _thread.join();
         CARSTAIRS_DEBUG("Loader thread has terminated.");
     }
+    delete[] _programs;
 }
 
 void Loader::poll(Config const& config) {
@@ -50,7 +51,7 @@ void Loader::poll(Config const& config) {
             std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _programInfo));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
-                _nextProgram = programHolder;
+                _programs[_programInfo.index()] = programHolder;
                 CARSTAIRS_DEBUG("New program ready.");
             }
         }

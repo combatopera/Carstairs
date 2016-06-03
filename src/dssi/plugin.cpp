@@ -109,7 +109,7 @@ Programs::Programs(Config const& config, Python const& python) {
         return *a.get() < *b.get();
     });
     for (auto i = sizex(_programs.size() - 1); SIZEX_NEG != i; --i) {
-        _programs[i].get()->setProgram(i);
+        _programs[i].get()->setIndex(i);
     }
 }
 

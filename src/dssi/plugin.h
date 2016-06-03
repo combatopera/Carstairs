@@ -48,8 +48,12 @@ public:
         return _name < that._name;
     }
 
-    void setProgram(DSSI::cursor program) {
-        _descriptor.Program = program;
+    void setIndex(sizex index) {
+        _descriptor.Program = index;
+    }
+
+    sizex index() const {
+        return sizex(_descriptor.Program);
     }
 
     DSSI_Program_Descriptor const& descriptor() const {

@@ -52,7 +52,9 @@ class Loader {
 
     Python const& _python;
 
-    std::shared_ptr<Program> _nextProgram {new DefaultProgram}, _currentProgram;
+    std::shared_ptr<Program> * const _programs;
+
+    std::shared_ptr<Program> _currentProgram;
 
     ProgramInfo& _programInfo;
 
@@ -69,7 +71,7 @@ public:
     ~Loader();
 
     void refresh() {
-        _currentProgram = _nextProgram;
+        _currentProgram = _programs[_programInfo.index()];
     }
 
     Program& currentProgram() const {
