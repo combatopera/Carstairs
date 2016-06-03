@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ctime>
 #include <memory>
 #include <thread>
 
@@ -55,9 +54,7 @@ class Loader {
 
     std::shared_ptr<Program> _nextProgram {new DefaultProgram}, _currentProgram;
 
-    ProgramInfo const& _programInfo;
-
-    std::time_t _mark;
+    ProgramInfo& _programInfo;
 
     bool _flag;
 
@@ -67,7 +64,7 @@ class Loader {
 
 public:
 
-    Loader(Config const&, Python const&, ProgramInfo const&);
+    Loader(Config const&, Python const&, ProgramInfo&);
 
     ~Loader();
 

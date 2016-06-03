@@ -26,8 +26,8 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
     });
 }
 
-Loader::Loader(Config const& config, Python const& python, ProgramInfo const& programInfo)
-        : _python(python), _programInfo(programInfo), _mark(-1) {
+Loader::Loader(Config const& config, Python const& python, ProgramInfo& programInfo)
+        : _python(python), _programInfo(programInfo) {
     _flag = true;
     _thread = std::thread([&] {
         poll(config);
@@ -46,9 +46,7 @@ Loader::~Loader() {
 void Loader::poll(Config const& config) {
     CARSTAIRS_DEBUG("Loader thread running.");
     while (_flag) {
-        auto const mark = _programInfo.lastWriteTime();
-        if (mark != _mark) {
-            _mark = mark;
+        if (_programInfo.reload()) {
             std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _programInfo));
             ProgramImpl const& program = *programHolder.get();
             if (program) {
