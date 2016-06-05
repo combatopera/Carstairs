@@ -48,7 +48,7 @@ Noise::Noise(Config const& config, State const& state)
 }
 
 #ifdef CARSTAIRS_TEST
-Buffer<int>& noiseShape() {
+Buffer<int> const& noiseShape() {
     return YM2149_NOISE;
 }
 #endif

@@ -6,7 +6,7 @@
 #include "../util/buf.h"
 
 #ifdef CARSTAIRS_TEST
-Buffer<int>& noiseShape();
+Buffer<int> const& noiseShape();
 #endif
 
 class Noise: public Node<int> {
