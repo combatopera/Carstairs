@@ -17,10 +17,10 @@ BOOST_AUTO_TEST_CASE(LFSR) {
     for (auto n = expected.size(), i = n - n; i < n; ++i) {
         expected[i] = 1 - expected[i]; // According to qnoispec, raw LFSR 1 maps to amp 0, so we flip our LFSR.
     }
-    for (sizex kMax = NOISE.limit() - sizex(expected.size()), k = kMax - kMax; k < kMax; ++k) {
+    for (sizex kMax = noiseShape().limit() - sizex(expected.size()), k = kMax - kMax; k < kMax; ++k) {
         bool match = true;
         for (auto n = expected.size(), i = n - n; i < n; ++i) {
-            if (expected[i] != NOISE.at(sizex(k + i))) {
+            if (expected[i] != noiseShape().at(sizex(k + i))) {
                 match = false;
                 break;
             }

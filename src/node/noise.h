@@ -1,14 +1,21 @@
 #pragma once
 
+#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 #include "../util/buf.h"
 
 #ifdef CARSTAIRS_TEST
-extern Buffer<int> NOISE;
+Buffer<int>& noiseShape();
 #endif
 
 class Noise: public Node<int> {
+
+    int const _atomSize;
+
+    View<int> const _shape;
+
+    int _indexInShape, _progress, _stepSize;
 
     void startImpl() {
     }
@@ -18,8 +25,6 @@ class Noise: public Node<int> {
 
 public:
 
-    Noise(State const& state)
-            : Node("Noise", state) {
-    }
+    Noise(Config const& config, State const& state);
 
 };

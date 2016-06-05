@@ -1,12 +1,10 @@
+#include "noise.h"
+
 #include <array>
 
-#include "../util/buf.h"
-
-#ifndef CARSTAIRS_TEST
 namespace {
-#endif
 
-class Noise: public Buffer<int> {
+class YM2149Noise: public Buffer<int> {
 
     static int step(int const mask, int& x) {
         auto const bit = x & 1;
@@ -19,7 +17,7 @@ class Noise: public Buffer<int> {
 
 public:
 
-    Noise()
+    YM2149Noise()
             : Buffer("NOISE") {
         std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
         auto mask = 0;
@@ -41,8 +39,16 @@ public:
         }
     }
 
-} NOISE;
+} YM2149_NOISE;
 
-#ifndef CARSTAIRS_TEST
+}
+
+Noise::Noise(Config const& config, State const& state)
+        : Node("Noise", state), _atomSize(config._atomSize), _shape(YM2149_NOISE), _indexInShape(), _progress(), _stepSize() {
+}
+
+#ifdef CARSTAIRS_TEST
+Buffer<int>& noiseShape() {
+    return YM2149_NOISE;
 }
 #endif
