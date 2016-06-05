@@ -1,40 +1,41 @@
+#include <array>
+
 #include "../util/buf.h"
 
 namespace {
 
 class Noise: public Buffer<int> {
 
+    static int step(int const mask, int& x) {
+        auto const bit = x & 1;
+        x >>= 1;
+        if (bit) {
+            x ^= mask;
+        }
+        return 1 - bit; // Authentic, see qnoispec.
+    }
+
 public:
 
     Noise()
             : Buffer("NOISE") {
+        std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
         auto mask = 0;
-        mask += 1 << (17 - 1);
-        mask += 1 << (14 - 1);
+        for (auto const positiveDegree : YM2149_POSITIVE_DEGREES) {
+            mask += 1 << (positiveDegree - 1);
+        }
+        auto const initialX = 1;
         auto n = 0;
         {
-            auto x = 1;
+            auto x = initialX;
             do {
-                auto bit = x & 1;
-                x >>= 1;
-                if (bit) {
-                    x ^= mask;
-                }
+                step(mask, x);
                 ++n;
-            } while (1 != x);
+            } while (initialX != x);
         }
         setLimit(n);
-        auto i = 0;
-        {
-            auto x = 1;
-            do {
-                auto bit = x & 1;
-                x >>= 1;
-                if (bit) {
-                    x ^= mask;
-                }
-                put(i++, 1 - bit); // Authentic, see qnoispec.
-            } while (1 != x);
+        for (auto x = initialX, i = 0; i < n; ++i) {
+            put(i, step(mask, x));
         }
     }
 
