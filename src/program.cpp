@@ -10,6 +10,10 @@ namespace {
 Log const LOG(__FILE__);
 }
 
+DefaultProgram::~DefaultProgram() {
+    CARSTAIRS_DEBUG("Deleting a DefaultProgram.");
+}
+
 ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo const& info)
         : Interpreter(config, python), _info(info) {
     auto const name = info.descriptor().Name;
@@ -28,6 +32,9 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
 
 Loader::Loader(Config const& config, Python const& python, ProgramInfos const& programInfos)
         : _python(python), _programs(new std::shared_ptr<Program const>[programInfos.size()]), _programInfos(programInfos) {
+    for (sizex i = programInfos.size() - 1; SIZEX_NEG != i; --i) {
+        _programs[i].reset(new DefaultProgram);
+    }
     _flag = true;
     _thread = std::thread([&] {
         poll(config);

@@ -2,6 +2,7 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
+#include <memory>
 
 #include "config.h"
 #include "dssi/plugin.h"
@@ -55,7 +56,7 @@ class Carstairs {
 
     sizex _pendingProgram = 0; // XXX: Or the DefaultProgram?
 
-    Program const *_currentProgram = 0;
+    std::shared_ptr<Program const> _currentProgram;
 
     DSSI::cursor getProgramEventX(DSSI::cursor voidX) const;
 

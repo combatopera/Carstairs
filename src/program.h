@@ -12,6 +12,10 @@
 
 class DefaultProgram: public Program {
 
+public:
+
+    ~DefaultProgram();
+
     float rate() const {
         return 50;
     }
@@ -69,8 +73,8 @@ public:
 
     ~Loader();
 
-    Program const& program(sizex index) const {
-        return *_programs[index];
+    std::shared_ptr<Program const>& program(sizex index) const {
+        return _programs[index];
     }
 
 };

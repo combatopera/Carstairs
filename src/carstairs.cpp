@@ -49,7 +49,7 @@ DSSI::cursor Carstairs::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
         // If the logical cursor is a fraction, it affects the next physical cursor:
-        return onOrMax + DSSI::cursor(ceil(double(_state.programEventIndex()) / (*_currentProgram).rate() * _pcmRate));
+        return onOrMax + DSSI::cursor(ceil(double(_state.programEventIndex()) / (*_currentProgram.get()).rate() * _pcmRate));
     }
     return voidX; // Not in this block.
 }
@@ -76,7 +76,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
                 auto const& event = events[eventIndex++];
                 switch (event.type) {
                     case SND_SEQ_EVENT_NOTEON: {
-                        _currentProgram = &_loader.program(_pendingProgram);
+                        _currentProgram = _loader.program(_pendingProgram);
                         auto const& n = event.data.note;
                         _state.noteOn(hostEventX, n.note, n.velocity);
                         break;
@@ -88,7 +88,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
                 }
             }
             else {
-                _state.fire(*_currentProgram);
+                _state.fire(*_currentProgram.get());
             }
         }
         // It's possible for both the next host and program events to be beyond the block, so clamp:
