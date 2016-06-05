@@ -4,7 +4,7 @@
 
 void Mixer::renderImpl() {
     auto const tone = _tone.render(cursor() + _buf.limit());
-    if (_state._toneEnabled) {
+    if (_state._toneFlag) {
         _buf.fill(tone.begin());
     }
     else {

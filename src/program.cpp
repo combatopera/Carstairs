@@ -76,7 +76,7 @@ void Loader::poll(Config const& config) {
 void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     assert(_rate);
     if (!noteFrame) {
-        state._toneEnabled = false;
+        state._toneFlag = false;
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
@@ -91,6 +91,10 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             auto const level = chan.getAttr("level");
             if (level) {
                 state.setLevel4(level.numberRoundToInt());
+            }
+            auto const toneFlag = chan.getAttr("toneflag");
+            if (toneFlag) {
+                state._toneFlag = toneFlag.boolValue();
             }
         }
     });
