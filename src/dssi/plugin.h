@@ -32,8 +32,6 @@ class ProgramInfo {
 
     boost::filesystem::path _path;
 
-    std::time_t _mark = -1; // FIXME: Can't be static.
-
 public:
 
     static DSSI::cursor const BANK = 0;
@@ -60,13 +58,8 @@ public:
         return _descriptor;
     }
 
-    bool reload() {
-        auto const mark = boost::filesystem::last_write_time(_path);
-        if (mark != _mark) {
-            _mark = mark;
-            return true;
-        }
-        return false;
+    std::time_t lastWriteTime() const {
+        return boost::filesystem::last_write_time(_path);
     }
 
 };

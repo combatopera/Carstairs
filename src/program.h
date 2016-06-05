@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <memory>
 #include <thread>
 
@@ -59,6 +60,8 @@ class Loader {
 
     std::shared_ptr<Program const> * const _programs;
 
+    std::time_t * const _marks;
+
     ProgramInfos const& _programInfos;
 
     bool _flag;
@@ -66,6 +69,15 @@ class Loader {
     std::thread _thread;
 
     void poll(Config const&);
+
+    bool reload(sizex index) {
+        auto const mark = _programInfos[index].lastWriteTime();
+        if (mark != _marks[index]) {
+            _marks[index] = mark;
+            return true;
+        }
+        return false;
+    }
 
 public:
 
