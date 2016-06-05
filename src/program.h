@@ -53,9 +53,7 @@ class Loader {
 
     Python const& _python;
 
-    std::shared_ptr<Program> * const _programs;
-
-    std::shared_ptr<Program> _currentProgram;
+    std::shared_ptr<Program const> * const _programs;
 
     ProgramInfos const& _programInfos;
 
@@ -71,12 +69,8 @@ public:
 
     ~Loader();
 
-    void refresh(sizex index) {
-        _currentProgram = _programs[index];
-    }
-
-    Program& currentProgram() const {
-        return *_currentProgram.get();
+    Program const& program(sizex index) const {
+        return *_programs[index];
     }
 
 };

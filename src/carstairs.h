@@ -2,6 +2,7 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
+#include <memory>
 
 #include "config.h"
 #include "dssi/plugin.h"
@@ -52,6 +53,8 @@ class Carstairs {
     PCM _pcm;
 
     int const _pcmRate;
+
+    std::shared_ptr<Program> _currentProgram;
 
     DSSI::cursor getProgramEventX(DSSI::cursor voidX) const;
 
