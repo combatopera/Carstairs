@@ -19,6 +19,6 @@ class Tone: public Node<int> {
 
 public:
 
-    Tone(Config const&, State&);
+    Tone(Config const&, State const&);
 
 };
