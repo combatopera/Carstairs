@@ -22,11 +22,12 @@ public:
     }
 
     void fire(int noteFrame, int offFrameOrNeg, State& state) const {
-        if (offFrameOrNeg < 0) {
+        if (!noteFrame) {
             state.setLevel4(13);
+            state._toneEnabled = true;
         }
-        else {
-            state.setLevel4(0);
+        if (!offFrameOrNeg) {
+            state._toneEnabled = false;
         }
     }
 

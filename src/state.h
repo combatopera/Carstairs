@@ -41,6 +41,8 @@ public:
 
 public:
 
+    bool _toneEnabled;
+
     State(Config const&);
 
     void reset();

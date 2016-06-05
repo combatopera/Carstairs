@@ -27,7 +27,8 @@ Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python 
         _state(config), //
         _loader(config, python, programInfos), //
         _tone(config, _state), //
-        _level(config, _state, _tone), //
+        _mixer(_state, _tone), //
+        _level(config, _state, _mixer), //
         _pcm(config, _state, _level, pcmRate), //
         _pcmRate(pcmRate) {
 }

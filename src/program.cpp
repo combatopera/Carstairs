@@ -2,7 +2,6 @@
 
 #include <unistd.h>
 #include <cassert>
-#include <ctime>
 
 #include "py/py.h"
 #include "util/util.h"
@@ -76,6 +75,9 @@ void Loader::poll(Config const& config) {
 
 void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     assert(_rate);
+    if (!noteFrame) {
+        state._toneEnabled = false;
+    }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
         if (offFrameOrNeg < 0) {

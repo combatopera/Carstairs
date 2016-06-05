@@ -2,7 +2,7 @@
 
 #include <ladspa.h>
 
-template<typename T> Node<T>::Node(char const *label, State& state)
+template<typename T> Node<T>::Node(char const *label, State const& state)
         : _cursor(INITIAL_CURSOR), _buf(label), _state(state) {
     // Nothing else.
 }
