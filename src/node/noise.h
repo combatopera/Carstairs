@@ -2,6 +2,11 @@
 
 #include "../node.h"
 #include "../state.h"
+#include "../util/buf.h"
+
+#ifdef CARSTAIRS_TEST
+extern Buffer<int> NOISE;
+#endif
 
 class Noise: public Node<int> {
 

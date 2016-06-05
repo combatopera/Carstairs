@@ -2,7 +2,9 @@
 
 #include "../util/buf.h"
 
+#ifndef CARSTAIRS_TEST
 namespace {
+#endif
 
 class Noise: public Buffer<int> {
 
@@ -41,4 +43,6 @@ public:
 
 } NOISE;
 
+#ifndef CARSTAIRS_TEST
 }
+#endif
