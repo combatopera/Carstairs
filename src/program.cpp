@@ -27,7 +27,7 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
 }
 
 Loader::Loader(Config const& config, Python const& python, ProgramInfos const& programInfos)
-        : _python(python), _programs(new std::shared_ptr<Program>[programInfos.size()]), _programInfos(programInfos) {
+        : _python(python), _programs(new std::shared_ptr<Program const>[programInfos.size()]), _programInfos(programInfos) {
     _flag = true;
     _thread = std::thread([&] {
         poll(config);

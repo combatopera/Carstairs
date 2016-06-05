@@ -32,7 +32,7 @@ class ProgramInfo {
 
     boost::filesystem::path _path;
 
-    std::time_t _mark = -1;
+    std::time_t _mark = -1; // FIXME: Can't be static.
 
 public:
 

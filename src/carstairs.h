@@ -2,7 +2,6 @@
 
 #include <alsa/seq_event.h>
 #include <ladspa.h>
-#include <memory>
 
 #include "config.h"
 #include "dssi/plugin.h"
@@ -54,7 +53,9 @@ class Carstairs {
 
     int const _pcmRate;
 
-    std::shared_ptr<Program> _currentProgram;
+    sizex _pendingProgram = 0; // XXX: Or the DefaultProgram?
+
+    Program const *_currentProgram = 0;
 
     DSSI::cursor getProgramEventX(DSSI::cursor voidX) const;
 
@@ -67,5 +68,9 @@ public:
     void setPortValPtr(sizex, LADSPA_Data *);
 
     void runSynth(DSSI::cursor, snd_seq_event_t const *, DSSI::cursor);
+
+    void selectProgram(sizex index) {
+        _pendingProgram = index;
+    }
 
 };

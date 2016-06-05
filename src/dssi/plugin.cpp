@@ -51,7 +51,7 @@ DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor 
 void select_program(LADSPA_Handle Instance, DSSI::cursor Bank, DSSI::cursor Program) {
     CARSTAIRS_DEBUG("DSSI: select_program(%lu, %lu)", Bank, Program);
     if (ProgramInfo::BANK == Bank && Program < PROGRAM_INFOS.size()) {
-
+        static_cast<Carstairs *>(Instance)->selectProgram(sizex(Program));
     }
 }
 
