@@ -4,8 +4,15 @@
 
 void Mixer::renderImpl() {
     auto const tone = _tone.render(cursor() + _buf.limit());
+    auto const noise = _noise.render(cursor() + _buf.limit());
     if (_state._toneFlag) {
         _buf.fill(tone.begin());
+        if (_state._noiseFlag) {
+            _buf.AND(noise.begin()); // We use AND as zero is preferred over envelope, see qbmixenv.
+        }
+    }
+    else if (_state._noiseFlag) {
+        _buf.fill(noise.begin());
     }
     else {
         _buf.fill(1); // Fixed and variable levels should work, see qanlgmix and qenvpbuf.

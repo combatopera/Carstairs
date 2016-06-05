@@ -41,7 +41,7 @@ public:
 
 public:
 
-    bool _toneFlag;
+    bool _toneFlag, _noiseFlag;
 
     State(Config const&);
 

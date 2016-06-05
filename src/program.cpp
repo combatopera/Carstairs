@@ -77,6 +77,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     assert(_rate);
     if (!noteFrame) {
         state._toneFlag = false;
+        state._noiseFlag = false;
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
@@ -95,6 +96,10 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             auto const toneFlag = chan.getAttr("toneflag");
             if (toneFlag) {
                 state._toneFlag = toneFlag.boolValue();
+            }
+            auto const noiseFlag = chan.getAttr("noiseflag");
+            if (noiseFlag) {
+                state._noiseFlag = noiseFlag.boolValue();
             }
         }
     });

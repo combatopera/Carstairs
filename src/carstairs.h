@@ -9,6 +9,7 @@
 #include "dssi/port.h"
 #include "node/level.h"
 #include "node/mixer.h"
+#include "node/noise.h"
 #include "node/pcm.h"
 #include "node/tone.h"
 #include "program.h"
@@ -48,6 +49,8 @@ class Carstairs {
     Loader _loader;
 
     Tone _tone;
+
+    Noise _noise;
 
     Mixer _mixer;
 
