@@ -100,6 +100,8 @@ public:
 
     void mul(T const *);
 
+    void AND(T const *);
+
     void add(T value);
 
     void fillAbs(std::complex<double> const *);

@@ -67,6 +67,12 @@ template<> void View<double>::mul(double const *values) {
     }
 }
 
+template<> void View<int>::AND(int const *values) {
+    for (auto i = _limit - 1; SIZEX_NEG != i; --i) {
+        _data[i] &= values[i];
+    }
+}
+
 template<> void View<double>::blackman() {
     auto const N = _limit;
     assert(N & 1);
