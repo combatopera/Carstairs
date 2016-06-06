@@ -17,7 +17,7 @@ template<typename T> View<T> Node<T>::render(DSSI::cursor newCursor) {
         renderImpl();
         _cursor = newCursor;
     }
-    return _buf;
+    return _buf; // TODO: Enforce return of current buf when nothing to render.
 }
 
 CARSTAIRS_NODE_INSTANTIATE(int)
