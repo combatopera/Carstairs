@@ -8,11 +8,13 @@ Log const LOG(__FILE__);
 
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
+Bounds<int> const State::NP_BOUNDS(1, 0x1f);
+
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
 
 State::State(Config const& config)
         : _config(config), _onOrMax(DSSI::CURSOR_MAX), _offOrMax(DSSI::CURSOR_MAX), //
-        _programEventIndex(), _offEventIndex() {
+        _programEventIndex(), _offEventIndex(), _toneFlag(), _noiseFlag() {
 }
 
 void State::reset() {
