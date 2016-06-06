@@ -61,4 +61,21 @@ BOOST_FIXTURE_TEST_CASE(works, F) {
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(carry, F) {
+    State state(_config);
+    state._NP = 1;
+    auto size = 17 * 16 + 1;
+    Noise oRef(_config, state);
+    oRef.start();
+    auto ref = oRef.render(size);
+    for (auto n = 1; n < size; ++n) {
+        Noise o(_config, state);
+        o.start();
+        auto v1 = o.render(n);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(), ref.begin(n), v1.begin(), v1.end());
+        auto v2 = o.render(size);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ref.begin(n), ref.end(), v2.begin(), v2.end());
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
