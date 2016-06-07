@@ -3,7 +3,7 @@
 #include <ladspa.h>
 
 template<typename T> Node<T>::Node(char const *label, State const& state)
-        : _cursor(INITIAL_CURSOR), _buf(label), _state(state) {
+        : _cursor(-1), _buf(label), _state(state) {
     // Nothing else.
 }
 

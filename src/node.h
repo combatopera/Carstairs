@@ -6,8 +6,6 @@
 
 template<typename T> class Node {
 
-    static DSSI::cursor const INITIAL_CURSOR = 0;
-
     DSSI::cursor _cursor;
 
 public:
@@ -17,7 +15,7 @@ public:
     virtual ~Node();
 
     void start() {
-        _cursor = INITIAL_CURSOR;
+        _cursor = 0;
         startImpl();
     }
 
