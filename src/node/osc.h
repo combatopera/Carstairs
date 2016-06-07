@@ -10,6 +10,8 @@ class Osc: public Node<int> {
 
     View<int> const _shape;
 
+    int const& _period;
+
     int _indexInShape, _progress, _stepSize;
 
     void startImpl() {
@@ -18,7 +20,7 @@ class Osc: public Node<int> {
     }
 
     void renderImpl() {
-        _stepSize = _atomSize * _state.TP();
+        _stepSize = _atomSize * _period;
         auto const shapeSize = _shape.limit();
         if (_progress >= _stepSize) { // Start a new step.
             _indexInShape = (_indexInShape + 1) % shapeSize;
@@ -44,8 +46,8 @@ class Osc: public Node<int> {
 
 protected:
 
-    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape)
-            : Node(label, state), _atomSize(atomSize), _shape(shape), _indexInShape(), _progress(), _stepSize() {
+    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape, int const& period)
+            : Node(label, state), _atomSize(atomSize), _shape(shape), _period(period), _indexInShape(), _progress(), _stepSize() {
     }
 
 };

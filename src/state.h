@@ -53,11 +53,11 @@ public:
 
     void noteOff(DSSI::cursor cursor, int midiNote);
 
-    int TP() const {
+    int const& TP() const {
         return _TP;
     }
 
-    int NP() const {
+    int const& NP() const {
         return _NP;
     }
 
