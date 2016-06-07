@@ -1,5 +1,7 @@
 #include "tone.h"
 
+#include "../util/buf.h"
+
 namespace {
 
 class Square: public Buffer<int> {
@@ -17,5 +19,5 @@ public:
 }
 
 Tone::Tone(Config const& config, State const& state)
-        : Node("Tone", state), _atomSize(config._atomSize), _shape(SQUARE), _indexInShape(), _progress(), _stepSize() {
+        : Osc(config, state, "Tone", SQUARE) {
 }
