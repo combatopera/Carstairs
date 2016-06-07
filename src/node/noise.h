@@ -1,27 +1,15 @@
 #pragma once
 
 #include "../config.h"
-#include "../node.h"
 #include "../state.h"
 #include "../util/buf.h"
+#include "osc.h"
 
 #ifdef CARSTAIRS_TEST
 Buffer<int> const& noiseShape();
 #endif
 
-class Noise: public Node<int> {
-
-    sizex const _atomSize;
-
-    View<int> const _shape;
-
-    int _indexInShape, _progress, _stepSize;
-
-    void startImpl() {
-    }
-
-    void renderImpl() {
-    }
+class Noise: public Osc {
 
 #ifdef CARSTAIRS_TEST
 public:

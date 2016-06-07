@@ -48,7 +48,7 @@ Noise::Noise(Config const& config, State const& state)
 }
 
 Noise::Noise(Config const& config, State const& state, View<int> const shape)
-        : Node("Noise", state), _atomSize(config._atomSize), _shape(shape), _indexInShape(), _progress(), _stepSize() {
+        : Osc(config, state, "Noise", shape) {
 }
 
 #ifdef CARSTAIRS_TEST
