@@ -11,7 +11,7 @@ Buffer<int> const& noiseShape();
 
 class Noise: public Node<int> {
 
-    int const _atomSize;
+    sizex const _atomSize;
 
     View<int> const _shape;
 

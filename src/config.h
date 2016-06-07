@@ -14,13 +14,13 @@ class Config {
 public:
 #endif
 
-    static int const YM2149_ATOM_SIZE = 8;
+    static sizex const YM2149_ATOM_SIZE = 8;
 
 public:
 
     unsigned long const _UniqueID = 0;
 
-    int CARSTAIRS_CONST _atomSize = 1;
+    sizex CARSTAIRS_CONST _atomSize = 1;
 
     int const _refMidiNote = 69;
 

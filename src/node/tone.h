@@ -7,7 +7,7 @@
 
 class Tone: public Node<int> {
 
-    int const _atomSize;
+    sizex const _atomSize;
 
     View<int> const _shape;
 
