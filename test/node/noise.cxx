@@ -109,4 +109,37 @@ BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
+    _config._atomSize = 4;
+    State state(_config);
+    state._NP = 3;
+    Buffer<int> oneZeroShape("oneZeroShape", 2), ones("ones", 24), zeros("zeros", 24);
+    oneZeroShape.put(0, 1);
+    oneZeroShape.put(1, 0);
+    ones.fill(1);
+    zeros.zero();
+    Noise o(_config, state, oneZeroShape);
+    o.start();
+    {
+        auto v = o.render(48);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(24), v.begin(), v.begin(24));
+        BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(24), v.begin(24), v.end());
+    }
+    state._NP = 2;
+    {
+        auto v = o.render(o.cursor() + 38);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(16), v.begin(), v.begin(16));
+        BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(16), v.begin(16), v.begin(32));
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(6), v.begin(32), v.end());
+    }
+    state._NP = 1;
+    {
+        auto v = o.render(o.cursor() + 27);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(10), v.begin(), v.begin(10));
+        BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(8), v.begin(10), v.begin(18));
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(8), v.begin(18), v.begin(26));
+        BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(1), v.begin(26), v.end());
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
