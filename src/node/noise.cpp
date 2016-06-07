@@ -44,7 +44,11 @@ public:
 }
 
 Noise::Noise(Config const& config, State const& state)
-        : Node("Noise", state), _atomSize(config._atomSize), _shape(YM2149_NOISE), _indexInShape(), _progress(), _stepSize() {
+        : Noise(config, state, YM2149_NOISE) {
+}
+
+Noise::Noise(Config const& config, State const& state, View<int> const shape)
+        : Node("Noise", state), _atomSize(config._atomSize), _shape(shape), _indexInShape(), _progress(), _stepSize() {
 }
 
 #ifdef CARSTAIRS_TEST

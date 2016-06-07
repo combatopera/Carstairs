@@ -23,6 +23,12 @@ class Noise: public Node<int> {
     void renderImpl() {
     }
 
+#ifdef CARSTAIRS_TEST
+public:
+#endif
+
+    Noise(Config const& config, State const& state, View<int> const shape);
+
 public:
 
     Noise(Config const& config, State const& state);
