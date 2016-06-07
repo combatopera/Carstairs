@@ -42,6 +42,8 @@ void Carstairs::start() {
     _state.reset();
     // TODO: Reliably start all nodes.
     _tone.start();
+    _noise.start();
+    _mixer.start();
     _level.start();
     _pcm.start();
 }
