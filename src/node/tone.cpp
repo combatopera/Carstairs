@@ -19,5 +19,5 @@ public:
 }
 
 Tone::Tone(Config const& config, State const& state)
-        : Osc(config._atomSize, state, "Tone", SQUARE, state.TP()) {
+        : Osc(config._atomSize, state, "Tone", SQUARE, state.TP(), true) {
 }

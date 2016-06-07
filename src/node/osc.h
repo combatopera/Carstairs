@@ -12,7 +12,15 @@ class Osc: public Node<int> {
 
     int const& _period;
 
+    bool const _eagerStepSize;
+
     int _indexInShape, _progress, _stepSize;
+
+    inline void updateStepSize(bool eager) {
+        if (_eagerStepSize == eager) {
+            _stepSize = _atomSize * _period;
+        }
+    }
 
     void startImpl() {
         _indexInShape = 0;
@@ -20,7 +28,8 @@ class Osc: public Node<int> {
     }
 
     void renderImpl() {
-        _stepSize = _atomSize * _period;
+        updateStepSize(true);
+        updateStepSize(false);
         auto const shapeSize = _shape.limit();
         if (_progress >= _stepSize) { // Start a new step.
             _indexInShape = (_indexInShape + 1) % shapeSize;
@@ -46,8 +55,9 @@ class Osc: public Node<int> {
 
 protected:
 
-    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape, int const& period)
-            : Node(label, state), _atomSize(atomSize), _shape(shape), _period(period), _indexInShape(), _progress(), _stepSize() {
+    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape, int const& period, bool eagerStepSize)
+            : Node(label, state), _atomSize(atomSize), _shape(shape), _period(period), _eagerStepSize(eagerStepSize), //
+            _indexInShape(), _progress(), _stepSize() {
     }
 
 };
