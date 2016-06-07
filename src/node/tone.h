@@ -27,13 +27,19 @@ class Tone: public Node<int> {
         }
         sizex endOfStep = _stepSize - _progress, i = 0;
         auto const n = _buf.limit();
+        auto ptr = const_cast<int *>(_buf.begin());
         while (endOfStep <= n) { // Could allow next block to extend step by using < here.
-            _buf.fill(i, endOfStep, _shape.at(_indexInShape));
-            i = endOfStep;
+            auto const val = _shape.at(_indexInShape);
+            for (; i < endOfStep; ++i) {
+                *ptr++ = val;
+            }
             _indexInShape = (_indexInShape + 1) % shapeSize;
             endOfStep += _stepSize;
         }
-        _buf.fill(i, n, _shape.at(_indexInShape));
+        auto const val = _shape.at(_indexInShape);
+        for (; i < n; ++i) {
+            *ptr++ = val;
+        }
         _progress = _stepSize - (endOfStep - n);
     }
 
