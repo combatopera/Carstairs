@@ -22,6 +22,7 @@ BOOST_FIXTURE_TEST_CASE(works, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(24, 1, ones)
     CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(96);
@@ -38,6 +39,7 @@ BOOST_FIXTURE_TEST_CASE(resume, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(24, 1, ones)
     CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(25);
@@ -53,9 +55,11 @@ BOOST_FIXTURE_TEST_CASE(carry, F) {
     state._TP = 1;
     int size = 3 * 8 + 1;
     Tone refOsc(_config, state); // Must stay in scope for ref to be valid.
+    refOsc.start();
     View<int> ref = refOsc.render(size);
     for (int n = 0; n <= size; ++n) {
         Tone o(_config, state);
+        o.start();
         View<int> v = o.render(n);
         BOOST_REQUIRE_EQUAL_COLLECTIONS(ref.begin(), ref.begin(v.limit()), v.begin(), v.end());
         v = o.render(size);
@@ -67,6 +71,7 @@ BOOST_FIXTURE_TEST_CASE(endExistingStepAtEndOfBlock, F) {
     State state(_config);
     state._TP = 1;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(4, 1, ones)
     CARSTAIRS_BUF(4, 0, zeros)
     View<int> v = o.render(4);
@@ -81,6 +86,7 @@ BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
     State state(_config);
     state._TP = 1;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(24, 1, ones)
     CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(16);
@@ -101,6 +107,7 @@ BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
     State state(_config);
     state._TP = 3;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(24, 1, ones)
     CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(48);
@@ -124,6 +131,7 @@ BOOST_FIXTURE_TEST_CASE(smallerBlocksThanPeriod, F) {
     State state(_config);
     state._TP = 5;
     Tone o(_config, state);
+    o.start();
     CARSTAIRS_BUF(24, 1, ones)
     CARSTAIRS_BUF(24, 0, zeros)
     View<int> v = o.render(4);
