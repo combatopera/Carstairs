@@ -47,8 +47,9 @@ Noise::Noise(Config const& config, State const& state)
         : Noise(config, state, YM2149_NOISE) {
 }
 
+// Doubling the atom size results in authentic spectrum, see qnoispec:
 Noise::Noise(Config const& config, State const& state, View<int> const shape)
-        : Osc(config, state, "Noise", shape) {
+        : Osc(config._atomSize * 2, state, "Noise", shape) {
 }
 
 #ifdef CARSTAIRS_TEST

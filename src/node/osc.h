@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../config.h"
 #include "../node.h"
 #include "../state.h"
 #include "../util/buf.h"
@@ -45,8 +44,8 @@ class Osc: public Node<int> {
 
 protected:
 
-    Osc(Config const& config, State const& state, char const *label, View<int> const shape)
-            : Node(label, state), _atomSize(config._atomSize), _shape(shape), _indexInShape(), _progress(), _stepSize() {
+    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape)
+            : Node(label, state), _atomSize(atomSize), _shape(shape), _indexInShape(), _progress(), _stepSize() {
     }
 
 };
