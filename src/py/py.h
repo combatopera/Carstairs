@@ -43,7 +43,7 @@ public:
         va_start(ap, format);
         PyRef args = Py_VaBuildValue(format, ap);
         va_end(ap);
-        Py_XDECREF(PyEval_CallObject(_ptr, args));
+        PyRef none = PyEval_CallObject(_ptr, args);
     }
 
     PyRef toPathBytes() const {
