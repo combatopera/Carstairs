@@ -22,38 +22,38 @@ public:
 
 private:
 
-    inline void updateStepSize(bool eager) {
-        if (_eagerStepSize == eager) {
-            _stepSize = _atomSize * _period;
-        }
-    }
-
     void startImpl() {
         _indexInShape = 0;
         _progress = 0;
     }
 
+    inline void updateStepSize() {
+        _stepSize = _atomSize * _period;
+    }
+
     void renderImpl() {
-        updateStepSize(true);
-        if (!_progress) {
-            updateStepSize(false);
+        auto const shapeSize = _shape.limit(), n = _buf.limit();
+        if (_eagerStepSize || !_progress) {
+            updateStepSize();
         }
-        auto const shapeSize = _shape.limit();
         if (_progress >= _stepSize) { // Start a new step.
             _indexInShape = (_indexInShape + 1) % shapeSize;
             _progress = 0;
         }
         sizex endOfStep = _stepSize - _progress, i = 0;
-        auto const n = _buf.limit();
         auto ptr = const_cast<int *>(_buf.begin());
-        while (endOfStep <= n) { // Could allow next block to extend step by using < here.
-            auto const val = _shape.at(_indexInShape);
-            for (; i < endOfStep; ++i) {
-                *ptr++ = val;
+        if (endOfStep <= n) {
+            if (!_eagerStepSize) {
+                updateStepSize();
             }
-            _indexInShape = (_indexInShape + 1) % shapeSize;
-            updateStepSize(false); // FIXME: Inefficient.
-            endOfStep += _stepSize;
+            do {
+                auto const val = _shape.at(_indexInShape);
+                for (; i < endOfStep; ++i) {
+                    *ptr++ = val;
+                }
+                _indexInShape = (_indexInShape + 1) % shapeSize;
+                endOfStep += _stepSize;
+            } while (endOfStep <= n);
         }
         auto const val = _shape.at(_indexInShape);
         for (; i < n; ++i) {
