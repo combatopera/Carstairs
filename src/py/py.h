@@ -16,6 +16,8 @@ public:
 
     PyRef& operator=(PyObject * const ptr);
 
+    PyRef& operator=(PyRef const& that);
+
     ~PyRef();
 
     explicit operator bool() const {
