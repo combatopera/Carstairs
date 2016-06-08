@@ -1,7 +1,5 @@
 #include "py.h"
 
-#include <python3.4m/Python.h>
-
 #include "../util/util.h"
 
 namespace {
@@ -13,6 +11,8 @@ PyRef& PyRef::operator=(PyObject * const ptr) {
 }
 
 PyRef::~PyRef() {
-    CARSTAIRS_TRACE("XDECREF: %p", _ptr);
-    Py_XDECREF(_ptr);
+    if (_ptr) {
+        CARSTAIRS_TRACE("DECREF: %p * %zd", _ptr, Py_REFCNT(_ptr));
+        Py_DECREF(_ptr);
+    }
 }
