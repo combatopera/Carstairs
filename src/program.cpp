@@ -85,7 +85,13 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             module.getAttr("on").callVoid("(i)", noteFrame);
         }
         else {
-            module.getAttr("off").callVoid("ii", noteFrame, offFrameOrNeg);
+            auto const off = module.getAttr("off");
+            if (off) {
+                off.callVoid("ii", noteFrame, offFrameOrNeg);
+            }
+            else {
+                module.getAttr("on").callVoid("(i)", noteFrame);
+            }
         }
         auto const chan = module.getAttr("chan");
         if (chan) {
