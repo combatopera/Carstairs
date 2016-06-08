@@ -31,13 +31,17 @@ private:
         _stepSize = _atomSize * _period;
     }
 
+    inline void nextVal(sizex const shapeSize) {
+        _indexInShape = (_indexInShape + 1) % shapeSize;
+    }
+
     void renderImpl() {
         auto const shapeSize = _shape.limit(), n = _buf.limit();
         if (_eagerStepSize || !_progress) {
             updateStepSize();
         }
         if (_progress >= _stepSize) { // Start a new step.
-            _indexInShape = (_indexInShape + 1) % shapeSize;
+            nextVal(shapeSize);
             _progress = 0;
         }
         sizex endOfStep = _stepSize - _progress, i = 0;
@@ -51,7 +55,7 @@ private:
                 for (; i < endOfStep; ++i) {
                     *ptr++ = val;
                 }
-                _indexInShape = (_indexInShape + 1) % shapeSize;
+                nextVal(shapeSize);
                 endOfStep += _stepSize;
             } while (endOfStep <= n);
         }
