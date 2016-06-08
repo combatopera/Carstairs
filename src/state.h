@@ -74,6 +74,14 @@ public:
         ++_programEventIndex;
     }
 
+    void setTP(int TP) {
+        _TP = TP_BOUNDS.clamp(TP);
+    }
+
+    void setNP(int NP) {
+        _NP = NP_BOUNDS.clamp(NP);
+    }
+
     void setLevel4(int level4) {
         _level4 = LEVEL4_BOUNDS.clamp(level4);
     }

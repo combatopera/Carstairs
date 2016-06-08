@@ -95,17 +95,25 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         }
         auto const chan = module.getAttr("chan");
         if (chan) {
-            auto const level = chan.getAttr("level");
-            if (level) {
-                state.setLevel4(level.numberRoundToInt());
+            auto var = chan.getAttr("level");
+            if (var) {
+                state.setLevel4(var.numberRoundToInt());
             }
-            auto const toneFlag = chan.getAttr("toneflag");
-            if (toneFlag) {
-                state._toneFlag = toneFlag.boolValue();
+            var = chan.getAttr("toneflag");
+            if (var) {
+                state._toneFlag = var.boolValue();
             }
-            auto const noiseFlag = chan.getAttr("noiseflag");
-            if (noiseFlag) {
-                state._noiseFlag = noiseFlag.boolValue();
+            var = chan.getAttr("noiseflag");
+            if (var) {
+                state._noiseFlag = var.boolValue();
+            }
+            var = chan.getAttr("toneperiod");
+            if (var) {
+                state.setTP(var.numberRoundToInt());
+            }
+            var = chan.getAttr("noiseperiod");
+            if (var) {
+                state.setNP(var.numberRoundToInt());
             }
         }
     });
