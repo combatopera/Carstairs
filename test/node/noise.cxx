@@ -4,6 +4,8 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <array>
 
+#include "../../src/node.h"
+
 BOOST_AUTO_TEST_SUITE(TestNoise)
 
 BOOST_AUTO_TEST_CASE(LFSR) {
@@ -139,6 +141,40 @@ BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
         BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(8), v.begin(10), v.begin(18));
         BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(8), v.begin(18), v.begin(26));
         BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(1), v.begin(26), v.end());
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(stepBiggerThanBlock, F) {
+    _config._atomSize = 1;
+    State state(_config);
+    state._NP = 5;
+    Buffer<int> oneZeroShape("oneZeroShape", 2), ones("ones", 24), zeros("zeros", 24);
+    oneZeroShape.put(0, 1);
+    oneZeroShape.put(1, 0);
+    ones.fill(1);
+    zeros.zero();
+    Noise o(_config, state, oneZeroShape);
+    o.start();
+    {
+        auto v = o.render(3);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(3), v.begin(), v.end());
+        BOOST_CHECK_EQUAL(10, o._stepSize);
+        BOOST_CHECK_EQUAL(3, o._progress);
+    }
+    state._NP = 6;
+    {
+        auto v = o.render(o.cursor() + 4);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(4), v.begin(), v.end());
+        BOOST_CHECK_EQUAL(10, o._stepSize);
+        BOOST_CHECK_EQUAL(7, o._progress);
+    }
+    {
+        auto v = o.render(o.cursor() + 16);
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(3), v.begin(), v.begin(3));
+        BOOST_CHECK_EQUAL_COLLECTIONS(zeros.begin(), zeros.begin(12), v.begin(3), v.begin(15));
+        BOOST_CHECK_EQUAL_COLLECTIONS(ones.begin(), ones.begin(1), v.begin(15), v.end());
+        BOOST_CHECK_EQUAL(12, o._stepSize);
+        BOOST_CHECK_EQUAL(1, o._progress);
     }
 }
 

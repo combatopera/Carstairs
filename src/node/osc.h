@@ -14,7 +14,13 @@ class Osc: public Node<int> {
 
     bool const _eagerStepSize;
 
+#ifdef CARSTAIRS_TEST
+public:
+#endif
+
     int _indexInShape, _progress, _stepSize;
+
+private:
 
     inline void updateStepSize(bool eager) {
         if (_eagerStepSize == eager) {
@@ -29,7 +35,9 @@ class Osc: public Node<int> {
 
     void renderImpl() {
         updateStepSize(true);
-        updateStepSize(false);
+        if (!_progress) {
+            updateStepSize(false);
+        }
         auto const shapeSize = _shape.limit();
         if (_progress >= _stepSize) { // Start a new step.
             _indexInShape = (_indexInShape + 1) % shapeSize;
@@ -44,6 +52,7 @@ class Osc: public Node<int> {
                 *ptr++ = val;
             }
             _indexInShape = (_indexInShape + 1) % shapeSize;
+            updateStepSize(false); // FIXME: Inefficient.
             endOfStep += _stepSize;
         }
         auto const val = _shape.at(_indexInShape);
