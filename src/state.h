@@ -41,6 +41,8 @@ public:
 
     int _level4 = LEVEL4_BOUNDS._min;
 
+    bool _levelMode = false;
+
 public:
 
     bool _toneFlag, _noiseFlag;
@@ -96,6 +98,10 @@ public:
 
     int level5() const {
         return _level4 * 2 + 1; // Observe 4-bit 0 is 5-bit 1.
+    }
+
+    bool const& levelMode() const {
+        return _levelMode;
     }
 
 };

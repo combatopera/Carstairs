@@ -6,6 +6,7 @@
 #include "../node.h"
 #include "../state.h"
 #include "../util/buf.h"
+#include "env.h"
 #include "mixer.h"
 
 class Level: public Node<float> {
@@ -13,6 +14,10 @@ class Level: public Node<float> {
     float const _maxAmp;
 
     Mixer& _mixer;
+
+    Env& _env;
+
+    bool const& _levelMode;
 
     void startImpl() {
         // Nothing to be done.
@@ -28,8 +33,8 @@ class Level: public Node<float> {
 
 public:
 
-    Level(Config const& config, State& state, Mixer& mixer)
-            : Node("Level", state), _maxAmp(config._maxAmp), _mixer(mixer) {
+    Level(Config const& config, State& state, Mixer& mixer, Env& env)
+            : Node("Level", state), _maxAmp(config._maxAmp), _mixer(mixer), _env(env), _levelMode(state.levelMode()) {
     }
 
 };
