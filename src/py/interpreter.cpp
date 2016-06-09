@@ -22,7 +22,32 @@ public:
         boost::filesystem::create_directory(_dir);
         std::ofstream f;
         f.open((_dir / "carstairs.py").string().c_str());
-        f << R"EOF(class chip: pass
+        f << R"EOF(class Env:
+
+    def __init__(self, script):
+        import re
+        self.v = []
+        for word in re.findall(r'[\S]+', script):
+            sep = word.find('>')
+            if -1 == sep:
+                sep = word.find('x')
+                if -1 == sep:
+                    self.v.append(float(word))
+                else:
+                    n = int(word[sep+1:])
+                    self.v += [float(word[:sep])] * n
+            else:
+                n = int(word[:sep])
+                src = self.v[-1]
+                diff = float(word[sep+1:]) - src
+                for i in range(n):
+                    self.v.append(src + diff * (1+i) / n)
+
+    def __getitem__(self, i):
+        n = len(self.v)
+        return self.v[i] if i < n else self.v[n - 1]
+
+class chip: pass
 class A: pass
 class note: pass
 )EOF";
