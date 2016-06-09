@@ -24,10 +24,10 @@ public:
     void fire(int noteFrame, int offFrameOrNeg, State& state) const {
         if (!noteFrame) {
             state.setLevel4(13);
-            state._toneFlag = true;
+            state.setToneFlag(true);
         }
         if (!offFrameOrNeg) {
-            state._toneFlag = false;
+            state.setToneFlag(false);
         }
     }
 

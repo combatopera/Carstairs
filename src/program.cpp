@@ -76,8 +76,9 @@ void Loader::poll(Config const& config) {
 void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     assert(_rate);
     if (!noteFrame) {
-        state._toneFlag = false;
-        state._noiseFlag = false;
+        state.setToneFlag(false);
+        state.setNoiseFlag(false);
+        state.setLevelMode(false);
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
@@ -101,11 +102,15 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             }
             var = chan.getAttr("toneflag");
             if (var) {
-                state._toneFlag = var.boolValue();
+                state.setToneFlag(var.boolValue());
             }
             var = chan.getAttr("noiseflag");
             if (var) {
-                state._noiseFlag = var.boolValue();
+                state.setNoiseFlag(var.boolValue());
+            }
+            var = chan.getAttr("levelmode");
+            if (var) {
+                state.setLevelMode(var.boolValue());
             }
             var = chan.getAttr("toneperiod");
             if (var) {
@@ -114,6 +119,10 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             var = chan.getAttr("noiseperiod");
             if (var) {
                 state.setNP(var.numberRoundToInt());
+            }
+            var = chan.getAttr("envperiod");
+            if (var) {
+                state.setEP(var.numberRoundToInt());
             }
         }
     });

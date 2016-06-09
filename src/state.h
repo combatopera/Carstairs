@@ -41,11 +41,9 @@ public:
 
     int _level4 = LEVEL4_BOUNDS._min;
 
-    bool _levelMode = false;
+    bool _toneFlag, _noiseFlag, _levelMode;
 
 public:
-
-    bool _toneFlag, _noiseFlag;
 
     State(Config const&);
 
@@ -100,8 +98,28 @@ public:
         return _level4 * 2 + 1; // Observe 4-bit 0 is 5-bit 1.
     }
 
+    bool const& toneFlag() const {
+        return _toneFlag;
+    }
+
+    bool const& noiseFlag() const {
+        return _noiseFlag;
+    }
+
     bool const& levelMode() const {
         return _levelMode;
+    }
+
+    void setToneFlag(bool b) {
+        _toneFlag = b;
+    }
+
+    void setNoiseFlag(bool b) {
+        _noiseFlag = b;
+    }
+
+    void setLevelMode(bool b) {
+        _levelMode = b;
     }
 
 };

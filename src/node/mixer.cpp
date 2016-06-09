@@ -5,13 +5,13 @@
 void Mixer::renderImpl() {
     auto const tone = _tone.render(cursor() + _buf.limit());
     auto const noise = _noise.render(cursor() + _buf.limit());
-    if (_state._toneFlag) {
+    if (_state.toneFlag()) {
         _buf.fill(tone.begin());
-        if (_state._noiseFlag) {
+        if (_state.noiseFlag()) {
             _buf.AND(noise.begin()); // We use AND as zero is preferred over envelope, see qbmixenv.
         }
     }
-    else if (_state._noiseFlag) {
+    else if (_state.noiseFlag()) {
         _buf.fill(noise.begin());
     }
     else {
