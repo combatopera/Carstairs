@@ -29,7 +29,7 @@ Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Python const
         script += "sys.path.append('";
         script += modulesDir.string(); // TODO LATER: Escape single quotes.
         script += "')\n";
-        PyRun_SimpleString(script.c_str());
+        execute(script);
     }
     PyEval_ReleaseThread(_state);
     CARSTAIRS_DEBUG("Created: %p", _state);

@@ -3,6 +3,7 @@
 #include <boost/filesystem/path.hpp>
 #include <python3.4m/Python.h>
 #include <functional>
+#include <string>
 
 #include "../config.h"
 #include "main.h"
@@ -20,6 +21,10 @@ public:
 
     static PyRef import(char const *module) {
         return PyImport_ImportModule(module);
+    }
+
+    static void execute(std::string const& script) {
+        PyRun_SimpleString(script.c_str());
     }
 
     Interpreter(Config const&, Python const&);

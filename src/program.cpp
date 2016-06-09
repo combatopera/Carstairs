@@ -1,5 +1,6 @@
 #include "program.h"
 
+#include <boost/format.hpp>
 #include <unistd.h>
 #include <cassert>
 
@@ -21,6 +22,9 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
     runTask([&] {
         auto const module = import(name);
         if (module) {
+            execute((boost::format("class note: pass\n"
+                                    "import %1%\n"
+                                    "%1%.note = note\n") % name).str());
             _rate = module.getAttr("rate").numberToFloatOr(50);
             CARSTAIRS_DEBUG("Program rate: %.3f", _rate);
         }
