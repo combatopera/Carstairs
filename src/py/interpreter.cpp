@@ -1,13 +1,41 @@
 #include "interpreter.h"
 
+#include <boost/filesystem.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
-#include <string>
+#include <fstream>
 
 #include "../util/util.h"
 
 namespace {
+
 Log const LOG(__FILE__);
+
+class Module {
+
+public:
+
+    boost::filesystem::path const _dir;
+
+    Module()
+            : _dir(boost::filesystem::temp_directory_path() / boost::filesystem::unique_path()) {
+        boost::filesystem::create_directory(_dir);
+        std::ofstream f;
+        f.open((_dir / "carstairs.py").string().c_str());
+        f << R"EOF(class chip: pass
+class A: pass
+class note: pass
+)EOF";
+        f.close();
+    }
+
+    ~Module() {
+        CARSTAIRS_DEBUG("Deleting: %s", _dir.c_str());
+        boost::filesystem::remove_all(_dir);
+    }
+
+} MODULE;
+
 }
 
 Interpreter::Interpreter(Config const& config, Python const& python)
@@ -26,9 +54,13 @@ Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Python const
     {
         std::string script;
         script += "import sys\n";
-        script += "sys.path.append('";
-        script += modulesDir.string(); // TODO LATER: Escape single quotes.
-        script += "')\n";
+        // Assume neither path contains triple single quotes:
+        script += "sys.path.append('''";
+        script += MODULE._dir.string();
+        script += "''')\n";
+        script += "sys.path.append('''";
+        script += modulesDir.string();
+        script += "''')\n";
         execute(script);
     }
     PyEval_ReleaseThread(_state);
