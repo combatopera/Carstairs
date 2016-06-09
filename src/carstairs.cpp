@@ -29,6 +29,7 @@ Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python 
         _tone(config, _state), //
         _noise(config, _state), //
         _mixer(_state, _tone, _noise), //
+        _env(config, _state), //
         _level(config, _state, _mixer), //
         _pcm(config, _state, _level, pcmRate), //
         _pcmRate(pcmRate) {
@@ -44,6 +45,7 @@ void Carstairs::start() {
     _tone.start();
     _noise.start();
     _mixer.start();
+    _env.start();
     _level.start();
     _pcm.start();
 }

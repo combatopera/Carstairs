@@ -7,6 +7,7 @@
 #include "config.h"
 #include "dssi/plugin.h"
 #include "dssi/port.h"
+#include "node/env.h"
 #include "node/level.h"
 #include "node/mixer.h"
 #include "node/noise.h"
@@ -53,6 +54,8 @@ class Carstairs {
     Noise _noise;
 
     Mixer _mixer;
+
+    Env _env;
 
     Level _level;
 
