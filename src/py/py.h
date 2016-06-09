@@ -46,6 +46,9 @@ public:
         PyRef args = Py_VaBuildValue(format, ap);
         va_end(ap);
         PyRef none = PyEval_CallObject(_ptr, args);
+        if (!none) {
+            PyErr_Print();
+        }
     }
 
     PyRef toPathBytes() const {
