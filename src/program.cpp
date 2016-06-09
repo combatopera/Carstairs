@@ -22,13 +22,6 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
     runTask([&] {
         auto const module = import(name);
         if (module) {
-            execute((boost::format("import %1%\n"
-                                    "class chip: pass\n"
-                                    "class chan: pass\n"
-                                    "class note: pass\n"
-                                    "%1%.chip = chip\n"
-                                    "%1%.chan = chan\n"
-                                    "%1%.note = note\n") % name).str());
             _rate = module.getAttr("rate").numberToFloatOr(50);
             CARSTAIRS_DEBUG("Program rate: %.3f", _rate);
         }
