@@ -1,6 +1,5 @@
 #include "program.h"
 
-#include <boost/format.hpp>
 #include <unistd.h>
 #include <cassert>
 
@@ -95,35 +94,39 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
                 module.getAttr("on").callVoid("(i)", noteFrame);
             }
         }
-        auto ns = module.getAttr("chan");
-        auto var = ns.getAttr("level");
-        if (var) {
-            state.setLevel4(var.numberRoundToInt());
-        }
-        var = ns.getAttr("toneflag");
-        if (var) {
-            state.setToneFlag(var.boolValue());
-        }
-        var = ns.getAttr("noiseflag");
-        if (var) {
-            state.setNoiseFlag(var.boolValue());
-        }
-        var = ns.getAttr("levelmode");
-        if (var) {
-            state.setLevelMode(var.boolValue());
-        }
-        var = ns.getAttr("toneperiod");
-        if (var) {
-            state.setTP(var.numberRoundToInt());
+        auto ns = module.getAttr("A");
+        if (ns) {
+            auto var = ns.getAttr("level");
+            if (var) {
+                state.setLevel4(var.numberRoundToInt());
+            }
+            var = ns.getAttr("toneflag");
+            if (var) {
+                state.setToneFlag(var.boolValue());
+            }
+            var = ns.getAttr("noiseflag");
+            if (var) {
+                state.setNoiseFlag(var.boolValue());
+            }
+            var = ns.getAttr("levelmode");
+            if (var) {
+                state.setLevelMode(var.boolValue());
+            }
+            var = ns.getAttr("toneperiod");
+            if (var) {
+                state.setTP(var.numberRoundToInt());
+            }
         }
         ns = module.getAttr("chip");
-        var = ns.getAttr("noiseperiod");
-        if (var) {
-            state.setNP(var.numberRoundToInt());
-        }
-        var = ns.getAttr("envperiod");
-        if (var) {
-            state.setEP(var.numberRoundToInt());
+        if (ns) {
+            auto var = ns.getAttr("noiseperiod");
+            if (var) {
+                state.setNP(var.numberRoundToInt());
+            }
+            var = ns.getAttr("envperiod");
+            if (var) {
+                state.setEP(var.numberRoundToInt());
+            }
         }
     });
 }
