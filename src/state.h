@@ -21,7 +21,7 @@ public:
 
 class State {
 
-    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, LEVEL4_BOUNDS;
+    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, LEVEL4_BOUNDS;
 
     Config const& _config;
 
@@ -37,7 +37,7 @@ class State {
 public:
 #endif
 
-    int _TP = TP_BOUNDS._min, _NP = NP_BOUNDS._min;
+    int _TP = TP_BOUNDS._min, _NP = NP_BOUNDS._min, _EP = EP_BOUNDS._min;
 
     int _level4 = LEVEL4_BOUNDS._min;
 
@@ -61,6 +61,10 @@ public:
         return _NP;
     }
 
+    int const& EP() const {
+        return _EP;
+    }
+
     DSSI::cursor onOrMax() const {
         return _onOrMax;
     }
@@ -80,6 +84,10 @@ public:
 
     void setNP(int NP) {
         _NP = NP_BOUNDS.clamp(NP);
+    }
+
+    void setEP(int EP) {
+        _EP = EP_BOUNDS.clamp(EP);
     }
 
     void setLevel4(int level4) {

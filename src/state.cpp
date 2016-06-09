@@ -10,6 +10,8 @@ Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
 Bounds<int> const State::NP_BOUNDS(1, 0x1f);
 
+Bounds<int> const State::EP_BOUNDS(1, 0xffff);
+
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
 
 State::State(Config const& config)
