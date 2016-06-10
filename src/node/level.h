@@ -31,6 +31,7 @@ class Level: public Node<float> {
         auto binPtr = binary.begin();
         auto outPtr = const_cast<float *>(_buf.begin());
         if (_levelMode) {
+            // FIXME: Also render _env in other mode to avoid huge resize later.
             auto const env = _env.render(newCursor);
             auto level5Ptr = env.begin();
             for (auto i = n - 1; SIZEX_NEG != i; --i) {
