@@ -37,7 +37,7 @@ public:
 
     static DSSI::cursor const BANK = 0;
 
-    ProgramInfo(boost::filesystem::path const& path, std::string const& name)
+    ProgramInfo(boost::filesystem::path const& path, std::string const& name, sizex index)
             : _name(name), _path(path) { // Copies.
         _descriptor.Bank = BANK;
         _descriptor.Name = _name.c_str();

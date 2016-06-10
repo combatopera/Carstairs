@@ -81,32 +81,44 @@ void cleanup(LADSPA_Handle Instance) {
 ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python const& python) {
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
-    Interpreter(config, module, python).runTask([&] {
-        using namespace boost::filesystem;
-        CARSTAIRS_INFO("Scanning: %s", config._modulesDir.c_str());
-        for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
-            auto const& path = i->path();
-            auto const filename = path.filename().string(); // XXX: Why doesn't a reference work here?
-            auto const suffixIndex = filename.find(suffix);
-            if (filename.size() - suffixLen == suffixIndex) {
-                std::string moduleName(filename);
-                moduleName.erase(suffixIndex);
+    using namespace boost::filesystem;
+    CARSTAIRS_INFO("Scanning: %s", config._modulesDir.c_str());
+    for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
+        auto const& path = i->path();
+        auto const filename = path.filename().string(); // XXX: Why doesn't a reference work here?
+        auto const suffixIndex = filename.find(suffix);
+        if (filename.size() - suffixLen == suffixIndex) {
+            std::string moduleName(filename);
+            moduleName.erase(suffixIndex);
+            Interpreter(config, module, python).runTask([&] {
                 auto const module = Interpreter::import(moduleName.c_str());
                 if (module) {
-                    auto const abstract = module.getAttr("_abstract");
-                    if (abstract && abstract.boolValue()) {
-                        CARSTAIRS_INFO("Ignoring abstract module: %s", moduleName.c_str());
+                    auto const program = module.getAttr("program");
+                    if (!program) {
+                        CARSTAIRS_INFO("No program object, ignoring: %s", moduleName.c_str());
                     }
                     else {
-                        _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName)));
+                        auto const index = program.getAttr("index");
+                        if (!index) {
+                            CARSTAIRS_INFO("No program.index, ignoring: %s", moduleName.c_str());
+                        }
+                        else {
+                            auto const indexVal = index.numberRoundToInt();
+                            if (indexVal < 0 || indexVal > 0xff) {
+                                CARSTAIRS_ERROR("[%s] program.index out of bounds: %d", moduleName.c_str(), indexVal);
+                            }
+                            else {
+                                _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName, indexVal)));
+                            }
+                        }
                     }
                 }
                 else {
                     CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
                 }
-            }
+            });
         }
-    });
+    }
     std::sort(_infos.begin(), _infos.end(), [](std::unique_ptr<ProgramInfo> const& a, std::unique_ptr<ProgramInfo> const& b) {
         return *a.get() < *b.get();
     });
