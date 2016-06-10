@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../config.h"
+#include "../module.h"
 #include "main.h"
 #include "py.h"
 
@@ -15,7 +16,7 @@ class Interpreter {
 
     PyThreadState *_state;
 
-    Interpreter(boost::filesystem::path const&, Python const&);
+    Interpreter(boost::filesystem::path const&, Module const&, Python const&);
 
 public:
 
@@ -27,9 +28,7 @@ public:
         PyRun_SimpleString(script.c_str());
     }
 
-    Interpreter(Config const&, Python const&);
-
-    Interpreter& operator=(Python const&);
+    Interpreter(Config const&, Module const&, Python const&);
 
     void runTask(std::function<void()> const&) const;
 

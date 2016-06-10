@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "module.h"
 #include "node.h"
 #include "util/util.h"
 
@@ -22,10 +23,11 @@ PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
     CARSTAIRS_DEBUG("Constructed the PortInfoEnum.");
 }
 
-Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Python const& python, ProgramInfos const& programInfos, int const pcmRate)
+Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Module const& module, Python const& python, ProgramInfos const& programInfos,
+        int const pcmRate)
         : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
         _state(config), //
-        _loader(config, python, programInfos), //
+        _loader(config, module, python, programInfos), //
         _tone(config, _state), //
         _noise(config, _state), //
         _mixer(_state, _tone, _noise), //

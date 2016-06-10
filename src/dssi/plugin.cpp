@@ -18,15 +18,17 @@ Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
+Module const MODULE;
+
 Python const PYTHON;
 
-ProgramInfos const PROGRAM_INFOS(CONFIG, PYTHON);
+ProgramInfos const PROGRAM_INFOS(CONFIG, MODULE, PYTHON);
 
 Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
 LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
-    return new Carstairs(CONFIG, PortInfo, PYTHON, PROGRAM_INFOS, int(SampleRate));
+    return new Carstairs(CONFIG, PortInfo, MODULE, PYTHON, PROGRAM_INFOS, int(SampleRate));
 }
 
 void activate(LADSPA_Handle Instance) {
@@ -76,10 +78,10 @@ void cleanup(LADSPA_Handle Instance) {
 
 }
 
-ProgramInfos::ProgramInfos(Config const& config, Python const& python) {
+ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python const& python) {
     auto const suffix = ".py";
     auto const suffixLen = strlen(suffix);
-    Interpreter(config, python).runTask([&] {
+    Interpreter(config, module, python).runTask([&] {
         using namespace boost::filesystem;
         CARSTAIRS_INFO("Scanning: %s", config._modulesDir.c_str());
         for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {

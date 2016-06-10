@@ -7,6 +7,7 @@
 #include "config.h"
 #include "dssi/plugin.h"
 #include "dssi/port.h"
+#include "module.h"
 #include "node/env.h"
 #include "node/level.h"
 #include "node/mixer.h"
@@ -71,7 +72,7 @@ class Carstairs {
 
 public:
 
-    Carstairs(Config const&, PortInfoEnum const&, Python const&, ProgramInfos const&, int pcmRate);
+    Carstairs(Config const&, PortInfoEnum const&, Module const&, Python const&, ProgramInfos const&, int pcmRate);
 
     void start();
 

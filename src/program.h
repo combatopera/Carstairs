@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "dssi/plugin.h"
+#include "module.h"
 #include "py/interpreter.h"
 #include "py/main.h"
 #include "state.h"
@@ -41,7 +42,7 @@ class ProgramImpl: public Interpreter, public Program {
 
 public:
 
-    ProgramImpl(Config const&, Python const&, ProgramInfo const&);
+    ProgramImpl(Config const&, Module const&, Python const&, ProgramInfo const&);
 
     operator bool() const {
         return _rate;
@@ -69,7 +70,7 @@ class Loader {
 
     std::thread _thread;
 
-    void poll(Config const&);
+    void poll(Config const&, Module const&);
 
     bool reload(sizex index) {
         auto const mark = _programInfos[index].lastWriteTime();
@@ -82,7 +83,7 @@ class Loader {
 
 public:
 
-    Loader(Config const&, Python const&, ProgramInfos const&);
+    Loader(Config const&, Module const&, Python const&, ProgramInfos const&);
 
     ~Loader();
 

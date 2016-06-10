@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "../config.h"
+#include "../module.h"
 #include "../py/main.h"
 #include "../util/buf.h"
 #include "../util/enum.h"
@@ -70,7 +71,7 @@ class ProgramInfos {
 
 public:
 
-    ProgramInfos(Config const&, Python const&);
+    ProgramInfos(Config const&, Module const&, Python const&);
 
     DSSI_Program_Descriptor const *descriptorOrNull(sizex index) const {
         return index < _infos.size() ? &_infos[index].get()->descriptor() : 0;

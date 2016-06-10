@@ -14,8 +14,8 @@ DefaultProgram::~DefaultProgram() {
     CARSTAIRS_DEBUG("Deleting a DefaultProgram.");
 }
 
-ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo const& info)
-        : Interpreter(config, python), _info(info) {
+ProgramImpl::ProgramImpl(Config const& config, Module const& module, Python const& python, ProgramInfo const& info)
+        : Interpreter(config, module, python), _info(info) {
     auto const name = info.descriptor().Name;
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
@@ -30,7 +30,7 @@ ProgramImpl::ProgramImpl(Config const& config, Python const& python, ProgramInfo
     });
 }
 
-Loader::Loader(Config const& config, Python const& python, ProgramInfos const& programInfos)
+Loader::Loader(Config const& config, Module const& module, Python const& python, ProgramInfos const& programInfos)
         : _python(python), //
         _programs(new std::shared_ptr<Program const>[programInfos.size()]), //
         _marks(new std::time_t[programInfos.size()]), //
@@ -41,7 +41,7 @@ Loader::Loader(Config const& config, Python const& python, ProgramInfos const& p
     }
     _flag = true;
     _thread = std::thread([&] {
-        poll(config);
+        poll(config, module);
     });
 }
 
@@ -56,12 +56,12 @@ Loader::~Loader() {
     delete[] _marks;
 }
 
-void Loader::poll(Config const& config) {
+void Loader::poll(Config const& config, Module const& module) {
     CARSTAIRS_DEBUG("Loader thread running.");
     while (_flag) {
         for (auto i = _programInfos.size() - 1; SIZEX_NEG != i; --i) {
             if (reload(i)) {
-                std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, _python, _programInfos[i]));
+                std::shared_ptr<ProgramImpl> programHolder(new ProgramImpl(config, module, _python, _programInfos[i]));
                 ProgramImpl const& program = *programHolder.get();
                 if (program) {
                     _programs[i] = programHolder;
