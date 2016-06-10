@@ -28,8 +28,8 @@ public:
         return PyObject_GetAttrString(_ptr, name);
     }
 
-    float numberToFloatOr(float const value) const {
-        return _ptr ? float(PyFloat_AsDouble(_ptr)) : value;
+    float numberToFloat() const {
+        return float(PyFloat_AsDouble(_ptr));
     }
 
     int numberRoundToInt() const {

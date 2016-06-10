@@ -21,7 +21,7 @@ ProgramImpl::ProgramImpl(Config const& config, Module const& module, Python cons
     runTask([&] {
         auto const module = import(name);
         if (module) {
-            _rate = module.getAttr("rate").numberToFloatOr(50);
+            _rate = module.getAttr("program").getAttr("rate").numberToFloat();
             CARSTAIRS_DEBUG("Program rate: %.3f", _rate);
         }
         else {

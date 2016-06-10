@@ -39,6 +39,13 @@ char const * const CODE =
 class chip: pass
 class A: pass
 class note: pass
+
+class Program:
+
+    rate = 50
+
+program = Program()
+del Program
 )EOF";
 
 }
@@ -53,6 +60,6 @@ Module::Module()
 }
 
 Module::~Module() {
-    CARSTAIRS_DEBUG("Deleting: %s", _dir.c_str());
+    CARSTAIRS_DEBUG("Deleting: %s", _dir.c_str()); // FIXME: File name is garbage.
     boost::filesystem::remove_all(_dir);
 }
