@@ -32,7 +32,7 @@ private:
     }
 
     inline void nextVal(sizex const shapeSize) {
-        _indexInShape = (_indexInShape + 1) % shapeSize;
+        _indexInShape = (_indexInShape + 1) % shapeSize; // TODO: Optimise out this division.
     }
 
     void renderImpl() {
