@@ -22,7 +22,7 @@ class Log {
 
 public:
 
-    char const * const _name;
+    char const *_name;
 
     Log(char const * const file)
             : _name(createName(file)) {
@@ -34,6 +34,7 @@ public:
 
     ~Log() {
         delete[] _name;
+        _name = 0; // Avoid garbage in subsequent logging.
     }
 
 };

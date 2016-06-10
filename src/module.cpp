@@ -60,6 +60,6 @@ Module::Module()
 }
 
 Module::~Module() {
-    CARSTAIRS_DEBUG("Deleting: %s", _dir.c_str()); // FIXME: File name is garbage.
+    CARSTAIRS_DEBUG("Deleting: %s", _dir.c_str());
     boost::filesystem::remove_all(_dir);
 }
