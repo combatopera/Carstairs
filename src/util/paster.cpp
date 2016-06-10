@@ -47,7 +47,7 @@ void Paster::pasteMulti(View<float> derivative, DSSI::cursor naiveRef, DSSI::cur
             sizex pcmRelX, minBLEPIndex;
             pastePrepare(*this, naiveRef + i, pcmRef, pcmRelX, minBLEPIndex);
             auto pcmPtr = pcmBegin + pcmRelX;
-            assert(pcmPtr + minBLEPSize(minBLEPIndex) <= pcmEnd); // Bounds check.
+            assert(pcmPtr + minBLEPSize(minBLEPIndex) <= pcmEnd); // Bounds check. TODO: Do this outside loop.
             // The target must be big enough for a minBLEP at maximum pcmX:
             for (auto k = minBLEPIndex; k < lim; k += step) {
                 *pcmPtr++ += amp * srcPtr[k];
