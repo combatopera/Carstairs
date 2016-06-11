@@ -76,6 +76,8 @@ void cleanup(LADSPA_Handle Instance) {
     CARSTAIRS_DEBUG("Cleaned up.");
 }
 
+Bounds<int> INDEX_BOUNDS(0, 0xff);
+
 }
 
 ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python const& python) {
@@ -91,31 +93,7 @@ ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python co
             std::string moduleName(filename);
             moduleName.erase(suffixIndex);
             Interpreter(config, module, python).runTask([&] {
-                auto const module = Interpreter::import(moduleName.c_str());
-                if (module) {
-                    auto const program = module.getAttr("program");
-                    if (!program) {
-                        CARSTAIRS_INFO("No program object, ignoring: %s", moduleName.c_str());
-                    }
-                    else {
-                        auto const index = program.getAttr("index");
-                        if (!index) {
-                            CARSTAIRS_INFO("No program.index, ignoring: %s", moduleName.c_str());
-                        }
-                        else {
-                            auto const indexVal = index.numberRoundToInt();
-                            if (indexVal < 0 || indexVal > 0xff) {
-                                CARSTAIRS_ERROR("[%s] program.index out of bounds: %d", moduleName.c_str(), indexVal);
-                            }
-                            else {
-                                _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName, indexVal)));
-                            }
-                        }
-                    }
-                }
-                else {
-                    CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
-                }
+                addOrLog(path, moduleName);
             });
         }
     }
@@ -124,6 +102,34 @@ ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python co
     });
     for (auto i = sizex(_infos.size() - 1); SIZEX_NEG != i; --i) {
         _infos[i].get()->setIndex(i);
+    }
+}
+
+void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string const& moduleName) {
+    auto const module = Interpreter::import(moduleName.c_str());
+    if (module) {
+        auto const program = module.getAttr("program");
+        if (program) {
+            auto const indexObj = program.getAttr("index");
+            if (indexObj) {
+                auto const index = indexObj.numberRoundToInt(); // TODO LATER: Don't round.
+                if (INDEX_BOUNDS.accept(index)) {
+                    _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName, index)));
+                }
+                else {
+                    CARSTAIRS_ERROR("[%s] program.index out of bounds: %d", moduleName.c_str(), index);
+                }
+            }
+            else {
+                CARSTAIRS_INFO("No program.index, ignoring module: %s", moduleName.c_str()); // Probably abstract.
+            }
+        }
+        else {
+            CARSTAIRS_INFO("No program object, ignoring module: %s", moduleName.c_str()); // Could be a plain old module.
+        }
+    }
+    else {
+        CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
     }
 }
 

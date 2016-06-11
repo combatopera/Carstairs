@@ -71,6 +71,10 @@ public:
         return _min <= x ? (x <= _max ? x : _max) : _min;
     }
 
+    bool accept(T x) const {
+        return _min <= x && x <= _max;
+    }
+
 };
 
 #ifdef CARSTAIRS_TEST

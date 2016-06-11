@@ -69,6 +69,8 @@ class ProgramInfos {
 
     std::vector<std::unique_ptr<ProgramInfo>> _infos;
 
+    void addOrLog(boost::filesystem::path const&, std::string const&);
+
 public:
 
     ProgramInfos(Config const&, Module const&, Python const&);
