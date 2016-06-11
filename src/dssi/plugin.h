@@ -27,18 +27,18 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class ProgramInfo {
 
+    boost::filesystem::path const _path;
+
     std::string const _name;
 
     DSSI_Program_Descriptor _descriptor;
-
-    boost::filesystem::path _path;
 
 public:
 
     static DSSI::cursor const BANK = 0;
 
     ProgramInfo(boost::filesystem::path const& path, std::string const& name, sizex index)
-            : _name(name), _path(path) { // Copies.
+            : _path(path), _name(name) { // Copies, necessarily.
         _descriptor.Bank = BANK;
         _descriptor.Name = _name.c_str();
     }
