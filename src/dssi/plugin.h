@@ -2,6 +2,7 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/format.hpp>
 #include <dssi.h>
 #include <ladspa.h>
 #include <climits>
@@ -56,10 +57,13 @@ public:
 
 class DefaultProgramInfo: public ProgramInfo {
 
+    std::string const _label;
+
 public:
 
-    DefaultProgramInfo(sizex index)
-            : ProgramInfo(index, "EMPTY SLOT") {
+    DefaultProgramInfo(sizex index, char const *label)
+            : ProgramInfo(index, 0), _label((boost::format("%02X %s") % index % label).str()) {
+        _descriptor.Name = _label.c_str();
     }
 
     bool isReal() const {

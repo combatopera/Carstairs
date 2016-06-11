@@ -110,7 +110,7 @@ void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string con
                     auto const index = sizex(indexOrNeg);
                     if (index >= _infos.size()) {
                         while (index != _infos.size()) {
-                            _infos.push_back(std::unique_ptr<ProgramInfo>(new DefaultProgramInfo(index)));
+                            _infos.push_back(std::unique_ptr<ProgramInfo>(new DefaultProgramInfo(sizex(_infos.size()), "EMPTY")));
                         }
                         _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfoImpl(index, path, moduleName)));
                     }
@@ -119,6 +119,7 @@ void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string con
                     }
                     else {
                         CARSTAIRS_ERROR("[%s] Program index %u already taken!", moduleName.c_str(), index);
+                        _infos[index] = std::unique_ptr<ProgramInfo>(new DefaultProgramInfo(index, "CONFLICT"));
                     }
                 }
                 else {
