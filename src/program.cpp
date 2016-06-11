@@ -82,16 +82,19 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
+        auto const note = module.getAttr("note");
+        note.setAttr("onframe", noteFrame);
         if (offFrameOrNeg < 0) {
-            module.getAttr("on").callVoid("(i)", noteFrame);
+            module.getAttr("on").callVoid("()");
         }
         else {
+            note.setAttr("offframe", offFrameOrNeg);
             auto const off = module.getAttr("off");
             if (off) {
-                off.callVoid("ii", noteFrame, offFrameOrNeg);
+                off.callVoid("()");
             }
             else {
-                module.getAttr("on").callVoid("(i)", noteFrame);
+                module.getAttr("on").callVoid("()");
             }
         }
         auto ns = module.getAttr("A");

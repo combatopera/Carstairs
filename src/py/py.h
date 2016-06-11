@@ -28,6 +28,10 @@ public:
         return PyObject_GetAttrString(_ptr, name);
     }
 
+    void setAttr(char const *name, long value) const {
+        PyObject_SetAttrString(_ptr, name, PyRef(PyLong_FromLong(value)));
+    }
+
     float numberToFloat() const {
         return float(PyFloat_AsDouble(_ptr));
     }
