@@ -73,10 +73,13 @@ class Loader {
     void poll(Config const&, Module const&);
 
     bool reload(sizex index) {
-        auto const mark = _programInfos[index].lastWriteTime();
-        if (mark != _marks[index]) {
-            _marks[index] = mark;
-            return true;
+        auto const& info = _programInfos[index];
+        if (info.isReal()) {
+            auto const mark = static_cast<ProgramInfoImpl const *>(&info)->lastWriteTime();
+            if (mark != _marks[index]) {
+                _marks[index] = mark;
+                return true;
+            }
         }
         return false;
     }

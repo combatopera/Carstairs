@@ -2,7 +2,6 @@
 
 #include <alsa/seq_event.h>
 #include <boost/iterator/iterator_facade.hpp>
-#include <algorithm>
 #include <cstring>
 
 #include "../carstairs.h"
@@ -21,6 +20,8 @@ PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for 
 Module const MODULE;
 
 Python const PYTHON;
+
+Bounds<int> PROGRAM_INDEX_BOUNDS {0, 0xff};
 
 ProgramInfos const PROGRAM_INFOS(CONFIG, MODULE, PYTHON);
 
@@ -76,8 +77,6 @@ void cleanup(LADSPA_Handle Instance) {
     CARSTAIRS_DEBUG("Cleaned up.");
 }
 
-Bounds<int> INDEX_BOUNDS(0, 0xff);
-
 }
 
 ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python const& python) {
@@ -97,12 +96,6 @@ ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python co
             });
         }
     }
-    std::sort(_infos.begin(), _infos.end(), [](std::unique_ptr<ProgramInfo> const& a, std::unique_ptr<ProgramInfo> const& b) {
-        return *a.get() < *b.get();
-    });
-    for (auto i = sizex(_infos.size() - 1); SIZEX_NEG != i; --i) {
-        _infos[i].get()->setIndex(i);
-    }
 }
 
 void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string const& moduleName) {
@@ -112,24 +105,36 @@ void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string con
         if (program) {
             auto const indexObj = program.getAttr("index");
             if (indexObj) {
-                auto const index = indexObj.numberRoundToInt(); // TODO LATER: Don't round.
-                if (INDEX_BOUNDS.accept(index)) {
-                    _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfo(path, moduleName, index)));
+                auto const indexOrNeg = indexObj.numberRoundToInt(); // TODO LATER: Don't round.
+                if (PROGRAM_INDEX_BOUNDS.accept(indexOrNeg)) {
+                    auto const index = sizex(indexOrNeg);
+                    if (index >= _infos.size()) {
+                        while (index != _infos.size()) {
+                            _infos.push_back(std::unique_ptr<ProgramInfo>(new DefaultProgramInfo(index)));
+                        }
+                        _infos.push_back(std::unique_ptr<ProgramInfo>(new ProgramInfoImpl(index, path, moduleName)));
+                    }
+                    else if (!_infos[index].get()->isReal()) {
+                        _infos[index] = std::unique_ptr<ProgramInfo>(new ProgramInfoImpl(index, path, moduleName));
+                    }
+                    else {
+                        CARSTAIRS_ERROR("[%s] Program index %u already taken!", moduleName.c_str(), index);
+                    }
                 }
                 else {
-                    CARSTAIRS_ERROR("[%s] program.index out of bounds: %d", moduleName.c_str(), index);
+                    CARSTAIRS_ERROR("[%s] program.index out of bounds: %d", moduleName.c_str(), indexOrNeg);
                 }
             }
             else {
-                CARSTAIRS_INFO("No program.index, ignoring module: %s", moduleName.c_str()); // Probably abstract.
+                CARSTAIRS_INFO("[%s] No program.index, ignoring module.", moduleName.c_str()); // Probably abstract.
             }
         }
         else {
-            CARSTAIRS_INFO("No program object, ignoring module: %s", moduleName.c_str()); // Could be a plain old module.
+            CARSTAIRS_INFO("[%s] No program object, ignoring module.", moduleName.c_str()); // Could be a plain old module.
         }
     }
     else {
-        CARSTAIRS_ERROR("Failed to load module: %s", moduleName.c_str());
+        CARSTAIRS_ERROR("[%s] Failed to load module.", moduleName.c_str());
     }
 }
 

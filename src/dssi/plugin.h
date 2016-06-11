@@ -27,9 +27,7 @@ cursor const CURSOR_MAX = ULONG_MAX;
 
 class ProgramInfo {
 
-    boost::filesystem::path const _path;
-
-    std::string const _name;
+protected:
 
     DSSI_Program_Descriptor _descriptor;
 
@@ -37,18 +35,11 @@ public:
 
     static DSSI::cursor const BANK = 0;
 
-    ProgramInfo(boost::filesystem::path const& path, std::string const& name, sizex index)
-            : _path(path), _name(name) { // Copies, necessarily.
-        _descriptor.Bank = BANK;
-        _descriptor.Name = _name.c_str();
+    ProgramInfo(sizex index, char const *name)
+            : _descriptor {BANK, index, name} {
     }
 
-    bool operator<(ProgramInfo const& that) const {
-        return _name < that._name;
-    }
-
-    void setIndex(sizex index) {
-        _descriptor.Program = index;
+    virtual ~ProgramInfo() {
     }
 
     sizex index() const {
@@ -57,6 +48,41 @@ public:
 
     DSSI_Program_Descriptor const& descriptor() const {
         return _descriptor;
+    }
+
+    virtual bool isReal() const = 0;
+
+};
+
+class DefaultProgramInfo: public ProgramInfo {
+
+public:
+
+    DefaultProgramInfo(sizex index)
+            : ProgramInfo(index, "EMPTY SLOT") {
+    }
+
+    bool isReal() const {
+        return false;
+    }
+
+};
+
+class ProgramInfoImpl: public ProgramInfo {
+
+    boost::filesystem::path const _path;
+
+    std::string const _name;
+
+public:
+
+    ProgramInfoImpl(sizex index, boost::filesystem::path const& tmpPath, std::string const& tmpName)
+            : ProgramInfo(index, 0), _path(tmpPath), _name(tmpName) { // Copies, necessarily.
+        _descriptor.Name = _name.c_str(); // Use our copy of the name!
+    }
+
+    bool isReal() const {
+        return true;
     }
 
     std::time_t lastWriteTime() const {
