@@ -119,6 +119,7 @@ void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string con
                     }
                     else {
                         CARSTAIRS_ERROR("[%s] Program index %u already taken!", moduleName.c_str(), index);
+                        // Don't let user depend on any ordering of the conflicted programs:
                         _infos[index] = std::unique_ptr<ProgramInfo>(new DefaultProgramInfo(index, "CONFLICT"));
                     }
                 }
