@@ -36,8 +36,19 @@ char const * const CODE =
         n = len(self.v)
         return self.v[i] if i < n else self.v[n - 1]
 
-class chip: pass
-class A: pass
+class Chip:
+
+    pass
+
+chip = Chip()
+del Chip
+
+class Channel:
+
+    pass
+
+A = Channel()
+del Channel
 
 class Note:
 
