@@ -11,7 +11,7 @@ namespace {
 Log const LOG(__FILE__);
 
 char const * const CODE =
-        R"EOF(class Env:
+        R"EOF(class Poly:
 
     def __init__(self, script):
         import re
@@ -38,7 +38,13 @@ char const * const CODE =
 
 class chip: pass
 class A: pass
-class note: pass
+
+class Note:
+
+    pass
+
+note = Note()
+del Note
 
 class Program:
 
