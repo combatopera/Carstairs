@@ -67,7 +67,7 @@ del Program
 
 }
 
-Module::Module()
+Module::Module(Config const& config)
         : _dir(boost::filesystem::temp_directory_path() / boost::filesystem::unique_path()) {
     boost::filesystem::create_directory(_dir);
     std::ofstream f;

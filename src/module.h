@@ -2,13 +2,15 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include "config.h"
+
 class Module {
 
     boost::filesystem::path const _dir;
 
 public:
 
-    Module();
+    Module(Config const&);
 
     ~Module();
 

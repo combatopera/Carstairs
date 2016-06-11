@@ -17,7 +17,7 @@ Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
-Module const MODULE;
+Module const MODULE {CONFIG};
 
 Python const PYTHON;
 
