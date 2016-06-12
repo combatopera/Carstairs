@@ -88,6 +88,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             note.setAttr("freq", _refFreq * powf(2, float(state.midiNote() - _refMidiNote) / float(_semitones)));
             chip.setAttr("envshape", module.getAttr(state.envShapeName()));
         }
+        chip.setAttr("envshapechanged", 0L);
         note.setAttr("onframe", long(noteFrame));
         if (offFrameOrNeg < 0) {
             module.getAttr("on").callVoid("()");
@@ -129,9 +130,8 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         if (var) {
             state.setNP(var.numberRoundToInt());
         }
-        var = chip.getAttr("envshape");
-        if (var) {
-            state.setShape(var.getAttr("index").numberRoundToInt());
+        if (chip.getAttr("envshapechanged").boolValue()) {
+            state.setShape(chip.getAttr("envshape").getAttr("index").numberRoundToInt());
         }
         var = chip.getAttr("envperiod");
         if (var) {

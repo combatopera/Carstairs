@@ -61,6 +61,11 @@ class Chip:
 
     clock = %2%
 
+    def __setattr__(self, name, value):
+        object.__setattr__(self, name, value)
+        if 'envshape' == name:
+            object.__setattr__(self, 'envshapechanged', True)
+
 chip = Chip()
 del Chip
 
