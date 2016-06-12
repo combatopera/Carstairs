@@ -36,6 +36,10 @@ public:
 
 class ProgramImpl: public Interpreter, public Program {
 
+    int const _refMidiNote, _semitones;
+
+    float const _refFreq;
+
     ProgramInfo const& _info;
 
     float _rate;

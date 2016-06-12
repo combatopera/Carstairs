@@ -1,7 +1,5 @@
 #include "state.h"
 
-#include <cmath>
-
 namespace {
 Log const LOG(__FILE__);
 }
@@ -32,8 +30,6 @@ void State::noteOn(DSSI::cursor cursor, int midiNote, int velocity) {
     _onOrMax = cursor;
     _offOrMax = DSSI::CURSOR_MAX;
     _velocity = velocity;
-    auto const freq = _config._refFreq * powf(2, float(midiNote - _config._refMidiNote) / float(_config._semitones));
-    _TP = TP_BOUNDS.clamp((int) roundf(_config._nominalClock / (16 * freq)));
     _programEventIndex = 0;
 }
 

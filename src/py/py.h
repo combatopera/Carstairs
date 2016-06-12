@@ -32,6 +32,10 @@ public:
         PyObject_SetAttrString(_ptr, name, PyRef(PyLong_FromLong(value)));
     }
 
+    void setAttr(char const *name, double value) const {
+        PyObject_SetAttrString(_ptr, name, PyRef(PyFloat_FromDouble(value)));
+    }
+
     void setAttr(char const *name, PyRef const& value) const {
         PyObject_SetAttrString(_ptr, name, value);
     }

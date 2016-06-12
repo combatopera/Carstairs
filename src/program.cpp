@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <cassert>
+#include <cmath>
 
 #include "py/py.h"
 #include "util/util.h"
@@ -15,7 +16,7 @@ DefaultProgram::~DefaultProgram() {
 }
 
 ProgramImpl::ProgramImpl(Config const& config, Module const& module, Python const& python, ProgramInfo const& info)
-        : Interpreter(config, module, python), _info(info) {
+        : Interpreter(config, module, python), _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq), _info(info) {
     auto const name = info.descriptor().Name;
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {
@@ -82,17 +83,17 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
-        auto const chip = module.getAttr("chip");
+        auto const note = module.getAttr("note"), chip = module.getAttr("chip");
         if (!noteFrame) {
+            note.setAttr("freq", _refFreq * powf(2, float(state.midiNote() - _refMidiNote) / float(_semitones)));
             chip.setAttr("envshape", module.getAttr(state.envShapeName()));
         }
-        auto const note = module.getAttr("note");
-        note.setAttr("onframe", noteFrame);
+        note.setAttr("onframe", long(noteFrame));
         if (offFrameOrNeg < 0) {
             module.getAttr("on").callVoid("()");
         }
         else {
-            note.setAttr("offframe", offFrameOrNeg);
+            note.setAttr("offframe", long(offFrameOrNeg));
             auto const off = module.getAttr("off");
             if (off) {
                 off.callVoid("()");

@@ -57,6 +57,10 @@ public:
 
     void noteOff(DSSI::cursor cursor, int midiNote);
 
+    int const midiNote() const {
+        return _midiNote;
+    }
+
     int const& TP() const {
         return _TP;
     }
