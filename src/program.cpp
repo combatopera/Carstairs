@@ -74,7 +74,7 @@ void Loader::poll(Config const& config, Module const& module) {
     }
 }
 
-void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
+void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape& envShape) const {
     assert(_rate);
     if (!noteFrame) {
         state.setToneFlag(false);
@@ -86,7 +86,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         auto const note = module.getAttr("note"), chip = module.getAttr("chip");
         if (!noteFrame) {
             note.setAttr("freq", _refFreq * powf(2, float(state.midiNote() - _refMidiNote) / float(_semitones)));
-            chip.setAttr("envshape", module.getAttr(state.envShapeName()));
+            chip.setAttr("envshape", module.getAttr(envShape.envShapeName()));
         }
         chip.setAttr("envshapechanged", 0L);
         note.setAttr("onframe", long(noteFrame));
@@ -131,7 +131,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
             state.setNP(var.numberRoundToInt());
         }
         if (chip.getAttr("envshapechanged").boolValue()) {
-            state.setShape(chip.getAttr("envshape").getAttr("index").numberRoundToInt());
+            envShape.setShape(chip.getAttr("envshape").getAttr("index").numberRoundToInt());
         }
         var = chip.getAttr("envperiod");
         if (var) {

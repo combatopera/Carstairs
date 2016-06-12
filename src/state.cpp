@@ -10,7 +10,7 @@ Bounds<int> const State::NP_BOUNDS(1, 0x1f);
 
 Bounds<int> const State::EP_BOUNDS(1, 0xffff);
 
-Bounds<int> const State::SHAPE_BOUNDS(0, 0b1111);
+Bounds<int> const EnvShape::SHAPE_BOUNDS(0, 0b1111);
 
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
 

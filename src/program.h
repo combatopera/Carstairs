@@ -22,7 +22,7 @@ public:
         return 50;
     }
 
-    void fire(int noteFrame, int offFrameOrNeg, State& state) const {
+    void fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape&) const {
         if (!noteFrame) {
             state.setLevel4(13);
             state.setToneFlag(true);
@@ -56,7 +56,7 @@ public:
         return _rate;
     }
 
-    void fire(int noteFrame, int offFrameOrNeg, State& state) const;
+    void fire(int noteFrame, int offFrameOrNeg, State&, EnvShape&) const;
 
 };
 

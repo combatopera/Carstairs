@@ -6,6 +6,58 @@
 #include "dssi/plugin.h"
 #include "util/util.h"
 
+class EnvShape {
+
+    static Bounds<int> const SHAPE_BOUNDS;
+
+    int _shape = SHAPE_BOUNDS._min;
+
+protected:
+
+    virtual void shapeChanged() = 0;
+
+public:
+
+    virtual ~EnvShape() {
+    }
+
+    void setShape(int shape) {
+        _shape = SHAPE_BOUNDS.clamp(shape);
+        shapeChanged();
+    }
+
+    char const *envShapeName() const {
+        int s;
+        if (_shape & 0b1000) {
+            s = _shape;
+        }
+        else {
+            s = (_shape & 0b0100) ? 0b1111 : 0b1001;
+        }
+        switch (s) {
+            case 0b1000:
+                return "desc_saw";
+            case 0b1001:
+                return "desc_hold";
+            case 0b1010:
+                return "desc_tri";
+            case 0b1011:
+                return "desc_flip";
+            case 0b1100:
+                return "asc_saw";
+            case 0b1101:
+                return "asc_hold";
+            case 0b1110:
+                return "asc_tri";
+            case 0b1111:
+                return "asc_flip";
+        }
+        assert(false);
+        return 0;
+    }
+
+};
+
 class State;
 
 class Program {
@@ -17,13 +69,13 @@ public:
 
     virtual float rate() const = 0;
 
-    virtual void fire(int noteFrame, int offFrameOrNeg, State&) const = 0;
+    virtual void fire(int noteFrame, int offFrameOrNeg, State&, EnvShape&) const = 0;
 
 };
 
 class State {
 
-    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, SHAPE_BOUNDS, LEVEL4_BOUNDS;
+    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, LEVEL4_BOUNDS;
 
     Config const& _config;
 
@@ -40,8 +92,6 @@ public:
 #endif
 
     int _TP = TP_BOUNDS._min, _NP = NP_BOUNDS._min, _EP = EP_BOUNDS._min;
-
-    int _shape = SHAPE_BOUNDS._min;
 
     int _level4 = LEVEL4_BOUNDS._min;
 
@@ -81,8 +131,8 @@ public:
         return _programEventIndex;
     }
 
-    void fire(Program const& program) {
-        program.fire(_programEventIndex, DSSI::CURSOR_MAX != _offOrMax ? _programEventIndex - _offEventIndex : -1, *this);
+    void fire(Program const& program, EnvShape& envShape) {
+        program.fire(_programEventIndex, DSSI::CURSOR_MAX != _offOrMax ? _programEventIndex - _offEventIndex : -1, *this, envShape);
         ++_programEventIndex;
     }
 
@@ -96,10 +146,6 @@ public:
 
     void setEP(int EP) {
         _EP = EP_BOUNDS.clamp(EP);
-    }
-
-    void setShape(int shape) {
-        _shape = SHAPE_BOUNDS.clamp(shape);
     }
 
     void setLevel4(int level4) {
@@ -132,36 +178,6 @@ public:
 
     void setLevelMode(bool b) {
         _levelMode = b;
-    }
-
-    char const *envShapeName() const {
-        int s;
-        if (_shape & 0b1000) {
-            s = _shape;
-        }
-        else {
-            s = (_shape & 0b0100) ? 0b1111 : 0b1001;
-        }
-        switch (s) {
-            case 0b1000:
-                return "desc_saw";
-            case 0b1001:
-                return "desc_hold";
-            case 0b1010:
-                return "desc_tri";
-            case 0b1011:
-                return "desc_flip";
-            case 0b1100:
-                return "asc_saw";
-            case 0b1101:
-                return "asc_hold";
-            case 0b1110:
-                return "asc_tri";
-            case 0b1111:
-                return "asc_flip";
-        }
-        assert(false);
-        return 0;
     }
 
 };

@@ -98,7 +98,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
                 }
             }
             else {
-                _state.fire(*_currentProgram.get());
+                _state.fire(*_currentProgram.get(), _env);
             }
         }
         // It's possible for both the next host and program events to be beyond the block, so clamp:
