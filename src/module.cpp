@@ -45,6 +45,7 @@ class EnvShape:
             self.wavelength = 32
         elif 2 == alt_hold: # Triangle.
             self.wavelength = 64
+        self.index = 0b1000 | att_alt_hold
 
 desc_saw = EnvShape(0)
 desc_hold = EnvShape(1)

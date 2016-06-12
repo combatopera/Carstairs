@@ -98,6 +98,10 @@ public:
         _EP = EP_BOUNDS.clamp(EP);
     }
 
+    void setShape(int shape) {
+        _shape = SHAPE_BOUNDS.clamp(shape);
+    }
+
     void setLevel4(int level4) {
         _level4 = LEVEL4_BOUNDS.clamp(level4);
     }

@@ -129,6 +129,10 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
         if (var) {
             state.setNP(var.numberRoundToInt());
         }
+        var = chip.getAttr("envshape");
+        if (var) {
+            state.setShape(var.getAttr("index").numberRoundToInt());
+        }
         var = chip.getAttr("envperiod");
         if (var) {
             state.setEP(var.numberRoundToInt());
