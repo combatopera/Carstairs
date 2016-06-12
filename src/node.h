@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 #include "dssi/plugin.h"
 #include "state.h"
 #include "util/buf.h"
@@ -54,8 +52,11 @@ public:
         return _buf; // TODO: Enforce return of current buf when nothing to render.
     }
 
-    View<T> renderNew(DSSI::cursor newCursor) {
-        assert(_cursor < newCursor);
+    View<T> renderNew(DSSI::cursor const newCursor) {
+        if (newCursor == _cursor) {
+            _buf.setLimit(0);
+            return _buf;
+        }
         return render(newCursor);
     }
 
