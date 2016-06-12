@@ -14,7 +14,7 @@ void PCM::renderImpl() {
     auto const pcmRef = cursor();
     auto const pcmCount = _buf.limit();
     auto const naiveRef = _naive.cursor();
-    auto const naive = _naive.render(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
+    auto const naive = _naive.renderNew(_minBLEPs.pcmXToNaiveX(pcmRef + pcmCount));
     auto const naiveCount = naive.limit();
     auto const pcmLimit = _paster.pcmCountWithOverflow(naiveRef + naiveCount - 1, pcmRef);
     _derivative.snapshot(naive);
