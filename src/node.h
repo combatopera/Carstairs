@@ -19,6 +19,14 @@ template<typename T> class Node: public Maskable {
 
     DSSI::cursor _cursor = -1;
 
+    inline void catchUpImpl(DSSI::cursor newCursor, bool makeData) {
+        if (_cursor < newCursor) {
+            _buf.setLimit(sizex(newCursor - _cursor));
+            renderImpl(); // TODO LATER: Only actually make the data in makeData case.
+            _cursor = newCursor;
+        }
+    }
+
 public:
 
     Node(char const *label, State const& state)
@@ -36,15 +44,11 @@ public:
     }
 
     void catchUp(DSSI::cursor newCursor) {
-        render(newCursor); // TODO LATER: No need to actually make the data in this case.
+        catchUpImpl(newCursor, false);
     }
 
     View<T> render(DSSI::cursor newCursor) {
-        if (_cursor < newCursor) {
-            _buf.setLimit(sizex(newCursor - _cursor));
-            renderImpl();
-            _cursor = newCursor;
-        }
+        catchUpImpl(newCursor, true);
         return _buf; // TODO: Enforce return of current buf when nothing to render.
     }
 
