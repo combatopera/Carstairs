@@ -37,7 +37,7 @@ Loader::Loader(Config const& config, Module const& module, Python const& python,
         _marks(new std::time_t[programInfos.size()]), //
         _programInfos(programInfos) {
     for (sizex i = programInfos.size() - 1; SIZEX_NEG != i; --i) {
-        _programs[i].reset(new DefaultProgram);
+        _programs[i].reset(new DefaultProgram); // FIXME LATER: Do an initial synchronous load instead.
         _marks[i] = -1;
     }
     _flag = true;
