@@ -10,13 +10,9 @@
 
 class Config {
 
-#ifdef CARSTAIRS_TEST
 public:
-#endif
 
-    static sizex const YM2149_ATOM_SIZE = 8;
-
-public:
+    sizex const YM2149_ATOM_SIZE = 8; // XXX: Why symbol not found when static?
 
     unsigned long const _UniqueID = 0;
 
@@ -43,7 +39,7 @@ public:
     boost::filesystem::path const _modulesDir = "/home/arc/projects/sounds/carstairs";
 
     float naiveRate() const {
-        return _nominalClock * float(_atomSize) / YM2149_ATOM_SIZE;
+        return _nominalClock * float(_atomSize) / float(YM2149_ATOM_SIZE);
     }
 
     int evenEmpiricalOrder() const {

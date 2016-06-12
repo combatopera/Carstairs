@@ -1,6 +1,7 @@
 #include "module.h"
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/format.hpp>
 #include <fstream>
 #include <string>
 
@@ -38,7 +39,7 @@ char const * const CODE =
 
 class Chip:
 
-    pass
+    clock = %2%
 
 chip = Chip()
 del Chip
@@ -52,7 +53,8 @@ del Channel
 
 class Note:
 
-    pass
+    def envperiod(self):
+        return chip.clock / (%1% * chip.envshape.wavelength * self.freq)
 
 note = Note()
 del Note
@@ -72,7 +74,7 @@ Module::Module(Config const& config)
     boost::filesystem::create_directory(_dir);
     std::ofstream f;
     f.open((_dir / "carstairs.py").string().c_str());
-    f << CODE;
+    f << boost::format(CODE) % config.YM2149_ATOM_SIZE % config._nominalClock;
     f.close();
 }
 
