@@ -17,13 +17,18 @@ public:
 
 template<typename T> class Node: public Maskable {
 
-    DSSI::cursor _cursor;
+    DSSI::cursor _cursor = -1;
 
 public:
 
-    Node(char const *label, State const&);
+    Node(char const *label, State const& state)
+            : _buf(label), _state(state) {
+        // Nothing else.
+    }
 
-    virtual ~Node();
+    virtual ~Node() {
+        // Do nothing.
+    }
 
     void start() {
         _cursor = 0;
@@ -34,7 +39,14 @@ public:
         render(newCursor); // TODO LATER: No need to actually make the data in this case.
     }
 
-    View<T> render(DSSI::cursor newCursor);
+    View<T> render(DSSI::cursor newCursor) {
+        if (_cursor < newCursor) {
+            _buf.setLimit(sizex(newCursor - _cursor));
+            renderImpl();
+            _cursor = newCursor;
+        }
+        return _buf; // TODO: Enforce return of current buf when nothing to render.
+    }
 
     DSSI::cursor cursor() {
         return _cursor;
