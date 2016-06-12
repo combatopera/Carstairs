@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "config.h"
 #include "dssi/plugin.h"
 #include "util/util.h"
@@ -21,7 +23,7 @@ public:
 
 class State {
 
-    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, LEVEL4_BOUNDS;
+    static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, SHAPE_BOUNDS, LEVEL4_BOUNDS;
 
     Config const& _config;
 
@@ -38,6 +40,8 @@ public:
 #endif
 
     int _TP = TP_BOUNDS._min, _NP = NP_BOUNDS._min, _EP = EP_BOUNDS._min;
+
+    int _shape = SHAPE_BOUNDS._min;
 
     int _level4 = LEVEL4_BOUNDS._min;
 
@@ -120,6 +124,36 @@ public:
 
     void setLevelMode(bool b) {
         _levelMode = b;
+    }
+
+    char const *envShapeName() const {
+        int s;
+        if (_shape & 0b1000) {
+            s = _shape;
+        }
+        else {
+            s = (_shape & 0b0100) ? 0b1111 : 0b1001;
+        }
+        switch (s) {
+            case 0b1000:
+                return "desc_saw";
+            case 0b1001:
+                return "desc_hold";
+            case 0b1010:
+                return "desc_tri";
+            case 0b1011:
+                return "desc_flip";
+            case 0b1100:
+                return "asc_saw";
+            case 0b1101:
+                return "asc_hold";
+            case 0b1110:
+                return "asc_tri";
+            case 0b1111:
+                return "asc_flip";
+        }
+        assert(false);
+        return 0;
     }
 
 };

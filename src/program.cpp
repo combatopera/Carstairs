@@ -82,6 +82,10 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
     }
     runTask([&] {
         auto const module = import(_info.descriptor().Name);
+        auto const chip = module.getAttr("chip");
+        if (!noteFrame) {
+            chip.setAttr("envshape", module.getAttr(state.envShapeName()));
+        }
         auto const note = module.getAttr("note");
         note.setAttr("onframe", noteFrame);
         if (offFrameOrNeg < 0) {
@@ -97,39 +101,36 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state) const {
                 module.getAttr("on").callVoid("()");
             }
         }
-        auto ns = module.getAttr("A");
-        if (ns) {
-            auto var = ns.getAttr("level");
+        auto chan = module.getAttr("A");
+        if (chan) {
+            auto var = chan.getAttr("level");
             if (var) {
                 state.setLevel4(var.numberRoundToInt());
             }
-            var = ns.getAttr("toneflag");
+            var = chan.getAttr("toneflag");
             if (var) {
                 state.setToneFlag(var.boolValue());
             }
-            var = ns.getAttr("noiseflag");
+            var = chan.getAttr("noiseflag");
             if (var) {
                 state.setNoiseFlag(var.boolValue());
             }
-            var = ns.getAttr("levelmode");
+            var = chan.getAttr("levelmode");
             if (var) {
                 state.setLevelMode(var.boolValue());
             }
-            var = ns.getAttr("toneperiod");
+            var = chan.getAttr("toneperiod");
             if (var) {
                 state.setTP(var.numberRoundToInt());
             }
         }
-        ns = module.getAttr("chip");
-        if (ns) {
-            auto var = ns.getAttr("noiseperiod");
-            if (var) {
-                state.setNP(var.numberRoundToInt());
-            }
-            var = ns.getAttr("envperiod");
-            if (var) {
-                state.setEP(var.numberRoundToInt());
-            }
+        auto var = chip.getAttr("noiseperiod");
+        if (var) {
+            state.setNP(var.numberRoundToInt());
+        }
+        var = chip.getAttr("envperiod");
+        if (var) {
+            state.setEP(var.numberRoundToInt());
         }
     });
 }
