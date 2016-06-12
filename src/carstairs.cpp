@@ -54,7 +54,7 @@ void Carstairs::start() {
     _pcm.start();
 }
 
-// FIXME LATER: This mechanism should not be affected by the PCM rate.
+// FIXME LATER: This mechanism should not be affected by the PCM rate, see #12.
 DSSI::cursor Carstairs::getProgramEventX(DSSI::cursor voidX) const {
     auto const onOrMax = _state.onOrMax();
     if (DSSI::CURSOR_MAX != onOrMax) {
