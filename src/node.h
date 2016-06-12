@@ -4,7 +4,18 @@
 #include "state.h"
 #include "util/buf.h"
 
-template<typename T> class Node {
+class Maskable {
+
+public:
+
+    virtual ~Maskable() {
+    }
+
+    virtual void catchUp(DSSI::cursor) = 0;
+
+};
+
+template<typename T> class Node: public Maskable {
 
     DSSI::cursor _cursor;
 
@@ -17,6 +28,10 @@ public:
     void start() {
         _cursor = 0;
         startImpl();
+    }
+
+    void catchUp(DSSI::cursor newCursor) {
+        render(newCursor); // TODO LATER: No need to actually make the data in this case.
     }
 
     View<T> render(DSSI::cursor newCursor);

@@ -3,6 +3,7 @@
 #include <alsa/seq_event.h>
 #include <ladspa.h>
 #include <memory>
+#include <vector>
 
 #include "config.h"
 #include "dssi/plugin.h"
@@ -61,6 +62,8 @@ class Carstairs {
     Level _level;
 
     PCM _pcm;
+
+    std::vector<Maskable *> _maskableNaiveNodes;
 
     int const _pcmRate;
 

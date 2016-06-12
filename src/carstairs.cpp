@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cmath>
 
-#include "module.h"
 #include "node.h"
 #include "util/util.h"
 
@@ -35,6 +34,9 @@ Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Module 
         _level(config, _state, _mixer, _env), //
         _pcm(config, _state, _level, pcmRate), //
         _pcmRate(pcmRate) {
+    _maskableNaiveNodes.push_back(&_tone);
+    _maskableNaiveNodes.push_back(&_noise);
+    _maskableNaiveNodes.push_back(&_env);
 }
 
 void Carstairs::setPortValPtr(sizex index, LADSPA_Data *valPtr) {
@@ -103,5 +105,8 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
         auto const block = _pcm.render(std::min(targetX, voidX));
         block.copyTo(destPtr);
         destPtr += block.limit();
+        for (auto const nodePtr : _maskableNaiveNodes) {
+            nodePtr->catchUp(_level.cursor());
+        }
     }
 }
