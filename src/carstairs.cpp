@@ -102,7 +102,7 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
             }
         }
         // It's possible for both the next host and program events to be beyond the block, so clamp:
-        auto const block = _pcm.render(std::min(targetX, voidX));
+        auto const block = _pcm.renderNew(std::min(targetX, voidX));
         block.copyTo(destPtr);
         destPtr += block.limit();
         for (auto const nodePtr : _maskableNaiveNodes) {
