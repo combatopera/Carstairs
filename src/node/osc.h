@@ -8,7 +8,7 @@ class Osc: public Node<int> {
 
     sizex const _atomSize;
 
-    View<int> const _shape;
+    View<int> _shape;
 
     int const& _period;
 
@@ -67,6 +67,11 @@ private:
     }
 
 protected:
+
+    void setShape(View<int> shape) {
+        _shape = shape;
+        startImpl();
+    }
 
     Osc(sizex atomSize, State const& state, char const *label, View<int> const shape, int const& period, bool eagerStepSize)
             : Node(label, state), _atomSize(atomSize), _shape(shape), _period(period), _eagerStepSize(eagerStepSize), //

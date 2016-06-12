@@ -131,7 +131,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape&
             state.setNP(var.numberRoundToInt());
         }
         if (chip.getAttr("envshapechanged").boolValue()) {
-            envShape.setShape(chip.getAttr("envshape").getAttr("index").numberRoundToInt());
+            envShape.changeShape(chip.getAttr("envshape").getAttr("index").numberRoundToInt());
         }
         var = chip.getAttr("envperiod");
         if (var) {

@@ -63,3 +63,20 @@ public:
 Env::Env(Config const& config, State const& state)
         : Osc(config._atomSize, state, "Envelope", ENV_1000, state.EP(), true) {
 }
+
+void Env::shapeChanged(int shape) {
+    switch (shape) {
+        case 8:
+            setShape(ENV_1000);
+            break;
+        case 10:
+            setShape(ENV_1010);
+            break;
+        case 12:
+            setShape(ENV_1100);
+            break;
+        case 14:
+            setShape(ENV_1110);
+            break;
+    }
+}

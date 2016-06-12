@@ -14,16 +14,15 @@ class EnvShape {
 
 protected:
 
-    virtual void shapeChanged() = 0;
+    virtual void shapeChanged(int) = 0;
 
 public:
 
     virtual ~EnvShape() {
     }
 
-    void setShape(int shape) {
-        _shape = SHAPE_BOUNDS.clamp(shape);
-        shapeChanged();
+    void changeShape(int shape) {
+        shapeChanged(_shape = SHAPE_BOUNDS.clamp(shape));
     }
 
     char const *envShapeName() const {
