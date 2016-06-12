@@ -72,6 +72,9 @@ del Channel
 
 class Note:
 
+    def toneperiod(self):
+        return chip.clock / (%1% * 2 * self.freq)
+
     def envperiod(self):
         return chip.clock / (%1% * chip.envshape.wavelength * self.freq)
 
