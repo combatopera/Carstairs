@@ -41,6 +41,22 @@ public:
 
 };
 
+class HoldShape: public Shape {
+
+public:
+
+    HoldShape(char const *label, sizex limit)
+            : Shape(label, limit) {
+    }
+
+    void step(sizex& index) const {
+        if (_data.limit() - 1 != index) {
+            ++index;
+        }
+    }
+
+};
+
 class Osc: public Node<int> {
 
     sizex const _atomSize;

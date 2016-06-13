@@ -17,6 +17,19 @@ public:
 
 } ENV_1000;
 
+class Env1001: public HoldShape {
+
+public:
+
+    Env1001()
+            : HoldShape("ENV_1001", 32) {
+        for (auto i = 0; i < 32; ++i) {
+            _data.put(i, 31 - i);
+        }
+    }
+
+} ENV_1001;
+
 class Env1010: public PeriodicShape {
 
 public:
@@ -31,6 +44,20 @@ public:
 
 } ENV_1010;
 
+class Env1011: public HoldShape {
+
+public:
+
+    Env1011()
+            : HoldShape("ENV_1011", 33) {
+        for (auto i = 0; i < 32; ++i) {
+            _data.put(i, 31 - i);
+        }
+        _data.put(32, 31);
+    }
+
+} ENV_1011;
+
 class Env1100: public PeriodicShape {
 
 public:
@@ -43,6 +70,19 @@ public:
     }
 
 } ENV_1100;
+
+class Env1101: public HoldShape {
+
+public:
+
+    Env1101()
+            : HoldShape("ENV_1101", 32) {
+        for (auto i = 0; i < 32; ++i) {
+            _data.put(i, i);
+        }
+    }
+
+} ENV_1101;
 
 class Env1110: public PeriodicShape {
 
@@ -57,6 +97,20 @@ public:
     }
 
 } ENV_1110;
+
+class Env1111: public HoldShape {
+
+public:
+
+    Env1111()
+            : HoldShape("ENV_1111", 33) {
+        for (auto i = 0; i < 32; ++i) {
+            _data.put(i, i);
+        }
+        _data.put(32, 0);
+    }
+
+} ENV_1111;
 
 }
 
