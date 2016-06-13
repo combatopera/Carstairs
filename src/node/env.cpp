@@ -120,17 +120,41 @@ Env::Env(Config const& config, State const& state)
 
 void Env::shapeChanged(int shape) {
     switch (shape) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            setShape(ENV_1001);
+            break;
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+            setShape(ENV_1111);
+            break;
         case 8:
             setShape(ENV_1000);
+            break;
+        case 9:
+            setShape(ENV_1001);
             break;
         case 10:
             setShape(ENV_1010);
             break;
+        case 11:
+            setShape(ENV_1011);
+            break;
         case 12:
             setShape(ENV_1100);
             break;
+        case 13:
+            setShape(ENV_1101);
+            break;
         case 14:
             setShape(ENV_1110);
+            break;
+        case 15:
+            setShape(ENV_1111);
             break;
     }
 }
