@@ -4,11 +4,48 @@
 #include "../state.h"
 #include "../util/buf.h"
 
+class Shape {
+
+protected:
+
+    Buffer<int> _data;
+
+public:
+
+    Shape(char const *label, sizex limit)
+            : _data(label, limit) {
+    }
+
+    virtual ~Shape() {
+    }
+
+    virtual void step(sizex& index) const = 0;
+
+    Buffer<int> const& data() const {
+        return _data;
+    }
+
+};
+
+class PeriodicShape: public Shape {
+
+public:
+
+    PeriodicShape(char const *label, sizex limit)
+            : Shape(label, limit) {
+    }
+
+    void step(sizex& index) const {
+        index = (index + 1) % _data.limit(); // TODO: Optimise out this division.
+    }
+
+};
+
 class Osc: public Node<int> {
 
     sizex const _atomSize;
 
-    View<int> _shape;
+    Shape const *_shape;
 
     int const& _period;
 
@@ -18,7 +55,9 @@ class Osc: public Node<int> {
 public:
 #endif
 
-    int _indexInShape, _progress, _stepSize;
+    sizex _indexInShape;
+
+    int _progress, _stepSize;
 
 private:
 
@@ -31,17 +70,14 @@ private:
         _stepSize = _atomSize * _period;
     }
 
-    inline void nextVal(sizex const shapeSize) {
-        _indexInShape = (_indexInShape + 1) % shapeSize; // TODO: Optimise out this division.
-    }
-
     void renderImpl() {
-        auto const shapeSize = _shape.limit(), n = _buf.limit();
+        auto const& shapeData = _shape->data();
+        auto const n = _buf.limit();
         if (_eagerStepSize || !_progress) {
             updateStepSize();
         }
         if (_progress >= _stepSize) { // Start a new step.
-            nextVal(shapeSize);
+            _shape->step(_indexInShape);
             _progress = 0;
         }
         sizex endOfStep = _stepSize - _progress, i = 0;
@@ -51,15 +87,15 @@ private:
                 updateStepSize();
             }
             do {
-                auto const val = _shape.at(_indexInShape);
+                auto const val = shapeData.at(_indexInShape);
                 for (; i < endOfStep; ++i) {
                     *ptr++ = val;
                 }
-                nextVal(shapeSize);
+                _shape->step(_indexInShape);
                 endOfStep += _stepSize;
             } while (endOfStep <= n);
         }
-        auto const val = _shape.at(_indexInShape);
+        auto const val = shapeData.at(_indexInShape);
         for (; i < n; ++i) {
             *ptr++ = val;
         }
@@ -68,13 +104,13 @@ private:
 
 protected:
 
-    void setShape(View<int> shape) {
-        _shape = shape;
+    void setShape(Shape const& shape) {
+        _shape = &shape;
         startImpl();
     }
 
-    Osc(sizex atomSize, State const& state, char const *label, View<int> const shape, int const& period, bool eagerStepSize)
-            : Node(label, state), _atomSize(atomSize), _shape(shape), _period(period), _eagerStepSize(eagerStepSize), //
+    Osc(sizex atomSize, State const& state, char const *label, Shape const& shape, int const& period, bool eagerStepSize)
+            : Node(label, state), _atomSize(atomSize), _shape(&shape), _period(period), _eagerStepSize(eagerStepSize), //
             _indexInShape(), _progress(), _stepSize() {
     }
 

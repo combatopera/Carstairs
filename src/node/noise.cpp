@@ -4,7 +4,7 @@
 
 namespace {
 
-class YM2149Noise: public Buffer<int> {
+class YM2149Noise: public PeriodicShape {
 
     static int step(int const mask, int& x) {
         auto const bit = x & 1;
@@ -18,7 +18,7 @@ class YM2149Noise: public Buffer<int> {
 public:
 
     YM2149Noise()
-            : Buffer("NOISE") {
+            : PeriodicShape("NOISE", 0) {
         std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
         auto mask = 0;
         for (auto const positiveDegree : YM2149_POSITIVE_DEGREES) {
@@ -33,9 +33,9 @@ public:
                 ++n;
             } while (initialX != x);
         }
-        setLimit(n);
+        _data.setLimit(n);
         for (auto x = initialX, i = 0; i < n; ++i) {
-            put(i, step(mask, x));
+            _data.put(i, step(mask, x));
         }
     }
 
@@ -48,7 +48,7 @@ Noise::Noise(Config const& config, State const& state)
 }
 
 // Doubling the atom size results in authentic spectrum, see qnoispec:
-Noise::Noise(Config const& config, State const& state, View<int> const shape)
+Noise::Noise(Config const& config, State const& state, Shape const& shape)
         : Osc(config._atomSize * 2, state, "Noise", shape, state.NP(), false) {
 }
 

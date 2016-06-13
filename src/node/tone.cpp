@@ -4,14 +4,14 @@
 
 namespace {
 
-class Square: public Buffer<int> {
+class Square: public PeriodicShape {
 
 public:
 
     Square()
-            : Buffer("SQUARE", 2) {
-        put(0, 1);
-        put(1, 0);
+            : PeriodicShape("SQUARE", 2) {
+        _data.put(0, 1);
+        _data.put(1, 0);
     }
 
 } SQUARE;

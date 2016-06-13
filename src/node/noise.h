@@ -15,10 +15,10 @@ class Noise: public Osc {
 public:
 #endif
 
-    Noise(Config const& config, State const& state, View<int> const shape);
+    Noise(Config const&, State const&, Shape const&);
 
 public:
 
-    Noise(Config const& config, State const& state);
+    Noise(Config const&, State const&);
 
 };
