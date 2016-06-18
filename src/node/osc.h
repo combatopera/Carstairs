@@ -8,6 +8,10 @@ class Shape {
 
 protected:
 
+#ifdef CARSTAIRS_TEST
+public:
+#endif
+
     Buffer<int> _data;
 
 public:

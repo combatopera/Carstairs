@@ -14,7 +14,7 @@ struct F {
     int _pcmRate = 6;
 
     F() {
-        _config._atomSize = Config::YM2149_ATOM_SIZE;
+        _config._atomSize = _config.YM2149_ATOM_SIZE;
         _config._nominalClock = 15;
         _config._transition = .05;
         _config._stopband = 0;

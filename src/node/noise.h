@@ -2,11 +2,10 @@
 
 #include "../config.h"
 #include "../state.h"
-#include "../util/buf.h"
 #include "osc.h"
 
 #ifdef CARSTAIRS_TEST
-Buffer<int> const& noiseShape();
+PeriodicShape const& noiseShape();
 #endif
 
 class Noise: public Osc {

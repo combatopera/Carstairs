@@ -53,7 +53,7 @@ Noise::Noise(Config const& config, State const& state, Shape const& shape)
 }
 
 #ifdef CARSTAIRS_TEST
-Buffer<int> const& noiseShape() {
+PeriodicShape const& noiseShape() {
     return YM2149_NOISE;
 }
 #endif
