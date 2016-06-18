@@ -1,5 +1,5 @@
 #include "carstairs.h"
- 
+
 #include <dssi.h>
 #include <algorithm>
 #include <cmath>
