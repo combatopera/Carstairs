@@ -14,49 +14,20 @@ public:
 
     Buffer<int> _data;
 
+    sizex const _introLen, _last;
+
 public:
 
-    Shape(char const *label, sizex limit)
-            : _data(label, limit) {
+    Shape(char const *label, sizex limit, sizex introLen = 0)
+            : _data(label, limit), _introLen(introLen), _last(limit - 1) {
     }
 
-    virtual ~Shape() {
+    sizex next(sizex index) const {
+        return _last == index ? _introLen : index + 1;
     }
-
-    virtual void step(sizex& index) const = 0;
 
     Buffer<int> const& data() const {
         return _data;
-    }
-
-};
-
-class PeriodicShape: public Shape {
-
-public:
-
-    PeriodicShape(char const *label, sizex limit)
-            : Shape(label, limit) {
-    }
-
-    void step(sizex& index) const {
-        index = (index + 1) % _data.limit(); // TODO: Optimise out this division.
-    }
-
-};
-
-class HoldShape: public Shape {
-
-public:
-
-    HoldShape(char const *label, sizex limit)
-            : Shape(label, limit) {
-    }
-
-    void step(sizex& index) const {
-        if (_data.limit() - 1 != index) {
-            ++index;
-        }
     }
 
 };
@@ -97,7 +68,7 @@ private:
             updateStepSize();
         }
         if (_progress >= _stepSize) { // Start a new step.
-            _shape->step(_indexInShape);
+            _indexInShape = _shape->next(_indexInShape);
             _progress = 0;
         }
         sizex endOfStep = _stepSize - _progress, i = 0;
@@ -111,7 +82,7 @@ private:
                 for (; i < endOfStep; ++i) {
                     *ptr++ = val;
                 }
-                _shape->step(_indexInShape);
+                _indexInShape = _shape->next(_indexInShape);
                 endOfStep += _stepSize;
             } while (endOfStep <= n);
         }

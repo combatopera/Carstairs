@@ -4,12 +4,12 @@
 
 namespace {
 
-class Square: public PeriodicShape {
+class Square: public Shape {
 
 public:
 
     Square()
-            : PeriodicShape("SQUARE", 2) {
+            : Shape("SQUARE", 2) {
         _data.put(0, 1);
         _data.put(1, 0);
     }

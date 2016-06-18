@@ -4,12 +4,12 @@
 
 namespace {
 
-class Env1000: public PeriodicShape {
+class Env1000: public Shape {
 
 public:
 
     Env1000()
-            : PeriodicShape("ENV_1000", 32) {
+            : Shape("ENV_1000", 32) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, 31 - i);
         }
@@ -17,12 +17,12 @@ public:
 
 } ENV_1000;
 
-class Env1001: public HoldShape {
+class Env1001: public Shape {
 
 public:
 
     Env1001()
-            : HoldShape("ENV_1001", 32) {
+            : Shape("ENV_1001", 32, 31) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, 31 - i);
         }
@@ -30,12 +30,12 @@ public:
 
 } ENV_1001;
 
-class Env1010: public PeriodicShape {
+class Env1010: public Shape {
 
 public:
 
     Env1010()
-            : PeriodicShape("ENV_1010", 64) {
+            : Shape("ENV_1010", 64) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, 31 - i);
             _data.put(32 + i, i);
@@ -44,12 +44,12 @@ public:
 
 } ENV_1010;
 
-class Env1011: public HoldShape {
+class Env1011: public Shape {
 
 public:
 
     Env1011()
-            : HoldShape("ENV_1011", 33) {
+            : Shape("ENV_1011", 33, 32) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, 31 - i);
         }
@@ -58,12 +58,12 @@ public:
 
 } ENV_1011;
 
-class Env1100: public PeriodicShape {
+class Env1100: public Shape {
 
 public:
 
     Env1100()
-            : PeriodicShape("ENV_1100", 32) {
+            : Shape("ENV_1100", 32) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, i);
         }
@@ -71,12 +71,12 @@ public:
 
 } ENV_1100;
 
-class Env1101: public HoldShape {
+class Env1101: public Shape {
 
 public:
 
     Env1101()
-            : HoldShape("ENV_1101", 32) {
+            : Shape("ENV_1101", 32, 31) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, i);
         }
@@ -84,12 +84,12 @@ public:
 
 } ENV_1101;
 
-class Env1110: public PeriodicShape {
+class Env1110: public Shape {
 
 public:
 
     Env1110()
-            : PeriodicShape("ENV_1110", 64) {
+            : Shape("ENV_1110", 64) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, i);
             _data.put(32 + i, 31 - i);
@@ -98,12 +98,12 @@ public:
 
 } ENV_1110;
 
-class Env1111: public HoldShape {
+class Env1111: public Shape {
 
 public:
 
     Env1111()
-            : HoldShape("ENV_1111", 33) {
+            : Shape("ENV_1111", 33, 32) {
         for (auto i = 0; i < 32; ++i) {
             _data.put(i, i);
         }

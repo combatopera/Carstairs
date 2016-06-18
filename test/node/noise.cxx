@@ -85,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(increasePeriodOnBoundary, F) {
     _config._atomSize = 4;
     State state(_config);
     state._NP = 1;
-    PeriodicShape oneZeroShape("oneZeroShape", 2);
+    Shape oneZeroShape("oneZeroShape", 2);
     Buffer<int> ones("ones", 24), zeros("zeros", 15);
     oneZeroShape._data.put(0, 1);
     oneZeroShape._data.put(1, 0);
@@ -117,7 +117,7 @@ BOOST_FIXTURE_TEST_CASE(decreasePeriodOnBoundary, F) {
     _config._atomSize = 4;
     State state(_config);
     state._NP = 3;
-    PeriodicShape oneZeroShape("oneZeroShape", 2);
+    Shape oneZeroShape("oneZeroShape", 2);
     Buffer<int> ones("ones", 24), zeros("zeros", 24);
     oneZeroShape._data.put(0, 1);
     oneZeroShape._data.put(1, 0);
@@ -151,7 +151,7 @@ BOOST_FIXTURE_TEST_CASE(stepBiggerThanBlock, F) {
     _config._atomSize = 1;
     State state(_config);
     state._NP = 5;
-    PeriodicShape oneZeroShape("oneZeroShape", 2);
+    Shape oneZeroShape("oneZeroShape", 2);
     Buffer<int> ones("ones", 24), zeros("zeros", 24);
     oneZeroShape._data.put(0, 1);
     oneZeroShape._data.put(1, 0);

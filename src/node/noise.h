@@ -5,7 +5,7 @@
 #include "osc.h"
 
 #ifdef CARSTAIRS_TEST
-PeriodicShape const& noiseShape();
+Shape const& noiseShape();
 #endif
 
 class Noise: public Osc {

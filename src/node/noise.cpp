@@ -2,9 +2,11 @@
 
 #include <array>
 
+#include "../util/buf.h"
+
 namespace {
 
-class YM2149Noise: public PeriodicShape {
+class YM2149Noise: public Shape {
 
     static int step(int const mask, int& x) {
         auto const bit = x & 1;
@@ -18,7 +20,7 @@ class YM2149Noise: public PeriodicShape {
 public:
 
     YM2149Noise()
-            : PeriodicShape("NOISE", 0) {
+            : Shape("NOISE", 0) {
         std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
         auto mask = 0;
         for (auto const positiveDegree : YM2149_POSITIVE_DEGREES) {
@@ -53,7 +55,7 @@ Noise::Noise(Config const& config, State const& state, Shape const& shape)
 }
 
 #ifdef CARSTAIRS_TEST
-PeriodicShape const& noiseShape() {
+Shape const& noiseShape() {
     return YM2149_NOISE;
 }
 #endif
