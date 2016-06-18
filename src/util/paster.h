@@ -4,6 +4,10 @@
 #include "buf.h"
 #include "minbleps.h"
 
+#ifdef CARSTAIRS_TEST
+double getPcmMark(Paster const& paster, DSSI::cursor naiveCursor);
+#endif
+
 class Paster {
 
     double const _ratio;
@@ -11,6 +15,8 @@ class Paster {
     View<float> const _minBLEPs;
 
     sizex const _minBLEPCount;
+
+    friend inline double getPcmMark(Paster const& paster, DSSI::cursor naiveCursor);
 
     friend inline void pastePrepare(Paster const&, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex);
 

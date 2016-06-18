@@ -9,8 +9,12 @@ namespace {
 Log const LOG(__FILE__);
 }
 
+inline double getPcmMark(Paster const& paster, DSSI::cursor naiveCursor) {
+    return double(naiveCursor) * paster._ratio;
+}
+
 inline void pastePrepare(Paster const& paster, DSSI::cursor naiveCursor, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) {
-    auto const pcmMark = double(naiveCursor) * paster._ratio;
+    auto const pcmMark = getPcmMark(paster, naiveCursor);
     // If pcmCursor is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
     auto const pcmCursor = DSSI::cursor(ceil(pcmMark));
     if (pcmCursor < pcmRef) {

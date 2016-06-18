@@ -18,11 +18,15 @@ struct F {
         _config._nominalClock = 15;
         _config._transition = .05;
         _config._stopband = 0;
-        BOOST_REQUIRE_EQUAL(.475, _config.cutoff());
-        BOOST_REQUIRE_EQUAL(_config._minBLEPCount = 5, _config.idealMinBLEPCount(_pcmRate));
+        _config._minBLEPCount = 5;
     }
 
 };
+
+BOOST_FIXTURE_TEST_CASE(checkFixture, F) {
+    BOOST_REQUIRE_EQUAL(.475, _config.cutoff());
+    BOOST_REQUIRE_EQUAL(_config._minBLEPCount, _config.idealMinBLEPCount(_pcmRate));
+}
 
 BOOST_FIXTURE_TEST_CASE(BLI, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
@@ -89,6 +93,26 @@ BOOST_FIXTURE_TEST_CASE(getNaiveCursor, F) {
     BOOST_REQUIRE_EQUAL(8, minBLEPs.getNaiveCursor(4));
     BOOST_REQUIRE_EQUAL(11, minBLEPs.getNaiveCursor(5));
     BOOST_REQUIRE_EQUAL(13, minBLEPs.getNaiveCursor(6));
+}
+
+BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError, F) {
+    _config._nominalClock = 2000000;
+    _config._atomSize = 1;
+    _pcmRate = 44100;
+    MinBLEPs minBLEPs(_config, _pcmRate);
+    Paster p(minBLEPs);
+    BOOST_CHECK_EQUAL(94546431, getPcmMark(p, 535977500)); // Logically correct.
+    BOOST_CHECK_EQUAL(535977501, minBLEPs.getNaiveCursor(94546432));
+}
+
+BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError2, F) {
+    _config._nominalClock = 2000000;
+    _config._atomSize = 1;
+    _pcmRate = 48000;
+    MinBLEPs minBLEPs(_config, _pcmRate);
+    Paster p(minBLEPs);
+    BOOST_CHECK_EQUAL(1537536, getPcmMark(p, 8008000)); // Logically correct.
+    BOOST_CHECK_EQUAL(8008001, minBLEPs.getNaiveCursor(1537537));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
