@@ -8,6 +8,8 @@ namespace {
 
 class YM2149Noise: public Shape {
 
+    static int const INITIAL_X = 1;
+
     static int step(int const mask, int& x) {
         auto const bit = x & 1;
         x >>= 1;
@@ -17,28 +19,40 @@ class YM2149Noise: public Shape {
         return 1 - bit; // Authentic, see qnoispec.
     }
 
+    class LFSR {
+
+    public:
+
+        int _mask = 0;
+
+        sizex _size = 0;
+
+        LFSR() {
+            std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
+            for (auto const positiveDegree : YM2149_POSITIVE_DEGREES) {
+                _mask += 1 << (positiveDegree - 1);
+            }
+            auto x = INITIAL_X;
+            do {
+                step(_mask, x);
+                ++_size;
+            } while (INITIAL_X != x);
+        }
+
+    };
+
+    YM2149Noise(LFSR const& lfsr)
+            : Shape("NOISE", lfsr._size) {
+        auto x = INITIAL_X;
+        for (auto i = 0u, n = lfsr._size; i < n; ++i) {
+            _data.put(i, step(lfsr._mask, x));
+        }
+    }
+
 public:
 
     YM2149Noise()
-            : Shape("NOISE", 0) {
-        std::array<int, 2> constexpr YM2149_POSITIVE_DEGREES {17, 14};
-        auto mask = 0;
-        for (auto const positiveDegree : YM2149_POSITIVE_DEGREES) {
-            mask += 1 << (positiveDegree - 1);
-        }
-        auto const initialX = 1;
-        auto n = 0;
-        {
-            auto x = initialX;
-            do {
-                step(mask, x);
-                ++n;
-            } while (initialX != x);
-        }
-        _data.setLimit(n);
-        for (auto x = initialX, i = 0; i < n; ++i) {
-            _data.put(i, step(mask, x));
-        }
+            : YM2149Noise(LFSR()) {
     }
 
 } YM2149_NOISE;
