@@ -66,6 +66,9 @@ class Chip:
         if 'envshape' == name:
             object.__setattr__(self, 'envshapechanged', True)
 
+    def envfreq(self):
+        return self.clock / (%1% * self.envshape.wavelength * self.envperiod)
+
 chip = Chip()
 del Chip
 
@@ -78,8 +81,8 @@ del Channel
 
 class Note:
 
-    def toneperiod(self):
-        return chip.clock / (%1% * 2 * self.freq)
+    def toneperiod(self, freq = None):
+        return chip.clock / (%1% * 2 * (self.freq if freq is None else freq))
 
     def envperiod(self):
         return chip.clock / (%1% * chip.envshape.wavelength * self.freq)
