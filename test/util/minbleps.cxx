@@ -101,7 +101,7 @@ BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError, F) {
     _pcmRate = 44100;
     MinBLEPs minBLEPs(_config, _pcmRate);
     Paster p(minBLEPs);
-    BOOST_CHECK_EQUAL(94546431, getPcmMark(p, 535977500)); // Logically correct.
+    BOOST_CHECK_EQUAL(94546431, p.getPcmMark(535977500)); // Logically correct.
     BOOST_CHECK_EQUAL(535977501, minBLEPs.getNaiveCursor(94546432));
 }
 
@@ -111,7 +111,7 @@ BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError2, F) {
     _pcmRate = 48000;
     MinBLEPs minBLEPs(_config, _pcmRate);
     Paster p(minBLEPs);
-    BOOST_CHECK_EQUAL(1537536, getPcmMark(p, 8008000)); // Logically correct.
+    BOOST_CHECK_EQUAL(1537536, p.getPcmMark(8008000)); // Logically correct.
     BOOST_CHECK_EQUAL(8008001, minBLEPs.getNaiveCursor(1537537));
 }
 

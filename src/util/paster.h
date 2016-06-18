@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+#include <cmath>
+
 #include "../dssi/plugin.h"
 #include "buf.h"
 #include "minbleps.h"
@@ -16,13 +19,28 @@ class Paster {
 
     sizex const _minBLEPCount;
 
-    friend inline double getPcmMark(Paster const& paster, DSSI::cursor naiveCursor);
+    inline void pastePrepare(DSSI::cursor naiveCursor, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) const {
+        auto const pcmMark = getPcmMark(naiveCursor);
+        // If pcmCursor is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
+        auto const pcmCursor = DSSI::cursor(ceil(pcmMark));
+        if (pcmCursor < pcmRef) {
+            logRoundingError(naiveCursor, pcmRef, pcmCursor);
+            assert(false);
+        }
+        pcmRelX = sizex(pcmCursor - pcmRef);
+        auto const distance = double(pcmCursor) - pcmMark;
+        minBLEPIndex = sizex(round(distance * _minBLEPCount));
+    }
 
-    friend inline void pastePrepare(Paster const&, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex);
+    void logRoundingError(DSSI::cursor naiveCursor, DSSI::cursor pcmRef, DSSI::cursor pcmCursor) const;
 
 #ifdef CARSTAIRS_TEST
 public:
 #endif
+
+    inline double getPcmMark(DSSI::cursor naiveCursor) const {
+        return double(naiveCursor) * _ratio;
+    }
 
     Paster(double ratio, View<float> const minBLEPs, sizex minBLEPCount)
             : _ratio(ratio), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
