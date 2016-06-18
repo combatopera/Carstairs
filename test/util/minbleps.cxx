@@ -81,14 +81,14 @@ BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
     BOOST_REQUIRE_EQUAL(102, paster.minBLEPSize(4));
 }
 
-BOOST_FIXTURE_TEST_CASE(pcmXToNaiveX, F) {
+BOOST_FIXTURE_TEST_CASE(getNaiveCursor, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
-    BOOST_REQUIRE_EQUAL(1, minBLEPs.pcmXToNaiveX(1));
-    BOOST_REQUIRE_EQUAL(3, minBLEPs.pcmXToNaiveX(2));
-    BOOST_REQUIRE_EQUAL(6, minBLEPs.pcmXToNaiveX(3));
-    BOOST_REQUIRE_EQUAL(8, minBLEPs.pcmXToNaiveX(4));
-    BOOST_REQUIRE_EQUAL(11, minBLEPs.pcmXToNaiveX(5));
-    BOOST_REQUIRE_EQUAL(13, minBLEPs.pcmXToNaiveX(6));
+    BOOST_REQUIRE_EQUAL(1, minBLEPs.getNaiveCursor(1));
+    BOOST_REQUIRE_EQUAL(3, minBLEPs.getNaiveCursor(2));
+    BOOST_REQUIRE_EQUAL(6, minBLEPs.getNaiveCursor(3));
+    BOOST_REQUIRE_EQUAL(8, minBLEPs.getNaiveCursor(4));
+    BOOST_REQUIRE_EQUAL(11, minBLEPs.getNaiveCursor(5));
+    BOOST_REQUIRE_EQUAL(13, minBLEPs.getNaiveCursor(6));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

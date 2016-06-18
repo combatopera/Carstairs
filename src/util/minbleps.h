@@ -35,9 +35,9 @@ public:
 
     MinBLEPs(Config const&, int pcmRate);
 
-    DSSI::cursor pcmXToNaiveX(DSSI::cursor pcmX) const {
-        // First naiveX that doesn't affect pcmX prior to that given:
-        return DSSI::cursor(floor(double(pcmX - 1) / _pcmRate * _naiveRate) + 1);
+    DSSI::cursor getNaiveCursor(DSSI::cursor pcmCursor) const {
+        // First naive cursor that doesn't affect pcm cursor values prior to that given:
+        return DSSI::cursor(floor(double(pcmCursor - 1) / _pcmRate * _naiveRate) + 1);
     }
 
 };
