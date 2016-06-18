@@ -16,7 +16,7 @@ struct F {
         }
     } _minBLEPs;
 
-    Paster _paster {15, 6, _minBLEPs, 5};
+    Paster _paster {6. / 15, _minBLEPs, 5};
 
     Buffer<float> _derivative {"_derivative", 15};
 

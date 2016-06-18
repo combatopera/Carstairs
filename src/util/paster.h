@@ -24,8 +24,8 @@ class Paster {
 public:
 #endif
 
-    Paster(float naiveRate, int pcmRate, View<float> const minBLEPs, sizex minBLEPCount)
-            : _ratio(double(pcmRate) / naiveRate), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
+    Paster(double ratio, View<float> const minBLEPs, sizex minBLEPCount)
+            : _ratio(ratio), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
     }
 
     inline sizex minBLEPSize(sizex minBLEPIndex) const {
@@ -35,7 +35,7 @@ public:
 public:
 
     Paster(MinBLEPs const& minBLEPs)
-            : Paster(minBLEPs._naiveRate, minBLEPs._pcmRate, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
+            : Paster(minBLEPs._ratio, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
     }
 
     sizex pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) const;

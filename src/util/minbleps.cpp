@@ -19,7 +19,7 @@ sizex getEvenFftSize(sizex const minSize) {
 }
 
 MinBLEPs::MinBLEPs(Config const& config, int pcmRate)
-        : _pcmRate(pcmRate), _naiveRate(config.naiveRate()), _minBLEPCount(config._minBLEPCount) {
+        : _ratio(pcmRate / double(config.naiveRate())), _minBLEPCount(config._minBLEPCount) {
     CARSTAIRS_DEBUG("Creating %u minBLEPs.", _minBLEPCount);
     auto const evenOrder = config.evenEmpiricalOrder();
     CARSTAIRS_DEBUG("For transition %.3f/%d using filter order: %d", config._transition, pcmRate, evenOrder);

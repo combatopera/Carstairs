@@ -13,9 +13,7 @@ class MinBLEPs {
 
     friend Paster;
 
-    int const _pcmRate;
-
-    float const _naiveRate;
+    double const _ratio;
 
 #ifdef CARSTAIRS_TEST
 
@@ -37,7 +35,7 @@ public:
 
     DSSI::cursor getNaiveCursor(DSSI::cursor pcmCursor) const {
         // First naive cursor that doesn't affect pcm cursor values prior to that given:
-        return DSSI::cursor(floor(double(pcmCursor - 1) / _pcmRate * _naiveRate) + 1);
+        return DSSI::cursor(floor(double(pcmCursor - 1) / _ratio) + 1);
     }
 
 };
