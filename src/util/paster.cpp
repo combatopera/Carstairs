@@ -9,20 +9,20 @@ namespace {
 Log const LOG(__FILE__);
 }
 
-inline void pastePrepare(Paster const& paster, DSSI::cursor naiveX, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) {
-    auto const pcmMark = double(naiveX) * paster._ratio;
-    // If pcmX is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
-    auto const pcmX = DSSI::cursor(ceil(pcmMark));
-    if (pcmX < pcmRef) {
+inline void pastePrepare(Paster const& paster, DSSI::cursor naiveCursor, DSSI::cursor pcmRef, sizex& pcmRelX, sizex& minBLEPIndex) {
+    auto const pcmMark = double(naiveCursor) * paster._ratio;
+    // If pcmCursor is 1 too big due to rounding error, we simply skip _minBLEPs[0] which is close to zero:
+    auto const pcmCursor = DSSI::cursor(ceil(pcmMark));
+    if (pcmCursor < pcmRef) {
         CARSTAIRS_INFO("ratio = %.20f", paster._ratio);
-        CARSTAIRS_INFO("naiveX = %lu", naiveX);
+        CARSTAIRS_INFO("naiveX = %lu", naiveCursor);
         CARSTAIRS_INFO("pcmRef = %lu", pcmRef);
-        CARSTAIRS_INFO("pcmX = %lu", pcmX);
+        CARSTAIRS_INFO("pcmX = %lu", pcmCursor);
         CARSTAIRS_ERROR("MinBLEP should have started in previous block!");
         assert(false);
     }
-    pcmRelX = sizex(pcmX - pcmRef);
-    auto const distance = double(pcmX) - pcmMark;
+    pcmRelX = sizex(pcmCursor - pcmRef);
+    auto const distance = double(pcmCursor) - pcmMark;
     minBLEPIndex = sizex(round(distance * paster._minBLEPCount));
 }
 
