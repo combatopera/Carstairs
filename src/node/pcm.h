@@ -13,7 +13,7 @@ class PCM: public Node<LADSPA_Data> {
 
     MinBLEPs const _minBLEPs;
 
-    Paster _paster;
+    Paster const _paster;
 
     Node<float>& _naive;
 
@@ -32,7 +32,7 @@ class PCM: public Node<LADSPA_Data> {
         auto const pcmRef = cursor();
         auto const pcmCount = _buf.limit();
         auto const naiveRef = _naive.cursor();
-        auto const naive = _naive.renderNew(_minBLEPs.getNaiveCursor(pcmRef + pcmCount));
+        auto const naive = _naive.renderNew(_paster.getNaiveCursor(pcmRef + pcmCount));
         auto const naiveCount = naive.limit();
         auto const pcmLimit = _paster.pcmCountWithOverflow(naiveRef + naiveCount - 1, pcmRef);
         _derivative.snapshot(naive);

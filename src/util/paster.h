@@ -56,6 +56,11 @@ public:
             : Paster(minBLEPs._ratio, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
     }
 
+    DSSI::cursor getNaiveCursor(DSSI::cursor pcmCursor) const {
+        // First naive cursor that doesn't affect pcm cursor values prior to that given:
+        return DSSI::cursor(floor(double(pcmCursor - 1) / _ratio) + 1);
+    }
+
     sizex pcmCountWithOverflow(DSSI::cursor naiveX, DSSI::cursor pcmRef) const {
         sizex pcmRelX, minBLEPIndex;
         pastePrepare(naiveX, pcmRef, pcmRelX, minBLEPIndex);

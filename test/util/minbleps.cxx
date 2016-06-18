@@ -87,12 +87,13 @@ BOOST_FIXTURE_TEST_CASE(minBLEPSize, F) {
 
 BOOST_FIXTURE_TEST_CASE(getNaiveCursor, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
-    BOOST_REQUIRE_EQUAL(1, minBLEPs.getNaiveCursor(1));
-    BOOST_REQUIRE_EQUAL(3, minBLEPs.getNaiveCursor(2));
-    BOOST_REQUIRE_EQUAL(6, minBLEPs.getNaiveCursor(3));
-    BOOST_REQUIRE_EQUAL(8, minBLEPs.getNaiveCursor(4));
-    BOOST_REQUIRE_EQUAL(11, minBLEPs.getNaiveCursor(5));
-    BOOST_REQUIRE_EQUAL(13, minBLEPs.getNaiveCursor(6));
+    Paster p(minBLEPs);
+    BOOST_REQUIRE_EQUAL(1, p.getNaiveCursor(1));
+    BOOST_REQUIRE_EQUAL(3, p.getNaiveCursor(2));
+    BOOST_REQUIRE_EQUAL(6, p.getNaiveCursor(3));
+    BOOST_REQUIRE_EQUAL(8, p.getNaiveCursor(4));
+    BOOST_REQUIRE_EQUAL(11, p.getNaiveCursor(5));
+    BOOST_REQUIRE_EQUAL(13, p.getNaiveCursor(6));
 }
 
 BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError, F) {
@@ -102,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
     Paster p(minBLEPs);
     BOOST_CHECK_EQUAL(94546431, p.getPcmMark(535977500)); // Logically correct.
-    BOOST_CHECK_EQUAL(535977501, minBLEPs.getNaiveCursor(94546432));
+    BOOST_CHECK_EQUAL(535977501, p.getNaiveCursor(94546432));
 }
 
 BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError2, F) {
@@ -112,7 +113,7 @@ BOOST_FIXTURE_TEST_CASE(getNaiveCursorRoundingError2, F) {
     MinBLEPs minBLEPs(_config, _pcmRate);
     Paster p(minBLEPs);
     BOOST_CHECK_EQUAL(1537536, p.getPcmMark(8008000)); // Logically correct.
-    BOOST_CHECK_EQUAL(8008001, minBLEPs.getNaiveCursor(1537537));
+    BOOST_CHECK_EQUAL(8008001, p.getNaiveCursor(1537537));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
