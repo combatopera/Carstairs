@@ -17,8 +17,7 @@
 
 #pragma once
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <dssi.h>
 #include <ladspa.h>
@@ -106,8 +105,13 @@ public:
         return true;
     }
 
-    std::time_t lastWriteTime() const {
-        return boost::filesystem::last_write_time(_path); // FIXME: Crash when it momentarily doesn't exist.
+    std::time_t lastWriteTime(std::time_t error) const {
+        try {
+            return boost::filesystem::last_write_time(_path);
+        }
+        catch (boost::filesystem::filesystem_error const&) {
+            return error;
+        }
     }
 
 };

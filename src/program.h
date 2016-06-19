@@ -96,7 +96,7 @@ class Loader {
     bool reload(sizex index) {
         auto const& info = _programInfos[index];
         if (info.isReal()) {
-            auto const mark = static_cast<ProgramInfoImpl const *>(&info)->lastWriteTime();
+            auto const mark = static_cast<ProgramInfoImpl const *>(&info)->lastWriteTime(_marks[index]);
             if (mark != _marks[index]) {
                 _marks[index] = mark;
                 return true;
