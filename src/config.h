@@ -22,6 +22,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "py/interpreter.h"
+#include "py/main.h"
 #include "util/buf.h"
 #include "util/util.h"
 
@@ -54,6 +56,15 @@ public:
     int const _alphaCC = 80, _betaCC = 81;
 
     boost::filesystem::path const _modulesDir = "/home/arc/projects/sounds/carstairs";
+
+    Config(Python const& python) {
+        Interpreter(python, [] {}).runTask([] {
+            Interpreter::execute(R"EOF(import os
+with open(os.path.join(os.path.expanduser('~'), '.carstairs.py')) as f:
+    exec(f.read())
+)EOF");
+        });
+    }
 
     float naiveRate() const {
         return _nominalClock * float(_atomSize) / float(YM2149_ATOM_SIZE);

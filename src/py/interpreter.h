@@ -23,8 +23,6 @@
 #include <functional>
 #include <string>
 
-#include "../config.h"
-#include "../module.h"
 #include "main.h"
 #include "py.h"
 
@@ -44,13 +42,13 @@ public:
 
     Interpreter(Python const&, std::function<void()> const&);
 
-    Interpreter(Config const& config, Module const& module, Python const& python)
+    Interpreter(boost::filesystem::path const& modulesDir, boost::filesystem::path const& moduleDir, Python const& python)
             : Interpreter(python, [&] {
                 // Assume neither path contains triple single quotes:
                     execute((boost::format(R"EOF(import sys
 sys.path.append('''%1%''')
 sys.path.append('''%2%''')
-)EOF") % module.dir().string() % config._modulesDir.string()).str());
+)EOF") % moduleDir.string() % modulesDir.string()).str());
                 }) {
     }
 

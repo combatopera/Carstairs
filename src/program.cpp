@@ -33,7 +33,7 @@ DefaultProgram::~DefaultProgram() {
 }
 
 ProgramImpl::ProgramImpl(Config const& config, Module const& module, Python const& python, ProgramInfo const& info)
-        : Interpreter(config, module, python), _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq), _info(info) {
+        : Interpreter(config._modulesDir, module.dir(), python), _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq), _info(info) {
     auto const name = info.descriptor().Name;
     CARSTAIRS_INFO("Reloading module: %s", name);
     runTask([&] {

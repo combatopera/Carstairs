@@ -18,6 +18,8 @@
 #include "plugin.h"
 
 #include <alsa/seq_event.h>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <cstring>
 
@@ -32,7 +34,7 @@ Log const LOG(__FILE__);
 
 Python const PYTHON;
 
-Config const CONFIG; // Must be in same file as PortInfo for static init order.
+Config const CONFIG {PYTHON}; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
@@ -108,7 +110,7 @@ ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python co
         if (filename.size() - suffixLen == suffixIndex) {
             std::string moduleName(filename);
             moduleName.erase(suffixIndex);
-            Interpreter(config, module, python).runTask([&] {
+            Interpreter(config._modulesDir, module.dir(), python).runTask([&] {
                 addOrLog(path, moduleName);
             });
         }
