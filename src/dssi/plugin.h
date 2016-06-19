@@ -107,7 +107,7 @@ public:
     }
 
     std::time_t lastWriteTime() const {
-        return boost::filesystem::last_write_time(_path);
+        return boost::filesystem::last_write_time(_path); // FIXME: Crash when it momentarily doesn't exist.
     }
 
 };
