@@ -21,9 +21,9 @@
 #include "../state.h"
 #include "osc.h"
 
-class Env: public Osc, public EnvShape {
+class Env: public EnvShape, public Osc {
 
-    void shapeChanged(int);
+    void shapeChanged();
 
 public:
 

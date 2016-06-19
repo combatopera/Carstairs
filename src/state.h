@@ -31,7 +31,11 @@ class EnvShape {
 
 protected:
 
-    virtual void shapeChanged(int) = 0;
+    int shapeIndex() const {
+        return _shape;
+    }
+
+    virtual void shapeChanged() = 0;
 
 public:
 
@@ -39,7 +43,8 @@ public:
     }
 
     void changeShape(int shape) {
-        shapeChanged(_shape = SHAPE_BOUNDS.clamp(shape));
+        _shape = SHAPE_BOUNDS.clamp(shape);
+        shapeChanged();
     }
 
     char const *envShapeName() const {

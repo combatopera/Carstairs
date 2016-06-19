@@ -17,9 +17,14 @@
 
 #include "env.h"
 
+#include <cassert>
+
 #include "../util/buf.h"
+#include "../util/util.h"
 
 namespace {
+
+Log const LOG(__FILE__);
 
 class Env1000: public Shape {
 
@@ -129,49 +134,44 @@ public:
 
 } ENV_1111;
 
-}
-
-Env::Env(Config const& config, State const& state)
-        : Osc(config._atomSize, state, "Envelope", ENV_1000, state.EP(), true) { // FIXME: Correct initial shape.
-}
-
-void Env::shapeChanged(int shape) {
-    switch (shape) {
+Shape const& indexToShape(int index) {
+    switch (index) {
+        case 8:
+            return ENV_1000;
         case 0:
         case 1:
         case 2:
         case 3:
-            setShape(ENV_1001);
-            break;
+        case 9:
+            return ENV_1001;
+        case 10:
+            return ENV_1010;
+        case 11:
+            return ENV_1011;
+        case 12:
+            return ENV_1100;
+        case 13:
+            return ENV_1101;
+        case 14:
+            return ENV_1110;
         case 4:
         case 5:
         case 6:
         case 7:
-            setShape(ENV_1111);
-            break;
-        case 8:
-            setShape(ENV_1000);
-            break;
-        case 9:
-            setShape(ENV_1001);
-            break;
-        case 10:
-            setShape(ENV_1010);
-            break;
-        case 11:
-            setShape(ENV_1011);
-            break;
-        case 12:
-            setShape(ENV_1100);
-            break;
-        case 13:
-            setShape(ENV_1101);
-            break;
-        case 14:
-            setShape(ENV_1110);
-            break;
         case 15:
-            setShape(ENV_1111);
-            break;
+            return ENV_1111;
     }
+    CARSTAIRS_ERROR("Bad shape index: %d", index);
+    assert(false);
+    return ENV_1000; // Unreachable.
+}
+
+}
+
+Env::Env(Config const& config, State const& state)
+        : Osc(config._atomSize, state, "Envelope", indexToShape(shapeIndex()), state.EP(), true) {
+}
+
+void Env::shapeChanged() {
+    setShape(indexToShape(shapeIndex()));
 }
