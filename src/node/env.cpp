@@ -115,7 +115,7 @@ public:
 }
 
 Env::Env(Config const& config, State const& state)
-        : Osc(config._atomSize, state, "Envelope", ENV_1000, state.EP(), true) {
+        : Osc(config._atomSize, state, "Envelope", ENV_1000, state.EP(), true) { // FIXME: Correct initial shape.
 }
 
 void Env::shapeChanged(int shape) {
