@@ -27,12 +27,12 @@ class EnvShape {
 
     static Bounds<int> const SHAPE_BOUNDS;
 
-    int _shape = SHAPE_BOUNDS._min;
+    int _shapeIndex = SHAPE_BOUNDS._min;
 
 protected:
 
     int shapeIndex() const {
-        return _shape;
+        return _shapeIndex;
     }
 
     virtual void shapeChanged() = 0;
@@ -43,17 +43,17 @@ public:
     }
 
     void changeShape(int shape) {
-        _shape = SHAPE_BOUNDS.clamp(shape);
+        _shapeIndex = SHAPE_BOUNDS.clamp(shape);
         shapeChanged();
     }
 
     char const *envShapeName() const {
         int s;
-        if (_shape & 0b1000) {
-            s = _shape;
+        if (_shapeIndex & 0b1000) {
+            s = _shapeIndex;
         }
         else {
-            s = (_shape & 0b0100) ? 0b1111 : 0b1001;
+            s = (_shapeIndex & 0b0100) ? 0b1111 : 0b1001;
         }
         switch (s) {
             case 0b1000:
