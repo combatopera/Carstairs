@@ -18,6 +18,7 @@
 #include "interpreter.h"
 
 #include <boost/filesystem/path.hpp>
+#include <boost/format.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
 
@@ -29,20 +30,15 @@ Log const LOG(__FILE__);
 
 Interpreter::Interpreter(Config const& config, Module const& module, Python const& python)
         : Interpreter(python, [&] {
-            std::string script;
-            script += "import sys\n";
             // Assume neither path contains triple single quotes:
-                script += "sys.path.append('''";
-                script += module.dir().string();
-                script += "''')\n";
-                script += "sys.path.append('''";
-                script += config._modulesDir.string();
-                script += "''')\n";
-                execute(script);
+                execute((boost::format(R"EOF(import sys
+sys.path.append('''%1%''')
+sys.path.append('''%2%''')
+)EOF") % module.dir().string() % config._modulesDir.string()).str());
             }) {
 }
 
-Interpreter::Interpreter(Python const& python, std::function<void()> const& task) {
+Interpreter::Interpreter(Python const& python, std::function<void()> const& init) {
     CARSTAIRS_DEBUG("Creating new sub-interpreter.");
     PyThreadState * const main = python;
     PyEval_AcquireThread(main);
@@ -50,7 +46,7 @@ Interpreter::Interpreter(Python const& python, std::function<void()> const& task
     assert(_state);
     assert(main != _state);
     assert(PyThreadState_Get() == _state);
-    task();
+    init();
     PyEval_ReleaseThread(_state);
     CARSTAIRS_DEBUG("Created: %p", _state);
 }
