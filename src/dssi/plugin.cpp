@@ -30,13 +30,13 @@ namespace {
 
 Log const LOG(__FILE__);
 
+Python const PYTHON;
+
 Config const CONFIG; // Must be in same file as PortInfo for static init order.
 
 PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
 
 Module const MODULE {CONFIG};
-
-Python const PYTHON;
 
 Bounds<int> PROGRAM_INDEX_BOUNDS {0, 0xff};
 
