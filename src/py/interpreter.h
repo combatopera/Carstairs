@@ -29,8 +29,6 @@
 
 class Interpreter {
 
-    boost::filesystem::path const& _modulesDir;
-
     PyThreadState *_state;
 
     Interpreter(boost::filesystem::path const&, Module const&, Python const&);

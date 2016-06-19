@@ -30,8 +30,7 @@ Interpreter::Interpreter(Config const& config, Module const& module, Python cons
         : Interpreter(config._modulesDir, module, python) {
 }
 
-Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Module const& module, Python const& python)
-        : _modulesDir(modulesDir) {
+Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Module const& module, Python const& python) {
     CARSTAIRS_DEBUG("Creating new sub-interpreter.");
     PyThreadState * const main = python;
     PyEval_AcquireThread(main);
