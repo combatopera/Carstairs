@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
 #include <python3.4m/Python.h>
 #include <functional>
 #include <string>
@@ -31,8 +30,6 @@ class Interpreter {
 
     PyThreadState *_state;
 
-    Interpreter(boost::filesystem::path const&, Module const&, Python const&);
-
 public:
 
     static PyRef import(char const *module) {
@@ -42,6 +39,8 @@ public:
     static void execute(std::string const& script) {
         PyRun_SimpleString(script.c_str());
     }
+
+    Interpreter(Python const&, std::function<void()> const&);
 
     Interpreter(Config const&, Module const&, Python const&);
 

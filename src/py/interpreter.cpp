@@ -17,6 +17,7 @@
 
 #include "interpreter.h"
 
+#include <boost/filesystem/path.hpp>
 #include <python3.4m/Python.h>
 #include <cassert>
 
@@ -27,10 +28,21 @@ Log const LOG(__FILE__);
 }
 
 Interpreter::Interpreter(Config const& config, Module const& module, Python const& python)
-        : Interpreter(config._modulesDir, module, python) {
+        : Interpreter(python, [&] {
+            std::string script;
+            script += "import sys\n";
+            // Assume neither path contains triple single quotes:
+                script += "sys.path.append('''";
+                script += module.dir().string();
+                script += "''')\n";
+                script += "sys.path.append('''";
+                script += config._modulesDir.string();
+                script += "''')\n";
+                execute(script);
+            }) {
 }
 
-Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Module const& module, Python const& python) {
+Interpreter::Interpreter(Python const& python, std::function<void()> const& task) {
     CARSTAIRS_DEBUG("Creating new sub-interpreter.");
     PyThreadState * const main = python;
     PyEval_AcquireThread(main);
@@ -38,18 +50,7 @@ Interpreter::Interpreter(boost::filesystem::path const& modulesDir, Module const
     assert(_state);
     assert(main != _state);
     assert(PyThreadState_Get() == _state);
-    {
-        std::string script;
-        script += "import sys\n";
-        // Assume neither path contains triple single quotes:
-        script += "sys.path.append('''";
-        script += module.dir().string();
-        script += "''')\n";
-        script += "sys.path.append('''";
-        script += modulesDir.string();
-        script += "''')\n";
-        execute(script);
-    }
+    task();
     PyEval_ReleaseThread(_state);
     CARSTAIRS_DEBUG("Created: %p", _state);
 }
