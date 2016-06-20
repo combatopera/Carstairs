@@ -50,12 +50,12 @@ ProgramImpl::ProgramImpl(Config const& config, Module const& module, Python cons
 }
 
 Loader::Loader(Config const& config, Module const& module, Python const& python, ProgramInfos const& programInfos)
-        : _python(python), //
+        : _python(python), _defaultProgram(new DefaultProgram(config)), //
         _programs(new std::shared_ptr<Program const>[programInfos.size()]), //
         _marks(new std::time_t[programInfos.size()]), //
         _programInfos(programInfos) {
     for (sizex i = programInfos.size() - 1; SIZEX_NEG != i; --i) {
-        _programs[i].reset(new DefaultProgram(config)); // FIXME LATER: Do an initial synchronous load instead.
+        _programs[i] = _defaultProgram; // FIXME LATER: Do an initial synchronous load instead.
         _marks[i] = -1;
     }
     _flag = true;

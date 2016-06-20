@@ -84,7 +84,7 @@ class Carstairs {
 
     int const _pcmRate;
 
-    sizex _pendingProgram = 0; // XXX: Or the DefaultProgram?
+    sizex _pendingProgram = -1;
 
     std::shared_ptr<Program const> _currentProgram;
 

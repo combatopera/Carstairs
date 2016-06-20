@@ -83,6 +83,8 @@ class Loader {
 
     Python const& _python;
 
+    std::shared_ptr<Program const> const _defaultProgram;
+
     std::shared_ptr<Program const> * const _programs;
 
     std::time_t * const _marks;
@@ -113,8 +115,13 @@ public:
 
     ~Loader();
 
-    std::shared_ptr<Program const>& program(sizex index) const {
-        return _programs[index];
+    std::shared_ptr<Program const> const& program(sizex index) const {
+        if (SIZEX_NEG == index) {
+            return _defaultProgram;
+        }
+        else {
+            return _programs[index];
+        }
     }
 
 };
