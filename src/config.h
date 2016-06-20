@@ -63,29 +63,40 @@ public:
     Config(Python const& python) {
         Interpreter(python, [] {}).runTask(
                 [&] {
-                    Interpreter::execute(R"EOF(def load():
-    import os, sys
+                    Interpreter::execute(R"EOF(import os, sys
+
+userhome = os.path.expanduser('~')
+
+def load():
     key = 'DSSI_PATH'
     if key in os.environ:
         dirs = os.environ[key].split(os.pathsep)
     else:
-        dirs = [os.path.join(os.path.expanduser('~'), '.dssi')]
+        dirs = [os.path.join(userhome, '.dssi')]
     for dir in dirs:
         print('Scanning:', dir, file = sys.stderr)
-        path = os.path.join(dir, 'carstairs.py')
+        path = os.path.join(dir, 'libcarstairs.py')
         if os.path.exists(path):
             print('Reading config:', path, file = sys.stderr)
             with open(path) as f:
                 return f.read()
+
 exec(load())
 )EOF");
-                    auto const conf = Interpreter::import("__main__");
-                    auto const attr = conf.getAttr("uniqueid");
+                    auto const config = Interpreter::import("__main__");
+                    auto attr = config.getAttr("uniqueid");
                     if (attr) {
                         _UniqueID = attr.numberRoundToUnsignedLong(); // TODO LATER: Should not round.
                     }
                     CARSTAIRS_DEBUG("UniqueID: %lu", _UniqueID);
-                    _modulesDir = conf.getAttr("modulesdir").toPathBytes().unwrapBytes();
+                    attr = config.getAttr("modulesdir");
+                    if (attr) {
+                        _modulesDir = attr.toPathBytes().unwrapBytes();
+                    }
+                    else {
+                        _modulesDir = config.getAttr("userhome").toPathBytes().unwrapBytes();
+                        _modulesDir /= ".carstairs";
+                    }
                 });
     }
 
