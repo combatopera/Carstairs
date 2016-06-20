@@ -30,11 +30,13 @@
 
 class Config {
 
+    static Log const LOG;
+
 public:
 
     sizex const YM2149_ATOM_SIZE = 8; // XXX: Why symbol not found when static?
 
-    unsigned long const _UniqueID = 0;
+    unsigned long _UniqueID;
 
     sizex CARSTAIRS_CONST _atomSize = 1;
 
@@ -73,6 +75,7 @@ exec(load())
 )EOF");
                     auto const conf = Interpreter::import("__main__");
                     _UniqueID = conf.getAttr("uniqueid").numberRoundToUnsignedLong(); // TODO LATER: Should not round.
+                    CARSTAIRS_DEBUG("UniqueID: %lu", _UniqueID);
                     _modulesDir = conf.getAttr("modulesdir").toPathBytes().unwrapBytes();
                 });
     }
