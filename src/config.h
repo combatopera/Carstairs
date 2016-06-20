@@ -65,7 +65,13 @@ public:
                 [&] {
                     Interpreter::execute(R"EOF(def load():
     import os, sys
-    for dir in os.environ['DSSI_PATH'].split(os.pathsep):
+    key = 'DSSI_PATH'
+    if key in os.environ:
+        dirs = os.environ[key].split(os.pathsep)
+    else:
+        dirs = [os.path.join(os.path.expanduser('~'), '.dssi')]
+    for dir in dirs:
+        print('Scanning:', dir, file = sys.stderr)
         path = os.path.join(dir, 'carstairs.py')
         if os.path.exists(path):
             print('Reading config:', path, file = sys.stderr)
