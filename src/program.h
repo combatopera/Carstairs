@@ -33,6 +33,10 @@ class DefaultProgram: public Program {
 
 public:
 
+    DefaultProgram(Config const& config)
+            : Program(config) {
+    }
+
     ~DefaultProgram();
 
     float rate() const {
@@ -41,8 +45,10 @@ public:
 
     void fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape&) const {
         if (!noteFrame) {
-            state.setLevel4(13);
             state.setToneFlag(true);
+            state.setNoiseFlag(false);
+            state.setLevelMode(false);
+            state.setLevel4(13);
         }
         if (!offFrameOrNeg) {
             state.setToneFlag(false);
@@ -52,10 +58,6 @@ public:
 };
 
 class ProgramImpl: public Interpreter, public Program {
-
-    int const _refMidiNote, _semitones;
-
-    float const _refFreq;
 
     ProgramInfo const& _info;
 

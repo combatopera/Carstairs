@@ -83,7 +83,17 @@ class State;
 
 class Program {
 
+protected:
+
+    int const _refMidiNote, _semitones;
+
+    float const _refFreq;
+
 public:
+
+    Program(Config const& config)
+            : _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq) {
+    }
 
     virtual ~Program() {
     }
