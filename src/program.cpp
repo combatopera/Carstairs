@@ -20,7 +20,6 @@
 #include <boost/filesystem/path.hpp>
 #include <unistd.h>
 #include <cassert>
-#include <cmath>
 
 #include "py/py.h"
 #include "util/util.h"
@@ -103,7 +102,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape&
         auto const module = import(_info.descriptor().Name);
         auto const note = module.getAttr("note"), chip = module.getAttr("chip");
         if (!noteFrame) {
-            note.setAttr("freq", _refFreq * powf(2, float(state.midiNote() - _refMidiNote) / float(_semitones)));
+            note.setAttr("freq", freq(state.midiNote()));
             chip.setAttr("envshape", module.getAttr(envShape.envShapeName()));
         }
         chip.setAttr("envshapechanged", 0L);

@@ -18,6 +18,7 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
 
 #include "config.h"
 #include "dssi/plugin.h"
@@ -88,6 +89,10 @@ protected:
     int const _refMidiNote, _semitones;
 
     float const _refFreq;
+
+    float freq(int const midiNote) const {
+        return _refFreq * powf(2, float(midiNote - _refMidiNote) / float(_semitones));
+    }
 
 public:
 

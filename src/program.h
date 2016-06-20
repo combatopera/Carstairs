@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <ctime>
 #include <memory>
 #include <thread>
@@ -31,10 +32,12 @@
 
 class DefaultProgram: public Program {
 
+    float const _scale;
+
 public:
 
     DefaultProgram(Config const& config)
-            : Program(config) {
+            : Program(config), _scale(config._nominalClock / float(config.YM2149_ATOM_SIZE * 2)) {
     }
 
     ~DefaultProgram();
@@ -49,6 +52,7 @@ public:
             state.setNoiseFlag(false);
             state.setLevelMode(false);
             state.setLevel4(13);
+            state.setTP(int(roundf(_scale / freq(state.midiNote()))));
         }
         if (!offFrameOrNeg) {
             state.setToneFlag(false);
