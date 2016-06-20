@@ -68,11 +68,10 @@ public:
 userhome = os.path.expanduser('~')
 
 def load():
-    key = 'DSSI_PATH'
-    if key in os.environ:
-        dirs = os.environ[key].split(os.pathsep)
-    else:
-        dirs = [os.path.join(userhome, '.dssi')]
+    try:
+        dirs = os.environ['DSSI_PATH'].split(os.pathsep)
+    except KeyError:
+        dirs = [os.path.join(userhome, '.dssi')] # Skip system paths for now.
     for dir in dirs:
         print('Scanning:', dir, file = sys.stderr)
         path = os.path.join(dir, 'libcarstairs.py')
