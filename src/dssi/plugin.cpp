@@ -103,17 +103,22 @@ ProgramInfos::ProgramInfos(Config const& config, Module const& module, Python co
     auto const suffixLen = strlen(suffix);
     using namespace boost::filesystem;
     CARSTAIRS_INFO("Scanning: %s", config._modulesDir.c_str());
-    for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
-        auto const& path = i->path();
-        auto const filename = path.filename().string(); // XXX: Why doesn't a reference work here?
-        auto const suffixIndex = filename.find(suffix);
-        if (filename.size() - suffixLen == suffixIndex) {
-            std::string moduleName(filename);
-            moduleName.erase(suffixIndex);
-            Interpreter(config._modulesDir, module.dir(), python).runTask([&] {
-                addOrLog(path, moduleName);
-            });
+    try {
+        for (auto i = directory_iterator(config._modulesDir), end = directory_iterator(); end != i; ++i) {
+            auto const& path = i->path();
+            auto const filename = path.filename().string(); // XXX: Why doesn't a reference work here?
+            auto const suffixIndex = filename.find(suffix);
+            if (filename.size() - suffixLen == suffixIndex) {
+                std::string moduleName(filename);
+                moduleName.erase(suffixIndex);
+                Interpreter(config._modulesDir, module.dir(), python).runTask([&] {
+                    addOrLog(path, moduleName);
+                });
+            }
         }
+    }
+    catch (filesystem_error const& e) {
+        CARSTAIRS_ERROR("Scan failed: %s", e.what());
     }
 }
 
