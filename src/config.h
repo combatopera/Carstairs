@@ -59,13 +59,20 @@ public:
     boost::filesystem::path _modulesDir;
 
     Config(Python const& python) {
-        Interpreter(python, [] {}).runTask([&] {
-            Interpreter::execute(R"EOF(import os
-with open(os.path.join(os.path.expanduser('~'), '.carstairs.py')) as f:
-    exec(f.read())
+        Interpreter(python, [] {}).runTask(
+                [&] {
+                    Interpreter::execute(R"EOF(def load():
+    import os, sys
+    for dir in os.environ['DSSI_PATH'].split(os.pathsep):
+        path = os.path.join(dir, 'carstairs.py')
+        if os.path.exists(path):
+            print('Reading config:', path, file = sys.stderr)
+            with open(path) as f:
+                return f.read()
+exec(load())
 )EOF");
-            _modulesDir = Interpreter::import("__main__").getAttr("modulesdir").toPathBytes().unwrapBytes();
-        });
+                    _modulesDir = Interpreter::import("__main__").getAttr("modulesdir").toPathBytes().unwrapBytes();
+                });
     }
 
     float naiveRate() const {
