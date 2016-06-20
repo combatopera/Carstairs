@@ -65,6 +65,10 @@ public:
         return int(round(PyFloat_AsDouble(_ptr)));
     }
 
+    unsigned long numberRoundToUnsignedLong() const {
+        return (unsigned long) round(PyFloat_AsDouble(_ptr));
+    }
+
     bool boolValue() const {
         return PyObject_IsTrue(_ptr);
     }

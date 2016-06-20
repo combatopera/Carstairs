@@ -71,7 +71,9 @@ public:
                 return f.read()
 exec(load())
 )EOF");
-                    _modulesDir = Interpreter::import("__main__").getAttr("modulesdir").toPathBytes().unwrapBytes();
+                    auto const conf = Interpreter::import("__main__");
+                    _UniqueID = conf.getAttr("uniqueid").numberRoundToUnsignedLong(); // TODO LATER: Should not round.
+                    _modulesDir = conf.getAttr("modulesdir").toPathBytes().unwrapBytes();
                 });
     }
 
