@@ -74,7 +74,10 @@ public:
 exec(load())
 )EOF");
                     auto const conf = Interpreter::import("__main__");
-                    _UniqueID = conf.getAttr("uniqueid").numberRoundToUnsignedLong(); // TODO LATER: Should not round.
+                    auto const attr = conf.getAttr("uniqueid");
+                    if (attr) {
+                        _UniqueID = attr.numberRoundToUnsignedLong(); // TODO LATER: Should not round.
+                    }
                     CARSTAIRS_DEBUG("UniqueID: %lu", _UniqueID);
                     _modulesDir = conf.getAttr("modulesdir").toPathBytes().unwrapBytes();
                 });
