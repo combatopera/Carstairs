@@ -22,11 +22,9 @@
 #include <fstream>
 #include <string>
 
-#include "util/util.h"
+Log const Module::LOG(__FILE__);
 
 namespace {
-
-Log const LOG(__FILE__);
 
 char const * const CODE =
         R"EOF(class Poly:

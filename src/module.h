@@ -20,8 +20,11 @@
 #include <boost/filesystem/path.hpp>
 
 #include "config.h"
+#include "util/util.h"
 
 class Module {
+
+    static Log const LOG;
 
     boost::filesystem::path const _dir;
 

@@ -96,6 +96,8 @@ public:
 
 class State {
 
+    static Log const LOG;
+
     static Bounds<int> const TP_BOUNDS, NP_BOUNDS, EP_BOUNDS, LEVEL4_BOUNDS;
 
     Config const& _config;

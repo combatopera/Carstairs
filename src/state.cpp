@@ -17,9 +17,7 @@
 
 #include "state.h"
 
-namespace {
-Log const LOG(__FILE__);
-}
+Log const State::LOG(__FILE__);
 
 Bounds<int> const State::TP_BOUNDS(1, 0xfff);
 
