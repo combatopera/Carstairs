@@ -24,6 +24,7 @@
 
 #include "py/interpreter.h"
 #include "py/main.h"
+#include "py/py.h"
 #include "util/buf.h"
 #include "util/util.h"
 
@@ -55,14 +56,15 @@ public:
 
     int const _alphaCC = 80, _betaCC = 81;
 
-    boost::filesystem::path const _modulesDir = "/home/arc/projects/sounds/carstairs";
+    boost::filesystem::path _modulesDir;
 
     Config(Python const& python) {
-        Interpreter(python, [] {}).runTask([] {
+        Interpreter(python, [] {}).runTask([&] {
             Interpreter::execute(R"EOF(import os
 with open(os.path.join(os.path.expanduser('~'), '.carstairs.py')) as f:
     exec(f.read())
 )EOF");
+            _modulesDir = Interpreter::import("__main__").getAttr("modulesdir").toPathBytes().unwrapBytes();
         });
     }
 
