@@ -60,6 +60,12 @@ public:
 
     boost::filesystem::path _modulesDir;
 
+#ifdef CARSTAIRS_TEST
+    Config()
+            : _UniqueID() {
+    }
+#endif
+
     Config(Python const& python) {
         Interpreter(python, [] {}).runTask(
                 [&] {
