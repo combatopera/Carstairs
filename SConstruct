@@ -46,6 +46,9 @@ class Context:
                 env.Append(LIBPATH = word[2:])
             elif word.startswith('-l'):
                 env.Append(LIBS = word[2:])
+        for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--includes'])):
+            if word.startswith('-I'):
+                env.Append(CPPPATH = [word[2:]])
         return env
 
 src = Tree('src', 'cpp')

@@ -17,7 +17,7 @@
 
 #include "interpreter.h"
 
-#include <python3.4m/Python.h>
+#include <Python.h>
 #include <cassert>
 
 #include "../util/util.h"

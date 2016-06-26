@@ -19,7 +19,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
-#include <python3.4m/Python.h>
+#include <Python.h>
 #include <functional>
 #include <string>
 

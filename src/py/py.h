@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <python3.4m/Python.h>
+#include <Python.h>
 #include <cmath>
 #include <cstdarg>
 

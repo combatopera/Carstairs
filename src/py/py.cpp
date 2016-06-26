@@ -17,7 +17,7 @@
 
 #include "py.h"
 
-#include <python3.4m/Python.h>
+#include <Python.h>
 
 #include "../util/util.h"
 
