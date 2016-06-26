@@ -36,6 +36,14 @@ class Context:
                     yield path
         return list(g())
 
+    @staticmethod
+    def newenv():
+        env = Environment()
+        env.Append(CXXFLAGS = '-std=c++11')
+        env.Append(LIBS = ['fftw3', 'python3.4', 'boost_filesystem'])
+        env.Append(LIBPATH = '/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu')
+        return env
+
 src = Tree('src', 'cpp')
 test = Tree('test', 'cxx')
 
