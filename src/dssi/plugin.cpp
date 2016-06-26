@@ -28,6 +28,8 @@
 #include "../py/py.h"
 #include "../util/util.h"
 
+#ifndef CARSTAIRS_TEST
+
 namespace {
 
 Log const LOG(__FILE__);
@@ -223,3 +225,5 @@ const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
 }
 
 }
+
+#endif
