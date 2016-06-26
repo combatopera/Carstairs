@@ -1,4 +1,4 @@
-import os, re
+import os, re, subprocess
 
 class Tree:
 
@@ -40,8 +40,12 @@ class Context:
     def newenv():
         env = Environment()
         env.Append(CXXFLAGS = '-std=c++11')
-        env.Append(LIBS = ['fftw3', 'python3.4', 'boost_filesystem'])
-        env.Append(LIBPATH = '/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu')
+        env.Append(LIBS = ['fftw3', 'boost_filesystem'])
+        for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
+            if word.startswith('-L'):
+                env.Append(LIBPATH = word[2:])
+            elif word.startswith('-l'):
+                env.Append(LIBS = word[2:])
         return env
 
 src = Tree('src', 'cpp')
