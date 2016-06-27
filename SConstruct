@@ -39,7 +39,11 @@ class Context:
     @staticmethod
     def newenv():
         env = Environment()
-        env.Append(CXXFLAGS = '-std=c++11')
+        env.Append(CXXFLAGS = [
+            '-std=c++11',
+            '-Wextra',
+            '-Wall',
+        ])
         env.Append(LIBS = ['fftw3', 'boost_filesystem'])
         for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
             if word.startswith('-L'):

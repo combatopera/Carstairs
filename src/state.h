@@ -145,7 +145,7 @@ public:
 
     void noteOff(DSSI::cursor cursor, int midiNote);
 
-    int const midiNote() const {
+    int midiNote() const {
         return _midiNote;
     }
 

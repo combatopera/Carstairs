@@ -36,7 +36,7 @@ template<typename T> class Node: public Maskable {
 
     DSSI::cursor _cursor = -1;
 
-    inline void catchUpImpl(DSSI::cursor newCursor, bool makeData) {
+    inline void catchUpImpl(DSSI::cursor newCursor, bool makeData __attribute__ ((unused))) {
         if (_cursor < newCursor) {
             _buf.setLimit(sizex(newCursor - _cursor));
             renderImpl(); // TODO LATER: Only actually make the data in makeData case.
