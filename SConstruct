@@ -41,8 +41,14 @@ class Context:
         env = Environment()
         env.Append(CXXFLAGS = [
             '-std=c++11',
+            '-Og',
+            '-g3',
             '-Wextra',
             '-Wall',
+            '-Wconversion',
+            '-Wunused',
+            '-Winline',
+            '-fmessage-length=0',
         ])
         env.Append(LIBS = ['fftw3', 'boost_filesystem'])
         for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
