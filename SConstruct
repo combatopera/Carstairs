@@ -46,7 +46,6 @@ class Context:
             '-Wextra',
             '-Wall',
             '-Wconversion',
-            '-Wunused',
             '-fmessage-length=0',
         ])
         env.Append(LIBS = ['fftw3', 'boost_filesystem'])

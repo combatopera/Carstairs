@@ -1,6 +1,6 @@
 Import('context')
 
 env = context.newenv()
-env.Append(CXXFLAGS = '-Winline')
+env.Append(CXXFLAGS = ['-Wunused', '-Winline'])
 
 env.SharedLibrary('carstairs', context.sources())
