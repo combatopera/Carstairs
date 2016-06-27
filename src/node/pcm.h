@@ -70,4 +70,7 @@ public:
             _overflowCount(), _dc() {
     }
 
+    ~PCM() {
+    }
+
 };
