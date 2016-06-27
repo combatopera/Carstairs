@@ -48,7 +48,7 @@ ProgramInfos const PROGRAM_INFOS(CONFIG, MODULE, PYTHON);
 
 Descriptors const DESCRIPTORS(CONFIG, PortInfo.values());
 
-LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor, DSSI::cursor SampleRate) {
+LADSPA_Handle instantiate(LADSPA_Descriptor const *Descriptor __attribute__ ((unused)), DSSI::cursor SampleRate) {
     CARSTAIRS_DEBUG("LADSPA: instantiate(%lu)", SampleRate);
     return new Carstairs(CONFIG, PortInfo, MODULE, PYTHON, PROGRAM_INFOS, int(SampleRate));
 }
@@ -58,7 +58,7 @@ void activate(LADSPA_Handle Instance) {
     static_cast<Carstairs *>(Instance)->start();
 }
 
-void deactivate(LADSPA_Handle Instance) {
+void deactivate(LADSPA_Handle Instance __attribute__ ((unused))) {
     CARSTAIRS_DEBUG("LADSPA: deactivate");
 }
 
@@ -67,7 +67,7 @@ void connect_port(LADSPA_Handle Instance, DSSI::cursor Port, LADSPA_Data *DataLo
     static_cast<Carstairs *>(Instance)->setPortValPtr((int) Port, DataLocation);
 }
 
-DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance, DSSI::cursor Index) {
+DSSI_Program_Descriptor const *get_program(LADSPA_Handle Instance __attribute__ ((unused)), DSSI::cursor Index) {
     CARSTAIRS_TRACE("DSSI: get_program(%lu)", Index);
     return PROGRAM_INFOS.descriptorOrNull(sizex(Index));
 }
