@@ -48,7 +48,7 @@ class Context:
             '-Wconversion',
             '-fmessage-length=0',
         ])
-        env.Append(LIBS = ['fftw3', 'boost_filesystem'])
+        env.Append(LIBS = ['fftw3', 'boost_filesystem1.48.0'])
         for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
             if word.startswith('-L'):
                 env.Append(LIBPATH = word[2:])
