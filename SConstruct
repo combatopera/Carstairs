@@ -23,7 +23,7 @@ class Context:
 
     def enter(self):
         SConscript(
-            'SConscript.' + self.name,
+            self.name + '.py',
             variant_dir = self.name,
             duplicate = 0,
             exports = {'context': self},
