@@ -1,4 +1,4 @@
-import os, re, subprocess
+import os, re, subprocess, versions
 
 class Tree:
 
@@ -48,7 +48,8 @@ class Context:
             '-Wconversion',
             '-fmessage-length=0',
         ])
-        env.Append(LIBS = ['fftw3', 'boost_filesystem1.48.0'])
+        env.Append(LIBS = ['fftw3'])
+        env.Append(LIBS = File('/usr/lib/x86_64-linux-gnu/libboost_filesystem.so.' + versions.boost))
         for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
             if word.startswith('-L'):
                 env.Append(LIBPATH = word[2:])
