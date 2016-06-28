@@ -39,7 +39,7 @@ class Context:
             self.name + '.py',
             variant_dir = self.name,
             duplicate = 0,
-            exports = {'context': self},
+            exports = {'context': self, 'libs': libs, 'versions': versions},
         )
 
     def sources(self):
