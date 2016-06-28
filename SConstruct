@@ -1,5 +1,18 @@
 import os, re, subprocess, versions
 
+class Libs:
+
+    def __init__(self):
+        self.paths = {}
+        namepattern = re.compile('^lib(.+)[.]so[.](.+)$')
+        for path in re.compile(' => (.+)$', re.MULTILINE).findall(subprocess.check_output(['/sbin/ldconfig', '-p'])):
+            m = namepattern.search(os.path.basename(path))
+            if m is not None:
+                self.paths[m.groups()] = path
+
+    def __getitem__(self, (lib, version)):
+        return self.paths[lib, version]
+
 class Tree:
 
     def __init__(self, path, *types):
@@ -49,7 +62,7 @@ class Context:
             '-fmessage-length=0',
         ])
         env.Append(LIBS = ['fftw3'])
-        env.Append(LIBS = File('/usr/lib/x86_64-linux-gnu/libboost_filesystem.so.' + versions.boost))
+        env.Append(LIBS = File(libs['boost_filesystem', versions.boost]))
         for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
             if word.startswith('-L'):
                 env.Append(LIBPATH = word[2:])
@@ -62,6 +75,8 @@ class Context:
 
 src = Tree('src', 'cpp')
 test = Tree('test', 'cxx')
+
+libs = Libs()
 
 Context('Debug', src).enter()
 Context('Test', src, test).enter()
