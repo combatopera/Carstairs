@@ -81,4 +81,5 @@ libs = Libs()
 Context('Debug', src).enter()
 Context('Test', src, test).enter()
 
-Command('OK', 'Test/testcarstairs', 'Test/testcarstairs')
+Command('tests', 'Test/testcarstairs', 'Test/testcarstairs')
+Command('cppcheck', [], 'cppcheck -q --inline-suppr --enable=all src test')
