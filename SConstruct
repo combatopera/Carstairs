@@ -80,3 +80,5 @@ libs = Libs()
 
 Context('Debug', src).enter()
 Context('Test', src, test).enter()
+
+Command('OK', 'Test/testcarstairs', 'Test/testcarstairs')
