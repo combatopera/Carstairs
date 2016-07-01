@@ -81,6 +81,4 @@ libs = Libs()
 Context('main', main).enter()
 Context('test', main, test).enter()
 
-Command('OK', 'bin/test/testcarstairs', 'env $SOURCE')
 Command('cppcheck', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES')
-Command('foreignsyms', 'bin/main/libcarstairs.so', '../pyven/foreignsyms $SOURCE')
