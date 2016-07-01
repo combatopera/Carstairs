@@ -81,4 +81,4 @@ libs = Libs()
 Context('main', main).enter()
 Context('test', main, test).enter()
 
-Command('cppcheck', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES')
+Command('bin/cppcheck.txt', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES 2>&1 | tee $TARGET')

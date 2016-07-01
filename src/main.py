@@ -21,4 +21,4 @@ env = context.newenv()
 env.Append(CXXFLAGS = ['-Winline'])
 
 env.SharedLibrary('carstairs', context.sources())
-env.Command('foreignsyms', 'libcarstairs.so', '../pyven/foreignsyms $SOURCE')
+env.Command('foreignsyms.txt', 'libcarstairs.so', '../pyven/foreignsyms $SOURCE | tee $TARGET')

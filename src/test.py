@@ -24,4 +24,4 @@ env.Append(LIBS = [File(libs['boost_system', versions.boost]), File(libs['boost_
 env.Append(CPPPATH = 'main')
 
 env.Program('testcarstairs', context.sources())
-env.Command('OK', 'testcarstairs', 'env $SOURCE')
+env.Command('testcarstairs.txt', 'testcarstairs', '$SOURCE 2>&1 | tee $TARGET')
