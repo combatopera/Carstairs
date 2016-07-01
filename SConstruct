@@ -21,7 +21,7 @@ class Tree:
 
     def __iter__(self):
         vardir = Dir('.').abspath
-        searchdir = os.path.join(os.path.dirname(os.path.dirname(vardir)), self.path)
+        searchdir = os.path.join(os.path.dirname(os.path.dirname(vardir)), 'src', self.path)
         for dirpath, dirnames, filenames in os.walk(searchdir):
             for name in filenames:
                 if self.pattern.search(name) is not None:
@@ -36,7 +36,7 @@ class Context:
 
     def enter(self):
         SConscript(
-            self.name + '.py',
+            os.path.join('src', self.name + '.py'),
             variant_dir = os.path.join('bin', self.name),
             duplicate = 0,
             exports = {'context': self, 'libs': libs, 'versions': versions},
@@ -73,8 +73,8 @@ class Context:
                 env.Append(CPPPATH = [word[2:]])
         return env
 
-main = Tree('src/main', 'cpp')
-test = Tree('src/test', 'cxx')
+main = Tree('main', 'cpp')
+test = Tree('test', 'cxx')
 
 libs = Libs()
 
