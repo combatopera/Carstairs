@@ -21,7 +21,7 @@ class Tree:
 
     def __iter__(self):
         vardir = Dir('.').abspath
-        searchdir = os.path.join(os.path.dirname(vardir), self.path)
+        searchdir = os.path.join(os.path.dirname(os.path.dirname(vardir)), self.path)
         for dirpath, dirnames, filenames in os.walk(searchdir):
             for name in filenames:
                 if self.pattern.search(name) is not None:
@@ -37,7 +37,7 @@ class Context:
     def enter(self):
         SConscript(
             self.name + '.py',
-            variant_dir = self.name,
+            variant_dir = os.path.join('bin', self.name),
             duplicate = 0,
             exports = {'context': self, 'libs': libs, 'versions': versions},
         )
@@ -73,14 +73,14 @@ class Context:
                 env.Append(CPPPATH = [word[2:]])
         return env
 
-src = Tree('src', 'cpp')
-test = Tree('test', 'cxx')
+main = Tree('src/main', 'cpp')
+test = Tree('src/test', 'cxx')
 
 libs = Libs()
 
-Context('Debug', src).enter()
-Context('Test', src, test).enter()
+Context('main', main).enter()
+Context('test', main, test).enter()
 
-Command('OK', 'Test/testcarstairs', 'env $SOURCE')
-Command('cppcheck', ['src', 'test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES')
-Command('foreignsyms', 'Debug/libcarstairs.so', '../pyven/foreignsyms $SOURCE')
+Command('OK', 'bin/test/testcarstairs', 'env $SOURCE')
+Command('cppcheck', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES')
+Command('foreignsyms', 'bin/main/libcarstairs.so', '../pyven/foreignsyms $SOURCE')

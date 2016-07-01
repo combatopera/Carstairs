@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "../../src/util/buf.h"
+#include "util/buf.h"
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>

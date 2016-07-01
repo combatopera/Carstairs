@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "../../src/util/minbleps.h"
+#include "util/minbleps.h"
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 
-#include "../../src/util/paster.h"
+#include "util/paster.h"
 
 BOOST_AUTO_TEST_SUITE(TestMinBLEPs)
 

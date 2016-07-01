@@ -1,6 +1,4 @@
 #gclean
 ^.sconsign.dblite$
-^Debug/
-^Test/
-^test_Backups/
+^bin/
 [.]pyc$

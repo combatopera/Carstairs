@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "../../src/node/noise.h"
+#include "node/noise.h"
 
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <array>
 
-#include "../../src/node.h"
-#include "../../src/util/buf.h"
+#include "node.h"
+#include "util/buf.h"
 
 BOOST_AUTO_TEST_SUITE(TestNoise)
 
