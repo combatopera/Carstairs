@@ -15,4 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-boost = '1.55.0'
+import os
+
+boost = '1.48.0' if 'DRONE' in os.environ else '1.55.0'
