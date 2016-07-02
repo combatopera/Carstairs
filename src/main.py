@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-Import('context')
+Import('context libs64')
 
-env = context.newenv()
+env = context.newenv(libs64)
 env.Append(CXXFLAGS = ['-Winline'])
 
 env.SharedLibrary('carstairs', context.sources())

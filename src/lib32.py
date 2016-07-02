@@ -15,13 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-Import('context libs64 versions')
+Import('context libs32')
 
-env = context.newenv(libs64)
-env.Append(CXXFLAGS = ['-Wno-unused-parameter'])
-env.Append(CPPDEFINES = ['BOOST_TEST_DYN_LINK', 'CARSTAIRS_TEST', 'CARSTAIRS_LEVEL_INFO'])
-env.Append(LIBS = [File(libs64['boost_system', versions.boost]), File(libs64['boost_unit_test_framework', versions.boost])])
-env.Append(CPPPATH = 'main')
+env = context.newenv(libs32)
+env.Append(CXXFLAGS = ['-Winline', '-m32'])
+env.Append(LINKFLAGS = ['-m32'])
 
-env.Program('testcarstairs', context.sources())
-env.Command('testcarstairs.txt', 'testcarstairs', '$SOURCE 2>&1 | tee $TARGET')
+env.SharedLibrary('carstairs', context.sources())

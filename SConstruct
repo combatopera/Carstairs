@@ -2,10 +2,10 @@ import os, re, subprocess, versions
 
 class Libs:
 
-    def __init__(self):
+    def __init__(self, type):
         self.paths = {}
         namepattern = re.compile('^lib(.+)[.]so[.](.+)$')
-        for path in re.compile(' => (.+)$', re.MULTILINE).findall(subprocess.check_output(['/sbin/ldconfig', '-p'])):
+        for path in re.compile('[(]%s[)] => (.+)$' % re.escape(type), re.MULTILINE).findall(subprocess.check_output(['/sbin/ldconfig', '-p'])):
             m = namepattern.search(os.path.basename(path))
             if m is not None:
                 self.paths[m.groups()] = path
@@ -39,7 +39,7 @@ class Context:
             os.path.join('src', self.name + '.py'),
             variant_dir = os.path.join('bin', self.name),
             duplicate = 0,
-            exports = {'context': self, 'libs': libs, 'versions': versions},
+            exports = {'context': self, 'libs64': libs64, 'libs32': libs32, 'versions': versions},
         )
 
     def sources(self):
@@ -50,7 +50,7 @@ class Context:
         return list(g())
 
     @staticmethod
-    def newenv():
+    def newenv(libs):
         env = Environment()
         env.Append(CXXFLAGS = [
             '-std=c++11',
@@ -76,9 +76,11 @@ class Context:
 main = Tree('main', 'cpp')
 test = Tree('test', 'cxx')
 
-libs = Libs()
+libs64 = Libs('libc6,x86-64')
+libs32 = Libs('libc6')
 
 Context('main', main).enter()
+Context('lib32', main).enter()
 Context('unit', main, test).enter()
 
 Command('bin/cppcheck.txt', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES 2>&1 | tee $TARGET')
