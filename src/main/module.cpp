@@ -96,6 +96,12 @@ del Channel
 
 class Note:
 
+    def __add__(self, semis):
+        import copy
+        that = copy.copy(self)
+        that.freq *= 2 ** (semis/12) # FIXME: Use configured semitone count.
+        return that
+
     def toneperiod(self, freq = None):
         return chip.clock / (%1% * 2 * (self.freq if freq is None else freq))
 
