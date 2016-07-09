@@ -24,4 +24,4 @@ if 'DRONE' not in os.environ:
     env.Append(CXXFLAGS = ['-Winline', '-m32'])
     env.Append(LINKFLAGS = ['-m32'])
 
-    env.SharedLibrary('carstairs32', context.sources())
+    env.SharedLibrary('carstairs', context.sources())
