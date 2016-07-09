@@ -32,8 +32,10 @@ src/main/carstairs.cpp
 src/main/carstairs.h
 src/main/config.cpp
 src/main/config.h
+src/main/config.py
 src/main/module.cpp
 src/main/module.h
+src/main/module.py
 src/main/node.cpp
 src/main/node.h
 src/main/program.cpp
