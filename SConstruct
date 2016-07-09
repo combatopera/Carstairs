@@ -85,7 +85,7 @@ libs32 = Libs('libc6')
 import platform
 if 'x86_64' == platform.machine():
     libs = libs64 = Libs('libc6,x86-64')
-    Context('main', main).enter()
+    Context('lib64', main).enter()
 else:
     libs = libs32
 Context('lib32', main).enter()
