@@ -35,11 +35,16 @@ class Context:
         self.trees = trees
 
     def enter(self):
+        exports = {'context': self, 'libs32': libs32, 'libs': libs, 'versions': versions}
+        try:
+            exports['libs64'] = libs64
+        except NameError:
+            pass
         SConscript(
             os.path.join('src', self.name + '.py'),
             variant_dir = os.path.join('bin', self.name),
             duplicate = 0,
-            exports = {'context': self, 'libs64': libs64, 'libs32': libs32, 'versions': versions},
+            exports = exports,
         )
 
     def sources(self):
@@ -76,10 +81,13 @@ class Context:
 main = Tree('main', 'cpp')
 test = Tree('test', 'cxx')
 
-libs64 = Libs('libc6,x86-64')
 libs32 = Libs('libc6')
-
-Context('main', main).enter()
+import platform
+if 'x86_64' == platform.machine():
+    libs = libs64 = Libs('libc6,x86-64')
+    Context('main', main).enter()
+else:
+    libs = libs32
 Context('lib32', main).enter()
 Context('unit', main, test).enter()
 

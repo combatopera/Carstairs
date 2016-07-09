@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Carstairs.  If not, see <http://www.gnu.org/licenses/>.
 
-Import('context libs64 versions')
+Import('context libs versions')
 
-env = context.newenv(libs64)
+env = context.newenv(libs)
 env.Append(CXXFLAGS = ['-Wno-unused-parameter'])
 env.Append(CPPDEFINES = ['BOOST_TEST_DYN_LINK', 'CARSTAIRS_TEST', 'CARSTAIRS_LEVEL_INFO'])
-env.Append(LIBS = [File(libs64['boost_system', versions.boost]), File(libs64['boost_unit_test_framework', versions.boost])])
+env.Append(LIBS = [File(libs['boost_system', versions.boost]), File(libs['boost_unit_test_framework', versions.boost])])
 env.Append(CPPPATH = 'main')
 
 env.Program('testcarstairs', context.sources())
