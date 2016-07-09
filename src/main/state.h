@@ -149,6 +149,10 @@ public:
         return _midiNote;
     }
 
+    int velocity() const {
+        return _velocity;
+    }
+
     int const& TP() const {
         return _TP;
     }

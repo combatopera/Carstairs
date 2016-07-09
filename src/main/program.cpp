@@ -19,6 +19,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <unistd.h>
+#include <algorithm>
 #include <cassert>
 
 #include "py/py.h"
@@ -103,6 +104,7 @@ void ProgramImpl::fire(int noteFrame, int offFrameOrNeg, State& state, EnvShape&
         auto const note = module.getAttr("note"), chip = module.getAttr("chip");
         if (!noteFrame) {
             note.setAttr("freq", freq(state.midiNote()));
+            note.setAttr("velocity", std::max(0., double(state.velocity() - 1) / 0x7e));
             chip.setAttr("envshape", module.getAttr(envShape.envShapeName()));
         }
         chip.setAttr("envshapechanged", 0L);
