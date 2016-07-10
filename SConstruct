@@ -92,6 +92,6 @@ Context('lib32', main).enter()
 Context('unit', main, test).enter()
 
 Command('bin/cppcheck.txt', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES 2>&1 | tee $TARGET')
-for path in 'module.py', 'config.py':
+for path in 'module.py3', 'config.py3':
     path = os.path.join('src', 'main', path)
     Command(path[:path.rindex('.')] + '.raw', path, '''echo -n 'R"EOF(' >$TARGET; cat $SOURCE >>$TARGET; echo ')EOF"' >>$TARGET''')
