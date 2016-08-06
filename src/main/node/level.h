@@ -65,7 +65,7 @@ class Level: public Node<float> {
 public:
 
     Level(Config const& config, State const& state, Mixer& mixer, Env& env)
-            : Node("Level", state), _levelMode(state.levelMode()), _mixer(mixer), _env(env) {
+        : Node("Level", state), _levelMode(state.levelMode()), _mixer(mixer), _env(env) {
         auto const maxLevel5 = sizex(_level5ToAmp.size() - 1);
         for (auto level5 = maxLevel5; SIZEX_NEG != level5; --level5) {
             _level5ToAmp[level5] = powf(2, float(maxLevel5 - level5) / -4) * config._maxAmp;

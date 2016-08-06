@@ -60,7 +60,7 @@ public:
     }
 
     Paster(double ratio, View<float> const minBLEPs, sizex minBLEPCount)
-            : _ratio(ratio), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
+        : _ratio(ratio), _minBLEPs(minBLEPs), _minBLEPCount(minBLEPCount) {
     }
 
     inline sizex minBLEPSize(sizex minBLEPIndex) const {
@@ -70,7 +70,7 @@ public:
 public:
 
     Paster(MinBLEPs const& minBLEPs)
-            : Paster(minBLEPs._ratio, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
+        : Paster(minBLEPs._ratio, minBLEPs._minBLEPs, minBLEPs._minBLEPCount) {
     }
 
     DSSI::cursor getNaiveCursor(DSSI::cursor pcmCursor) const {

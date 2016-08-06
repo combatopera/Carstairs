@@ -29,11 +29,12 @@ BOOST_AUTO_TEST_SUITE(TestNoise)
 BOOST_AUTO_TEST_CASE(LFSR) {
     // Subsequence of the real LFSR from Hatari mailing list:
     std::array<int, 51> expected { //
-    0, 1, 0, 0, 1, 1, 0, 1, 0, 1, //
-            1, 1, 0, 0, 1, 0, 1, 0, 0, 1, //
-            0, 0, 1, 1, 0, 1, 1, 1, 0, 0, //
-            1, 1, 0, 0, 0, 0, 0, 1, 0, 0, //
-            0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0};
+        0, 1, 0, 0, 1, 1, 0, 1, 0, 1, //
+        1, 1, 0, 0, 1, 0, 1, 0, 0, 1, //
+        0, 0, 1, 1, 0, 1, 1, 1, 0, 0, //
+        1, 1, 0, 0, 0, 0, 0, 1, 0, 0, //
+        0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0
+    };
     for (auto n = expected.size(), i = n - n; i < n; ++i) {
         expected[i] = 1 - expected[i]; // According to qnoispec, raw LFSR 1 maps to amp 0, so we flip our LFSR.
     }

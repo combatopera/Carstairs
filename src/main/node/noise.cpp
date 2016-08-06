@@ -59,7 +59,7 @@ class YM2149Noise: public Shape {
     };
 
     YM2149Noise(LFSR const& lfsr)
-            : Shape("NOISE", lfsr._size) {
+        : Shape("NOISE", lfsr._size) {
         auto x = INITIAL_X;
         for (auto i = 0u, n = lfsr._size; i < n; ++i) {
             _data.put(i, step(lfsr._mask, x));
@@ -69,7 +69,7 @@ class YM2149Noise: public Shape {
 public:
 
     YM2149Noise()
-            : YM2149Noise(LFSR()) {
+        : YM2149Noise(LFSR()) {
     }
 
 } YM2149_NOISE;
@@ -77,12 +77,12 @@ public:
 }
 
 Noise::Noise(Config const& config, State const& state)
-        : Noise(config, state, YM2149_NOISE) {
+    : Noise(config, state, YM2149_NOISE) {
 }
 
 // Doubling the atom size results in authentic spectrum, see qnoispec:
 Noise::Noise(Config const& config, State const& state, Shape const& shape)
-        : Osc(config._atomSize * 2, state, "Noise", shape, state.NP(), false) {
+    : Osc(config._atomSize * 2, state, "Noise", shape, state.NP(), false) {
 }
 
 #ifdef CARSTAIRS_TEST

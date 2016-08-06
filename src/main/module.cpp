@@ -28,12 +28,12 @@ namespace {
 
 char const * const CODE =
 #include "module.raw"
-;
+    ;
 
 }
 
 Module::Module(Config const& config)
-        : _dir(boost::filesystem::temp_directory_path() / boost::filesystem::unique_path()) {
+    : _dir(boost::filesystem::temp_directory_path() / boost::filesystem::unique_path()) {
     boost::filesystem::create_directory(_dir);
     std::ofstream f;
     f.open((_dir / "carstairs.py").string().c_str());

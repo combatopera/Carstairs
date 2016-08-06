@@ -36,7 +36,7 @@ public:
 public:
 
     Shape(char const *label, sizex limit, sizex introLen = 0)
-            : _data(label, limit), _introLen(introLen), _last(limit - 1) {
+        : _data(label, limit), _introLen(introLen), _last(limit - 1) {
     }
 
     sizex next(sizex index) const {
@@ -118,8 +118,8 @@ protected:
     }
 
     Osc(sizex atomSize, State const& state, char const *label, Shape const& shape, int const& period, bool eagerStepSize)
-            : Node(label, state), _atomSize(atomSize), _shape(&shape), _period(period), _eagerStepSize(eagerStepSize), //
-            _indexInShape(), _progress(), _stepSize() {
+        : Node(label, state), _atomSize(atomSize), _shape(&shape), _period(period), _eagerStepSize(eagerStepSize), //
+          _indexInShape(), _progress(), _stepSize() {
     }
 
 };

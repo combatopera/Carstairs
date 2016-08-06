@@ -53,7 +53,7 @@ public:
     static DSSI::cursor const BANK = 0;
 
     ProgramInfo(sizex index, char const *name)
-            : _descriptor {BANK, index, name} {
+        : _descriptor {BANK, index, name} {
     }
 
     virtual ~ProgramInfo() {
@@ -78,7 +78,7 @@ class DefaultProgramInfo: public ProgramInfo {
 public:
 
     DefaultProgramInfo(sizex index, char const *label)
-            : ProgramInfo(index, 0), _label((boost::format("%02X %s") % index % label).str()) {
+        : ProgramInfo(index, 0), _label((boost::format("%02X %s") % index % label).str()) {
         _descriptor.Name = _label.c_str();
     }
 
@@ -97,7 +97,7 @@ class ProgramInfoImpl: public ProgramInfo {
 public:
 
     ProgramInfoImpl(sizex index, boost::filesystem::path const& tmpPath, std::string const& tmpName)
-            : ProgramInfo(index, 0), _path(tmpPath), _name(tmpName) { // Copies, necessarily.
+        : ProgramInfo(index, 0), _path(tmpPath), _name(tmpName) { // Copies, necessarily.
         _descriptor.Name = _name.c_str(); // Use our copy of the name!
     }
 

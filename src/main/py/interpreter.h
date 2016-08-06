@@ -43,21 +43,21 @@ public:
     Interpreter(Python const&, std::function<void()> const&);
 
     Interpreter(boost::filesystem::path const& modulesDir, boost::filesystem::path const& moduleDir, Python const& python)
-            : Interpreter(python, [&] {
-                // Assume neither path contains triple single quotes:
-                    execute((boost::format(R"EOF(import sys
+        : Interpreter(python, [&] {
+        // Assume neither path contains triple single quotes:
+        execute((boost::format(R"EOF(import sys
 sys.path.append('''%1%''')
 sys.path.append('''%2%''')
 )EOF") % moduleDir.string() % modulesDir.string()).str());
-                }) {
-    }
+}) {
+}
 
-    void runTask(std::function<void()> const& task) const {
-        PyEval_AcquireThread(_state);
-        task();
-        PyEval_ReleaseThread(_state);
-    }
+void runTask(std::function<void()> const& task) const {
+PyEval_AcquireThread(_state);
+task();
+PyEval_ReleaseThread(_state);
+}
 
-    virtual ~Interpreter();
+virtual ~Interpreter();
 
 };

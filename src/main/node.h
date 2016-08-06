@@ -47,7 +47,7 @@ template<typename T> class Node: public Maskable {
 public:
 
     Node(char const *label, State const& state)
-            : _buf(label), _state(state) {
+        : _buf(label), _state(state) {
         // Nothing else.
     }
 

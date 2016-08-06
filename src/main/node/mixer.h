@@ -36,7 +36,7 @@ class Mixer: public Node<int> {
 public:
 
     Mixer(State const& state, Tone& tone, Noise& noise)
-            : Node("Mixer", state), _tone(tone), _noise(noise) {
+        : Node("Mixer", state), _tone(tone), _noise(noise) {
     }
 
 };

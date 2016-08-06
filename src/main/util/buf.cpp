@@ -35,19 +35,19 @@ double abs(std::complex<double> const& c) {
 }
 
 template<typename T> View<T>::View(char const *label, sizex limit)
-        : _limit(limit) {
+    : _limit(limit) {
     CARSTAIRS_DEBUG("Creating Buffer: %s", label);
     _data = (T *) malloc(limit * sizeof(T));
 }
 
 template<typename T> Buffer<T>::Buffer(char const *label, sizex limit)
-        : View<T>(label, limit) {
+    : View<T>(label, limit) {
     _capacity = limit;
     _label = label;
 }
 
 template<typename T> View<T>::View(View<T> const& master)
-        : _limit(master._limit), _data(master._data) {
+    : _limit(master._limit), _data(master._data) {
     // Nothing else.
 }
 
@@ -193,14 +193,14 @@ template<> void View<float>::fillNarrowing(double const *values) {
 
 template<> void View<std::complex<double>>::fft() {
     auto plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
-    FFTW_FORWARD, FFTW_ESTIMATE);
+                                 FFTW_FORWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 }
 
 template<> void View<std::complex<double>>::ifft() {
     auto plan = fftw_plan_dft_1d(int(_limit), reinterpret_cast<fftw_complex *>(_data), reinterpret_cast<fftw_complex *>(_data),
-    FFTW_BACKWARD, FFTW_ESTIMATE);
+                                 FFTW_BACKWARD, FFTW_ESTIMATE);
     fftw_execute(plan);
     fftw_destroy_plan(plan);
     mul(std::complex<double>(1 / double(_limit))); // How numpy does it.

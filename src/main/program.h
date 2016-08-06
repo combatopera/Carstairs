@@ -37,7 +37,7 @@ class DefaultProgram: public Program {
 public:
 
     DefaultProgram(Config const& config)
-            : Program(config), _scale(config._nominalClock / float(config.YM2149_ATOM_SIZE * 2)) {
+        : Program(config), _scale(config._nominalClock / float(config.YM2149_ATOM_SIZE * 2)) {
     }
 
     ~DefaultProgram();

@@ -27,7 +27,7 @@ struct F {
 
     struct BLEPs: public Buffer<float> {
         BLEPs()
-                : Buffer {"_minBLEPs", 18} {
+            : Buffer {"_minBLEPs", 18} {
             range();
             add(1); // [1,6,11,16], [2,7,12,17], [3,8,13,18], [4,9,14], [5,10,15]
         }
