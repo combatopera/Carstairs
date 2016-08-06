@@ -32,10 +32,8 @@ src/main/carstairs.cpp
 src/main/carstairs.h
 src/main/config.cpp
 src/main/config.h
-src/main/config.py
 src/main/module.cpp
 src/main/module.h
-src/main/module.py
 src/main/node.cpp
 src/main/node.h
 src/main/program.cpp
@@ -49,3 +47,10 @@ src/test/util/minbleps.cxx
 src/test/util/paster.cxx
 src/test/carstairs.cxx
 src/test/config.cxx
+src/lib32.py
+src/lib64.py
+src/unit.py
+Carstairs.astylerc
+project.info
+SConstruct
+versions.py
