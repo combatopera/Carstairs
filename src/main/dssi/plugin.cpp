@@ -36,11 +36,17 @@ Log const LOG(__FILE__);
 
 Python const PYTHON;
 
-Config const CONFIG {PYTHON}; // Must be in same file as PortInfo for static init order.
+Config const CONFIG {
+    PYTHON
+}; // Must be in same file as PortInfo for static init order.
 
-PortInfoEnum const PortInfo {CONFIG}; // Must be in same file as descriptor for static init order.
+PortInfoEnum const PortInfo {
+    CONFIG
+}; // Must be in same file as descriptor for static init order.
 
-Module const MODULE {CONFIG};
+Module const MODULE {
+    CONFIG
+};
 
 Bounds<int> PROGRAM_INDEX_BOUNDS {0, 0xff};
 
@@ -167,9 +173,9 @@ void ProgramInfos::addOrLog(boost::filesystem::path const& path, std::string con
 }
 
 Descriptors::Descriptors(Config const& config, Values<PortInfo_t const> const& ports)
-        : _PortDescriptors(new LADSPA_PortDescriptor[ports.length]), //
-        _PortNames(new char const *[ports.length]), //
-        _PortRangeHints(new LADSPA_PortRangeHint[ports.length]) {
+    : _PortDescriptors(new LADSPA_PortDescriptor[ports.length]), //
+      _PortNames(new char const *[ports.length]), //
+      _PortRangeHints(new LADSPA_PortRangeHint[ports.length]) {
     for (auto i = ports.length - 1; SIZEX_NEG != i; --i) {
         _PortDescriptors[i] = ports[i]->_descriptor;
         _PortNames[i] = ports[i]->_name;
@@ -220,9 +226,9 @@ Descriptors::~Descriptors() {
 
 extern "C" {
 
-const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
-    return Index ? 0 : &DESCRIPTORS.dssiDescriptor();
-}
+    const DSSI_Descriptor *dssi_descriptor(DSSI::cursor Index) {
+        return Index ? 0 : &DESCRIPTORS.dssiDescriptor();
+    }
 
 }
 

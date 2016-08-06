@@ -29,28 +29,31 @@ Log const LOG(__FILE__);
 }
 
 PortInfoEnum::PortInfoEnum(Config const& config, sizex ord)
-        : PCM {ord++, true, true, "PCM", 0, //
-                0, 0, DSSI_NONE}, //
-        ALPHA {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
-                -1, 1, DSSI_CC(config._alphaCC)}, //
-        BETA {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
-                -1, 1, DSSI_CC(config._betaCC)}, //
-        _values {&PCM, ord} {
+    : PCM {ord++, true, true, "PCM", 0, //
+    0, 0, DSSI_NONE
+}, //
+ALPHA {ord++, false, false, "alpha", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+       -1, 1, DSSI_CC(config._alphaCC)
+      }, //
+BETA {ord++, false, false, "beta", LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE, //
+      -1, 1, DSSI_CC(config._betaCC)
+     }, //
+_values {&PCM, ord} {
     CARSTAIRS_DEBUG("Constructed the PortInfoEnum.");
 }
 
 Carstairs::Carstairs(Config const& config, PortInfoEnum const& PortInfo, Module const& module, Python const& python, ProgramInfos const& programInfos,
-        int const pcmRate)
-        : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
-        _state(config), //
-        _loader(config, module, python, programInfos), //
-        _tone(config, _state), //
-        _noise(config, _state), //
-        _mixer(_state, _tone, _noise), //
-        _env(config, _state), //
-        _level(config, _state, _mixer, _env), //
-        _pcm(config, _state, _level, pcmRate), //
-        _pcmRate(pcmRate) {
+                     int const pcmRate)
+    : _PortInfo(PortInfo), _portValPtrs("_portValPtrs", PortInfo.values().length), //
+      _state(config), //
+      _loader(config, module, python, programInfos), //
+      _tone(config, _state), //
+      _noise(config, _state), //
+      _mixer(_state, _tone, _noise), //
+      _env(config, _state), //
+      _level(config, _state, _mixer, _env), //
+      _pcm(config, _state, _level, pcmRate), //
+      _pcmRate(pcmRate) {
     _maskableNaiveNodes.push_back(&_tone);
     _maskableNaiveNodes.push_back(&_noise);
     _maskableNaiveNodes.push_back(&_env);
@@ -102,16 +105,16 @@ void Carstairs::runSynth(DSSI::cursor blockSize, snd_seq_event_t const *events, 
             if (hostEventX <= programEventX) { // Prioritise host events if equal.
                 auto const& event = events[eventIndex++];
                 switch (event.type) {
-                    case SND_SEQ_EVENT_NOTEON: {
-                        _currentProgram = _loader.program(_pendingProgram);
-                        auto const& n = event.data.note;
-                        _state.noteOn(hostEventX, n.note, n.velocity);
-                        break;
-                    }
-                    case SND_SEQ_EVENT_NOTEOFF: {
-                        _state.noteOff(hostEventX, event.data.note.note);
-                        break;
-                    }
+                case SND_SEQ_EVENT_NOTEON: {
+                    _currentProgram = _loader.program(_pendingProgram);
+                    auto const& n = event.data.note;
+                    _state.noteOn(hostEventX, n.note, n.velocity);
+                    break;
+                }
+                case SND_SEQ_EVENT_NOTEOFF: {
+                    _state.noteOff(hostEventX, event.data.note.note);
+                    break;
+                }
                 }
             }
             else {

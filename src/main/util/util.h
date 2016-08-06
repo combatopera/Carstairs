@@ -42,7 +42,7 @@ public:
     char const *_name;
 
     Log(char const * const file)
-            : _name(createName(file)) {
+        : _name(createName(file)) {
     }
 
     char const *name() const {
@@ -81,7 +81,7 @@ public:
     T const _min, _max;
 
     Bounds(T min, T max)
-            : _min(min), _max(max) {
+        : _min(min), _max(max) {
     }
 
     T clamp(T x) const {

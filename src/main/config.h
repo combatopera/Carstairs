@@ -62,31 +62,31 @@ public:
 
 #ifdef CARSTAIRS_TEST
     Config()
-            : _UniqueID() {
+        : _UniqueID() {
     }
 #endif
 
     Config(Python const& python) {
         Interpreter(python, [] {}).runTask(
-                [&] {
-                    Interpreter::execute(
+        [&] {
+            Interpreter::execute(
 #include "config.raw"
-);
-                    auto const config = Interpreter::import("__main__");
-                    auto attr = config.getAttr("uniqueid");
-                    if (attr) {
-                        _UniqueID = attr.numberRoundToUnsignedLong(); // TODO LATER: Should not round.
-                    }
-                    CARSTAIRS_DEBUG("UniqueID: %lu", _UniqueID);
-                    attr = config.getAttr("modulesdir");
-                    if (attr) {
-                        _modulesDir = attr.toPathBytes().unwrapBytes();
-                    }
-                    else {
-                        _modulesDir = config.getAttr("userhome").toPathBytes().unwrapBytes();
-                        _modulesDir /= ".carstairs";
-                    }
-                });
+            );
+            auto const config = Interpreter::import("__main__");
+            auto attr = config.getAttr("uniqueid");
+            if (attr) {
+                _UniqueID = attr.numberRoundToUnsignedLong(); // TODO LATER: Should not round.
+            }
+            CARSTAIRS_DEBUG("UniqueID: %lu", _UniqueID);
+            attr = config.getAttr("modulesdir");
+            if (attr) {
+                _modulesDir = attr.toPathBytes().unwrapBytes();
+            }
+            else {
+                _modulesDir = config.getAttr("userhome").toPathBytes().unwrapBytes();
+                _modulesDir /= ".carstairs";
+            }
+        });
     }
 
     float naiveRate() const {

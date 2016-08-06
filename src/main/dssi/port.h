@@ -28,7 +28,7 @@ class PortInfo_t {
 public:
 
     PortInfo_t(sizex ordinal, bool output, bool audio, char const *name, LADSPA_PortRangeHintDescriptor HintDescriptor, LADSPA_Data LowerBound,
-            LADSPA_Data UpperBound, int controllers);
+               LADSPA_Data UpperBound, int controllers);
 
     LADSPA_PortDescriptor const _descriptor;
 

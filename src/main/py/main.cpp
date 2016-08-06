@@ -39,7 +39,7 @@ PyThreadState *initPython() {
 }
 
 Python::Python()
-        : _main(initPython()) {
+    : _main(initPython()) {
 }
 
 Python::~Python() {

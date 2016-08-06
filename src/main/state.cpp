@@ -30,8 +30,8 @@ Bounds<int> const EnvShape::SHAPE_BOUNDS(0, 0b1111);
 Bounds<int> const State::LEVEL4_BOUNDS(0, 0xf);
 
 State::State(Config const& config)
-        : _config(config), _onOrMax(DSSI::CURSOR_MAX), _offOrMax(DSSI::CURSOR_MAX), //
-        _programEventIndex(), _offEventIndex(), _toneFlag(), _noiseFlag(), _levelMode() {
+    : _config(config), _onOrMax(DSSI::CURSOR_MAX), _offOrMax(DSSI::CURSOR_MAX), //
+      _programEventIndex(), _offEventIndex(), _toneFlag(), _noiseFlag(), _levelMode() {
 }
 
 void State::reset() {

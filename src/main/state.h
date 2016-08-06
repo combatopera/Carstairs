@@ -57,22 +57,22 @@ public:
             s = (_shapeIndex & 0b0100) ? 0b1111 : 0b1001;
         }
         switch (s) {
-            case 0b1000:
-                return "desc_saw";
-            case 0b1001:
-                return "desc_hold";
-            case 0b1010:
-                return "desc_tri";
-            case 0b1011:
-                return "desc_flip";
-            case 0b1100:
-                return "asc_saw";
-            case 0b1101:
-                return "asc_hold";
-            case 0b1110:
-                return "asc_tri";
-            case 0b1111:
-                return "asc_flip";
+        case 0b1000:
+            return "desc_saw";
+        case 0b1001:
+            return "desc_hold";
+        case 0b1010:
+            return "desc_tri";
+        case 0b1011:
+            return "desc_flip";
+        case 0b1100:
+            return "asc_saw";
+        case 0b1101:
+            return "asc_hold";
+        case 0b1110:
+            return "asc_tri";
+        case 0b1111:
+            return "asc_flip";
         }
         assert(false);
         return 0;
@@ -97,7 +97,7 @@ protected:
 public:
 
     Program(Config const& config)
-            : _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq) {
+        : _refMidiNote(config._refMidiNote), _semitones(config._semitones), _refFreq(config._refFreq) {
     }
 
     virtual ~Program() {

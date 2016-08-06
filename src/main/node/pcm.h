@@ -66,8 +66,8 @@ class PCM: public Node<LADSPA_Data> {
 public:
 
     PCM(Config const& config, State& state, Node<float>& naive, int pcmRate)
-            : Node("PCM", state), _minBLEPs(config, pcmRate), _paster(_minBLEPs), _naive(naive), //
-            _overflowCount(), _dc() {
+        : Node("PCM", state), _minBLEPs(config, pcmRate), _paster(_minBLEPs), _naive(naive), //
+          _overflowCount(), _dc() {
     }
 
     ~PCM() {

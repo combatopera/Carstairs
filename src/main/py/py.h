@@ -28,7 +28,7 @@ class PyRef {
 public:
 
     PyRef(PyObject * const ptr = 0)
-            : _ptr(ptr) {
+        : _ptr(ptr) {
     }
 
     PyRef& operator=(PyObject * const ptr);
