@@ -3,3 +3,7 @@ src/main/dssi
 src/main/node
 src/main/py
 src/main/util
+src/test
+src/test/node
+src/test/util
+.
