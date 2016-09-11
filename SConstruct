@@ -100,6 +100,8 @@ for path in 'module.py3', 'config.py3':
     path = os.path.join('src', 'main', path)
     Command(path[:path.rindex('.')] + '.raw', path, '''echo -n 'R"EOF(' >$TARGET; cat $SOURCE >>$TARGET; echo ')EOF"' >>$TARGET''')
 
-Command('bin/Carstairs.zip', sopaths, '''ln -Tsfv bin Carstairs
-zip $TARGET `echo '$SOURCES' | sed 's:bin/:Carstairs/:g'`
-rm -fv Carstairs''')
+linuxcodename, = subprocess.check_output(['lsb_release', '-sc']).splitlines()
+zipdirname = "Carstairs-%s" % linuxcodename
+Command("bin/%s.zip" % zipdirname, sopaths, """ln -Tsfv bin %(zipdirname)s
+zip $TARGET `echo '$SOURCES' | sed 's:bin/:%(zipdirname)s/:g'`
+rm -fv %(zipdirname)s""" % locals())
