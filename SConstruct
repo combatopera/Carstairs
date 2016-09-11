@@ -95,3 +95,7 @@ Command('bin/cppcheck.txt', ['src/main', 'src/test'], 'cppcheck -q --inline-supp
 for path in 'module.py3', 'config.py3':
     path = os.path.join('src', 'main', path)
     Command(path[:path.rindex('.')] + '.raw', path, '''echo -n 'R"EOF(' >$TARGET; cat $SOURCE >>$TARGET; echo ')EOF"' >>$TARGET''')
+
+Command('bin/Carstairs.zip', ['bin/lib32/libcarstairs.so', 'bin/lib64/libcarstairs.so'], '''ln -Tsfv bin Carstairs
+zip $TARGET `echo '$SOURCES' | sed 's:bin/:Carstairs/:g'`
+rm -fv Carstairs''')
