@@ -17,12 +17,9 @@
 
 Import('context libs32')
 
-import os
-if 'DRONE' not in os.environ:
+env = context.newenv(libs32)
+env.Append(CXXFLAGS = ['-Winline', '-m32'])
+env.Append(LINKFLAGS = ['-m32'])
 
-    env = context.newenv(libs32)
-    env.Append(CXXFLAGS = ['-Winline', '-m32'])
-    env.Append(LINKFLAGS = ['-m32'])
-
-    env.SharedLibrary('carstairs', context.sources())
-    env.Command('foreignsyms.txt', 'libcarstairs.so', '../pyven/foreignsyms $SOURCE | tee $TARGET')
+env.SharedLibrary('carstairs', context.sources())
+env.Command('foreignsyms.txt', 'libcarstairs.so', '../pyven/foreignsyms $SOURCE | tee $TARGET')
