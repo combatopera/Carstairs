@@ -82,13 +82,17 @@ main = Tree('main', 'cpp')
 test = Tree('test', 'cxx')
 
 libs32 = Libs('libc6')
-import platform
+import platform, os
+sopaths = []
 if 'x86_64' == platform.machine():
     libs = libs64 = Libs('libc6,x86-64')
     Context('lib64', main).enter()
+    sopaths.append('bin/lib64/libcarstairs.so')
 else:
     libs = libs32
-Context('lib32', main).enter()
+if 'DRONE' not in os.environ:
+    Context('lib32', main).enter()
+    sopaths.append('bin/lib32/libcarstairs.so')
 Context('unit', main, test).enter()
 
 Command('bin/cppcheck.txt', ['src/main', 'src/test'], 'cppcheck -q --inline-suppr --enable=all $SOURCES 2>&1 | tee $TARGET')
@@ -96,6 +100,6 @@ for path in 'module.py3', 'config.py3':
     path = os.path.join('src', 'main', path)
     Command(path[:path.rindex('.')] + '.raw', path, '''echo -n 'R"EOF(' >$TARGET; cat $SOURCE >>$TARGET; echo ')EOF"' >>$TARGET''')
 
-Command('bin/Carstairs.zip', ['bin/lib32/libcarstairs.so', 'bin/lib64/libcarstairs.so'], '''ln -Tsfv bin Carstairs
+Command('bin/Carstairs.zip', sopaths, '''ln -Tsfv bin Carstairs
 zip $TARGET `echo '$SOURCES' | sed 's:bin/:Carstairs/:g'`
 rm -fv Carstairs''')
