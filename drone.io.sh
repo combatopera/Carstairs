@@ -19,7 +19,7 @@
 
 set -e
 
-hg clone https://bitbucket.org/combatopera/pyven ../pyven
+git clone https://github.com/combatopera/pyven.git ../pyven
 
 ../pyven/drone.io.py
 
