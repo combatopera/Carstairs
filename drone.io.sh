@@ -19,8 +19,6 @@
 
 set -ex
 
-git clone https://github.com/combatopera/pyven.git ../pyven
-
 ../pyven/drone.io.py
 
 echo 2 | sudo update-alternatives --config gcc
