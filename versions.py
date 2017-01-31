@@ -17,4 +17,4 @@
 
 import os
 
-boost = '1.48.0' if 'DRONE' in os.environ else '1.55.0'
+boost = '1.48.0' if 'TRAVIS' in os.environ else '1.55.0'
