@@ -68,12 +68,13 @@ class Context:
         ])
         env.Append(LIBS = ['fftw3'])
         env.Append(LIBS = File(libs['boost_filesystem', versions.boost]))
-        for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--ldflags'])):
+        pyconf = 'python3.4-config'
+        for word in re.findall(r'[\S]+', subprocess.check_output([pyconf, '--ldflags'])):
             if word.startswith('-L'):
                 env.Append(LIBPATH = word[2:])
             elif word.startswith('-l'):
                 env.Append(LIBS = word[2:])
-        for word in re.findall(r'[\S]+', subprocess.check_output(['python3-config', '--includes'])):
+        for word in re.findall(r'[\S]+', subprocess.check_output([pyconf, '--includes'])):
             if word.startswith('-I'):
                 env.Append(CPPPATH = [word[2:]])
         return env
