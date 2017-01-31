@@ -1,6 +1,0 @@
-#gclean
-^.sconsign.dblite$
-^bin/
-[.]pyc$
-[.]raw$
-^Carstairs.creator.user$
