@@ -1,4 +1,4 @@
-import os, re, subprocess, versions
+import os, re, subprocess, versions, platform
 
 class Libs:
 
@@ -82,7 +82,6 @@ main = Tree('main', 'cpp')
 test = Tree('test', 'cxx')
 
 libs32 = Libs('libc6')
-import platform, os
 sopaths = []
 if 'x86_64' == platform.machine():
     libs = libs64 = Libs('libc6,x86-64')
@@ -90,7 +89,7 @@ if 'x86_64' == platform.machine():
     sopaths.append('bin/lib64/libcarstairs.so')
 else:
     libs = libs32
-if 'DRONE' not in os.environ:
+if not versions.istravis:
     Context('lib32', main).enter()
     sopaths.append('bin/lib32/libcarstairs.so')
 Context('unit', main, test).enter()
