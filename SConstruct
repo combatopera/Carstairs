@@ -77,6 +77,7 @@ class Context:
         for word in re.findall(r'[\S]+', subprocess.check_output([pyconf, '--includes'])):
             if word.startswith('-I'):
                 env.Append(CPPPATH = [word[2:]])
+        env['ENV']['SHELLOPTS'] = 'pipefail'
         return env
 
 main = Tree('main', 'cpp')
