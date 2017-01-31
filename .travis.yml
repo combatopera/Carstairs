@@ -1,2 +1,3 @@
 install: git clone https://github.com/combatopera/pyven.git ../pyven
 script: ./drone.io.sh
+sudo: required
