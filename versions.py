@@ -18,4 +18,4 @@
 import os
 
 istravis = 'TRAVIS' in os.environ
-boost = '1.48.0' if istravis else '1.55.0'
+boost = '1.55.0'
