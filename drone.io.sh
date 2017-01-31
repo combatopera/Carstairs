@@ -23,6 +23,6 @@ set -ex
 
 #echo 2 | sudo update-alternatives --config gcc
 
-sudo apt-get install dssi-dev libboost1.48-dev libboost-filesystem1.48.0 libboost-test1.48.0 python3-dev libfftw3-dev cppcheck zip
+sudo apt-get install dssi-dev libboost1.55-dev libboost-filesystem1.55.0 libboost-test1.55.0 python3-dev libfftw3-dev cppcheck zip
 
 scons
