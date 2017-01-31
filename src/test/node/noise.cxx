@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_SUITE(TestNoise)
 BOOST_AUTO_TEST_CASE(LFSR) {
     // Subsequence of the real LFSR from Hatari mailing list:
     std::array<int, 51> expected { //
-        1, 1, 0, 0, 1, 1, 0, 1, 0, 1, //
+        0, 1, 0, 0, 1, 1, 0, 1, 0, 1, //
         1, 1, 0, 0, 1, 0, 1, 0, 0, 1, //
         0, 0, 1, 1, 0, 1, 1, 1, 0, 0, //
         1, 1, 0, 0, 0, 0, 0, 1, 0, 0, //
