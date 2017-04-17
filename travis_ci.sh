@@ -19,10 +19,10 @@
 
 set -ex
 
-apt-cache search pyparsing
-python --version
-
 sudo apt-get install python-pyparsing
+
+find /usr/lib -name *pyparsing*
+python -c 'import sys; print sys.path'
 
 ../pyven/travis_ci.py
 
