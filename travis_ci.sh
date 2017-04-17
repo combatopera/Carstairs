@@ -19,7 +19,7 @@
 
 set -ex
 
-../pyven/drone.io.py
+../pyven/travis_ci.py
 
 sudo apt-get install dssi-dev libboost1.55-dev libboost-filesystem1.55.0 libboost-test1.55.0 libfftw3-dev cppcheck
 
