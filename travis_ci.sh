@@ -21,11 +21,8 @@ set -ex
 
 sudo apt-get install python-pyparsing
 
-find /usr/lib -name *pyparsing*
-python -c 'import sys; print sys.path'
-
 ../pyven/travis_ci.py
 
-sudo apt-get install dssi-dev libboost1.55-dev libboost-filesystem1.55.0 libboost-test1.55.0 libfftw3-dev cppcheck
+sudo apt-get install dssi-dev libboost1.55-dev libboost-filesystem1.55.0 libboost-test1.55.0 libfftw3-dev cppcheck scons
 
 scons
