@@ -4,3 +4,4 @@ install:
 script: ./travis_ci.sh
 sudo: required
 dist: trusty
+language: generic
