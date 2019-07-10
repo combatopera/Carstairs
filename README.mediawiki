@@ -1,3 +1,8 @@
+This project is dead, for reasons including but not limited to:
+* Challenges embedding Python in a performant way
+* Duplicating the emulation effort of pym2149 and less accurately
+But some code may be salvageable, such as:
+* MinBLEPs
 {|
 ! master
 |-
